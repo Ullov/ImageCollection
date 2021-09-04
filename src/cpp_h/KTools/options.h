@@ -1,8 +1,11 @@
 #ifndef KTOOLS_OPTIONS_H
 #define KTOOLS_OPTIONS_H
 
-#include <QJsonObject>
+#include "curl.h"
 
+class QJsonObject;
+class QVariant;
+class QJsonValue;
 
 namespace KTools
 {

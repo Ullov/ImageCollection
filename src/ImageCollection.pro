@@ -7,16 +7,23 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        cpp_h/FsExplorer/fshandler.cpp \
+        cpp_h/KTools/HtmlAstMaker/object.cpp \
+        cpp_h/KTools/HtmlAstMaker/tag.cpp \
         cpp_h/KTools/StaticVarsDeclarations.cpp \
+        cpp_h/KTools/archiverw.cpp \
         cpp_h/KTools/converter.cpp \
+        cpp_h/KTools/curl.cpp \
         cpp_h/KTools/exforstring.cpp \
         cpp_h/KTools/file.cpp \
         cpp_h/KTools/fileidentifier.cpp \
+        cpp_h/KTools/kawaiimageprovider.cpp \
+        cpp_h/KTools/ktoolsqmlinterface.cpp \
         cpp_h/KTools/log.cpp \
         cpp_h/KTools/options.cpp \
         cpp_h/main.cpp
 
-RESOURCES += resources/qml.qrc
+RESOURCES += qml.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -30,10 +37,32 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    cpp_h/FsExplorer/fshandler.h \
+    cpp_h/KTools/HtmlAstMaker/object.h \
+    cpp_h/KTools/HtmlAstMaker/tag.h \
+    cpp_h/KTools/archiverw.h \
     cpp_h/KTools/converter.h \
+    cpp_h/KTools/curl.h \
     cpp_h/KTools/enums.h \
     cpp_h/KTools/exforstring.h \
     cpp_h/KTools/file.h \
     cpp_h/KTools/fileidentifier.h \
+    cpp_h/KTools/kawaiimageprovider.h \
+    cpp_h/KTools/ktoolsqmlinterface.h \
     cpp_h/KTools/log.h \
     cpp_h/KTools/options.h
+
+#Curl
+LIBS += -L$$PWD/libs/curl-x64/lib/dll/ -llibcurl.dll
+INCLUDEPATH += $$PWD/libs/curl-x64/include
+DEPENDPATH += $$PWD/libs/curl-x64/include
+
+#KArchive
+LIBS += -L$$PWD/libs/karchive-5.69.0/lib/ -llibKF5Archive.dll
+INCLUDEPATH += $$PWD/libs/karchive-5.69.0/include
+DEPENDPATH += $$PWD/libs/karchive-5.69.0/include
+
+QMAKE_CXXFLAGS += -O3
+
+# defines macros for debug build
+debug {DEFINES += KAWAI_DEBUG}

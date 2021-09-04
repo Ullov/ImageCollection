@@ -1,0 +1,34 @@
+{
+    "signatures": [
+        {
+            "extension": ".jpg",
+            "summary": "JPEG image file",
+            "mimeType": "image/jpeg",
+            "signature": ["\u00FF\u00D8\u00FF\u00DB", "\u00FF\u00D8\u00FF\u00E0\u0000\u0010\u004A\u0046\u0049\u0046\u0000\u0001"]
+        },
+        {
+            "extension": ".png",
+            "summary": "PNG image file",
+            "mimeType": "image/png",
+            "signature": ["\u0089\u0050\u004E\u0047\u000D\u000A\u001A\u000A"]
+        },
+        {
+            "extension": ".gif",
+            "summary": "GIF image file",
+            "mimeType": "image/gif",
+            "signature": ["\u0047\u0049\u0046\u0038\u0037\u0061", "\u0047\u0049\u0046\u0038\u0039\u0061"]
+        },
+        {
+            "extension": ".tiff",
+            "summary": "TIFF image file",
+            "mimeType": "image/tiff",
+            "signature": ["\u0049\u0049\u002A\u0000", "\u004D\u004D\u0000\u002A"]
+        },
+        {
+            "extension": ".bmp",
+            "summary": "Bitmap image file",
+            "mimeType": "image/bmp",
+            "signature": ["\u0042\u004D"]
+        }
+    ]
+}

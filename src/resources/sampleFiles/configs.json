@@ -1,0 +1,13 @@
+{
+    "parsersAndClients": {
+        "pixiv": {
+            "login": "",
+            "password": "",
+            "header": "",
+            "cookieName": ""
+        }
+    },
+    "fsExplorer": {
+        "lastOpenedDirectory": "C:/"
+    }
+}

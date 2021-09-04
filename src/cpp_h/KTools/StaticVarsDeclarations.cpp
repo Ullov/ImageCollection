@@ -1,11 +1,16 @@
 #include "options.h"
 #include "log.h"
+#include "curl.h"
 #include "enums.h"
+#include "ktoolsqmlinterface.h"
+//#include "../Parsers/parsersqmlinterface.h"
 #include "fileidentifier.h"
+//#include "../Parsers/parserclass.h"
 
 #include <QStandardPaths>
 #include <QDir>
 #include <QDateTime>
+#include <QJsonObject>
 
 // Start OptionsHandler
 QString KTools::Options::configFile = "config.txt";
@@ -31,3 +36,13 @@ QMap<KTools::Enums::LogType, QString> KTools::Log::logTypeNames = {
     {KTools::Enums::LogType::Custom, "Custom"}
 };
 // End Log
+// Start CurlClass
+QString KTools::Curl::cacertPath = QDir::temp().path() + "/KawaiClient";
+QString KTools::Curl::cacertFileName = "cacert.pem";
+QString KTools::Curl::fullCacertPath = cacertPath + '/' + cacertFileName;
+QString KTools::Curl::pathToCacertInQrc = ":/resources/other/cacert.pem";
+QString KTools::Curl::cookiePath = "";
+// End CurlClass
+// Start KTolsQmlInterface
+//KToolsQmlInterface KToolsQmlInterface::obj;
+// End KTolsQmlInterface

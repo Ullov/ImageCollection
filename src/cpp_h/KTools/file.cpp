@@ -65,7 +65,7 @@ bool KTools::File::writeFile(const QByteArray &data, const QString &directory, c
 {
     QString correctPath = directory;
     correctPath.replace("\\", "/").replace("//", "/");
-    if (correctPath[correctPath.size() - 1] == '/')
+    if (correctPath[correctPath.size() - 1] == "/")
         correctPath.chop(1);
 
     makePath(correctPath);

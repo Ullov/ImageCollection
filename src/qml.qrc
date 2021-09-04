@@ -1,0 +1,35 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/FSExplorer/DelegateItemForFolderList.qml</file>
+        <file>qml/FSExplorer/FileBrowserTab.qml</file>
+        <file>qml/FSExplorer/FileListTools.js</file>
+        <file>qml/FSExplorer/StartObject.qml</file>
+        <file>qml/QmlIncludes/KawaiButton.qml</file>
+        <file>qml/QmlIncludes/KawaiCollapsibleBlock.qml</file>
+        <file>qml/QmlIncludes/KawaiDownloadBar.qml</file>
+        <file>qml/QmlIncludes/KawaiHorisontalLine.qml</file>
+        <file>qml/QmlIncludes/KawaiLoadTabButton.qml</file>
+        <file>qml/QmlIncludes/KawaiVerticalLine.qml</file>
+        <file>qml/QmlIncludes/KawaiLabelInputFieldCombination.qml</file>
+        <file>qml/QmlIncludes/KawaiSwitchableWindows.qml</file>
+        <file>js/pageloader.js</file>
+        <file>js/Tools.js</file>
+        <file>resources/FSExplorer/img/fileTypeIcons/bmp.png</file>
+        <file>resources/FSExplorer/img/fileTypeIcons/folder.png</file>
+        <file>resources/FSExplorer/img/fileTypeIcons/gif.png</file>
+        <file>resources/FSExplorer/img/fileTypeIcons/jpeg.png</file>
+        <file>resources/FSExplorer/img/fileTypeIcons/lnk.png</file>
+        <file>resources/FSExplorer/img/fileTypeIcons/png.png</file>
+        <file>resources/FSExplorer/img/fileTypeIcons/tiff.png</file>
+        <file>resources/FSExplorer/txt/fileSignatures.json</file>
+        <file>resources/icons/4272e394f5ad(instagram).png</file>
+        <file>resources/icons/apple-icon-57x57(mangarock).webp</file>
+        <file>resources/icons/apple-touch-icon(pixiv).png</file>
+        <file>resources/icons/favicon(exhentai).ico</file>
+        <file>resources/icons/favicon(nhentai).ico</file>
+        <file>resources/other/cacert.pem</file>
+        <file>resources/other/fileSignatures.json</file>
+        <file>resources/sampleFiles/configs.json</file>
+    </qresource>
+</RCC>

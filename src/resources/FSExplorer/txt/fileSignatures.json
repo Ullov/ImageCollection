@@ -1,0 +1,79 @@
+{
+    "images": [
+        {
+            "extension": ".jpg",
+            "summary": "JPEG image file",
+            "type": "image/jpeg",
+            "icon": "qrc:/resources/img/fileTypeIcons/jpeg.png",
+            "signature": ["\\xFF\\xD8\\xFF\\xDB", "\\xFF\\xD8\\xFF\\xE0", "\\xFF\\xD8\\xFF\\xEE", "\\xFF\\xD8\\xFF\\xE1", "\\xFF\\xD8\\xFF\\xE8"]
+        },
+        {
+            "extension": ".png",
+            "summary": "PNG image file",
+            "type": "image/png",
+            "icon": "qrc:/resources/img/fileTypeIcons/png.png",
+            "signature": ["\\x89\\x50\\x4E\\x47\\x0D\\x0A\\x1A\\x0A"],
+            "pathToApp": ""
+        },
+        {
+            "extension": ".gif",
+            "summary": "GIF image file",
+            "type": "image/gif",
+            "icon": "qrc:/resources/img/fileTypeIcons/gif.png",
+            "signature": ["\\x47\\x49\\x46\\x38\\x37\\x61", "\\x47\\x49\\x46\\x38\\x39\\x61"],
+            "pathToApp": ""
+        },
+        {
+            "extension": ".tiff",
+            "summary": "TIFF image file",
+            "type": "image/tiff",
+            "icon": "qrc:/resources/img/fileTypeIcons/tiff.png",
+            "signature": ["\\x49\\x49\\x2A\\x00", "\\x4D\\x4D\\x00\\x2A"],
+            "pathToApp": ""
+        },
+        {
+            "extension": ".bmp",
+            "summary": "Bitmap image file",
+            "type": "image/bmp",
+            "icon": "qrc:/resources/img/fileTypeIcons/bmp.png",
+            "signature": ["\\x42\\x4D"],
+            "pathToApp": ""
+        }
+    ],
+    "archives": [
+        {
+            "extension": ".zip",
+            "summary": "PCZIP archive",
+            "type": "archive/pcZip",
+            "icon": "",
+            "signature": ["\\x50\\x4B\\x03\\x04", "\\x50\\x4B\\x05\\x06", "\\x50\\x4B\\x07\\x08"],
+            "pathToApp": ""
+        },
+        {
+            "extension": ".zip",
+            "summary": "WinZip compressed archive",
+            "type": "archive/winZip",
+            "icon": "",
+            "signature": ["\\x57\\x69\\x6E\\x5A\\x69\\x70"],
+            "pathToApp": ""
+        },
+        {
+            "extension": ".zip",
+            "summary": "PKSFX self-extracting archive",
+            "type": "archive/pcsfx",
+            "icon": "",
+            "signature": ["\\x50\\x4B\\x53\\x70\\x58"],
+            "pathToApp": ""
+        }
+    ],
+    "windows": [
+        {
+            "extension": ".lnk",
+            "summary": "Windows shortcut file",
+            "type": "windows/lnk",
+            "icon": "qrc:/resources/img/fileTypeIcons/lnk.png",
+            "signature": ["\\x4C\\x00\\x00\\x00\\x01\\x14\\x02\\00"],
+            "pathToApp": ""
+        }
+    ]
+}

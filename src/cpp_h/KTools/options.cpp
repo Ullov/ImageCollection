@@ -3,6 +3,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include "file.h"
+#include "curl.h"
 #include "converter.h"
 #include "log.h"
 
@@ -19,6 +20,7 @@ KTools::Options::Options()
         KTools::File::writeFile(configPath.toUtf8(), configPath, configFile, QIODevice::WriteOnly | QIODevice::Text);
     }
     logRootPath = Options::rootProgramPath + "/log/";
+    KTools::Curl::cookiePath = Options::rootProgramPath + "/Cookie/";
 
 
     if (!KTools::File::fileExist(rootProgramPath + "/Settings/configs.json"))
@@ -74,8 +76,7 @@ QJsonValue KTools::Options::privateSetParam(QList<QString> pathToParam, QJsonVal
         }
         else
         {
-            //KTools::Log::writeError("Wrong type. jsValType: " + static_cast<QString>(jsValType) + ", name: " + name, "OptionsHandler::setParam");
-            // Static cast from QJsonValue::Type to QString does not work in Qt6. Says that its ambiguous.
+            KTools::Log::writeError("Wrong type. jsValType: " + static_cast<QString>(jsValType) + ", name: " + name, "OptionsHandler::setParam");
         }
     }
     else
@@ -124,8 +125,7 @@ QJsonValue KTools::Options::privateGetParam(QList<QString> pathToParam, const QJ
         }
         else
         {
-            //KTools::Log::writeError("Wrong type. jsValType: " + static_cast<QString>(jsValType) + ", name: " + name, "OptionsHandler::getParam");
-            // See line 78 for info about this error.
+            KTools::Log::writeError("Wrong type. jsValType: " + static_cast<QString>(jsValType) + ", name: " + name, "OptionsHandler::getParam");
             return QJsonValue();
         }
     }

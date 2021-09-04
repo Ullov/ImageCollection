@@ -17,7 +17,6 @@ Window {
         anchors.right: tmp2.left
         KawaiSwitchableWindows {
             id: switchableWindow
-            anchors.right: parent.horizontalCenter
         }
     }
     Rectangle {
@@ -28,7 +27,6 @@ Window {
         width: parent.width / 2
         KawaiSwitchableWindows {
             id: switchableWindow2
-            anchors.left: switchableWindow.right
         }
     }
 
