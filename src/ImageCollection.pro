@@ -21,6 +21,7 @@ SOURCES += \
         cpp_h/KTools/ktoolsqmlinterface.cpp \
         cpp_h/KTools/log.cpp \
         cpp_h/KTools/options.cpp \
+        cpp_h/KTools/uuidslist.cpp \
         cpp_h/main.cpp
 
 RESOURCES += qml.qrc
@@ -50,7 +51,8 @@ HEADERS += \
     cpp_h/KTools/kawaiimageprovider.h \
     cpp_h/KTools/ktoolsqmlinterface.h \
     cpp_h/KTools/log.h \
-    cpp_h/KTools/options.h
+    cpp_h/KTools/options.h \
+    cpp_h/KTools/uuidslist.h
 
 #Curl
 LIBS += -L$$PWD/libs/curl-x64/lib/dll/ -llibcurl.dll

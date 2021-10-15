@@ -20,26 +20,26 @@ public:
     FsHandler();
 
 public slots:
-    void init();
-    void slotCd(const QString file);
+    void init(const QVariant uuid);
+    void slotCd(const QString file, const QVariant uuid);
     void slotOpenInDefaultApp(const QString path);
-    void slotCdUp();
-    void slotShowDrivesList();
-    void slotRemoveFile(const QVariantList arr);
+    void slotCdUp(const QVariant uuid);
+    void slotShowDrivesList(const QVariant uuid);
+    void slotRemoveFile(const QVariantList arr, const QVariant uuid);
 
 signals:
-    void dirInfo(const QJsonObject dirInfo);
-    void drivesList(const QJsonObject drives);
+    void dirInfo(const QJsonObject dirInfo, const QVariant uuid);
+    void drivesList(const QJsonObject drives, const QVariant uuid);
 
 private:
     QJsonObject fileInfoToJsonObject(const QFileInfo &file);
-    QJsonObject fileInfoListToJsonObject(const QFileInfoList &files);
-    bool cd(const QString &dir);
-    bool setPath(const QString &dir);
+    QJsonObject fileInfoListToJsonObject(const QFileInfoList &files, const QVariant &uuid);
+    bool cd(const QString &dir, const QVariant &uuid);
+    QDir createDirectory(const QString &path);
 
 
-    // variabnles
-    QDir *currentDir;
+    // variables
+    QMap<QVariant, QDir*> *currentDirs;
 };
 
 #endif // FSHANDLER_H

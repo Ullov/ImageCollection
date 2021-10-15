@@ -5,6 +5,7 @@ import "FileListTools.js" as FileListTools
 
 Rectangle {
     id: root
+    property string uuid
     anchors.fill: parent
     TabView {
         id: tabs
@@ -36,5 +37,11 @@ Rectangle {
             }
             frame: Rectangle { color: "steelblue" }
         }
+    }
+    Component.onCompleted: {
+        uuid = uuidsList.getAndMark()
+    }
+    Component.onDestruction: {
+        uuidsList.unmark(uuid)
     }
 }

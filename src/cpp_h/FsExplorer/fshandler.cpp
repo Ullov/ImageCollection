@@ -4,18 +4,7 @@
 
 FsHandler::FsHandler()
 {
-    currentDir = new QDir(KTools::Options::getParam("/fsExplorer/lastOpenedDirectory").toString());
-
-    for (int i = 0; !currentDir->exists(); i++)
-    {
-        currentDir->cdUp();
-        if (i > 30)
-        {
-            currentDir->setPath("C:/");
-            break;
-        }
-    }
-    currentDir->setFilter(QDir::AllDirs | QDir::AllEntries | QDir::Writable | QDir::Executable | QDir::Readable | QDir::Hidden | QDir::System | QDir::NoDot);
+    currentDirs = new QMap<QVariant, QDir*>();
 }
 
 QJsonObject FsHandler::fileInfoToJsonObject(const QFileInfo &file)
@@ -46,7 +35,7 @@ QJsonObject FsHandler::fileInfoToJsonObject(const QFileInfo &file)
     return result;
 }
 
-QJsonObject FsHandler::fileInfoListToJsonObject(const QFileInfoList &files)
+QJsonObject FsHandler::fileInfoListToJsonObject(const QFileInfoList &files, const QVariant &uuid)
 {
     QJsonObject tmp;
     QJsonArray fResult;
@@ -62,39 +51,39 @@ QJsonObject FsHandler::fileInfoListToJsonObject(const QFileInfoList &files)
     tmp = QJsonObject();
     tmp["dir"] = dResult;
     tmp["file"] = fResult;
-    tmp["currentDir"] = currentDir->path();
+    tmp["currentDir"] = currentDirs->value(uuid)->path();
     return tmp;
 }
 
-bool FsHandler::cd(const QString &dir)
+bool FsHandler::cd(const QString &dir, const QVariant &uuid)
 {
-    bool res = currentDir->cd(dir);
-    KTools::Options::setParam("/fsExplorer/lastOpenedDirectory", currentDir->path());
+    bool res = currentDirs->value(uuid)->cd(dir);
+    KTools::Options::setParam("/fsExplorer/lastOpenedDirectory", currentDirs->value(uuid)->path());
     return res;
 }
 
-bool FsHandler::setPath(const QString &dir)
+void FsHandler::init(const QVariant uuid)
 {
-    QString oldPath = currentDir->path();
-    currentDir->setPath(dir);
-    if (currentDir->exists())
-        return true;
-    else
+    QDir *newDir = new QDir(KTools::Options::getParam("/fsExplorer/lastOpenedDirectory").toString());
+
+    for (int i = 0; !newDir->exists(); i++)
     {
-        currentDir->setPath(oldPath);
-        return false;
+        newDir->cdUp();
+        if (i > 30)
+        {
+            newDir->setPath("C:/");
+            break;
+        }
     }
+    newDir->setFilter(QDir::AllDirs | QDir::AllEntries | QDir::Writable | QDir::Executable | QDir::Readable | QDir::Hidden | QDir::System | QDir::NoDot);
+    currentDirs->insert(uuid, newDir);
+    emit dirInfo(fileInfoListToJsonObject(newDir->entryInfoList(), uuid), uuid);
 }
 
-void FsHandler::init()
+void FsHandler::slotCd(const QString file, const QVariant uuid)
 {
-    emit dirInfo(fileInfoListToJsonObject(currentDir->entryInfoList()));
-}
-
-void FsHandler::slotCd(const QString file)
-{
-    if (cd(file))
-        emit dirInfo(fileInfoListToJsonObject(currentDir->entryInfoList()));
+    if (cd(file, uuid))
+        emit dirInfo(fileInfoListToJsonObject(currentDirs->value(uuid)->entryInfoList(), uuid), uuid);
     else
         KTools::Log::writeError("Directory does not exist. file: " + file, "FsHandler::slotSd()");
 }
@@ -104,20 +93,20 @@ void FsHandler::slotOpenInDefaultApp(const QString path)
     QDesktopServices::openUrl(QUrl::fromLocalFile(path));
 }
 
-void FsHandler::slotCdUp()
+void FsHandler::slotCdUp(const QVariant uuid)
 {
-    if (cd(".."))
-        emit dirInfo(fileInfoListToJsonObject(currentDir->entryInfoList()));
+    if (cd("..", uuid))
+        emit dirInfo(fileInfoListToJsonObject(currentDirs->value(uuid)->entryInfoList(), uuid), uuid);
 }
 
-void FsHandler::slotShowDrivesList()
+void FsHandler::slotShowDrivesList(const QVariant uuid)
 {
-    emit drivesList(fileInfoListToJsonObject(currentDir->drives()));
+    emit drivesList(fileInfoListToJsonObject(currentDirs->value(uuid)->drives(), uuid), uuid);
 }
 
-void FsHandler::slotRemoveFile(const QVariantList arr)
+void FsHandler::slotRemoveFile(const QVariantList arr, const QVariant uuid)
 {
     for (int i = 0; i < arr.size(); i++)
         QDir(arr[i].toString()).removeRecursively();
-    emit dirInfo(fileInfoListToJsonObject(currentDir->entryInfoList()));
+    emit dirInfo(fileInfoListToJsonObject(currentDirs->value(uuid)->entryInfoList(), uuid), uuid);
 }

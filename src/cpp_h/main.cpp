@@ -2,6 +2,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include "FsExplorer/fshandler.h"
+#include <QUuid>
+#include "KTools/uuidslist.h"
+#include <QQmlEngine>
 
 
 int main(int argc, char *argv[])
@@ -20,8 +23,13 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
 
-    FsHandler *fsExplorerHandle = new FsHandler();
+    qmlRegisterType<UuidsList>("QmlUuidsList", 1, 0, "UuidsList");
+    static FsHandler *fsExplorerHandle = new FsHandler();
+    static UuidsList ids;
+    ids.init(&ids);
+    ids.createItems(20);
 
+    engine.rootContext()->setContextProperty("uuidsList", &ids);
     engine.rootContext()->setContextProperty("fsExplorerHandle", fsExplorerHandle);
     engine.load(url);
 

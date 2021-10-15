@@ -9,6 +9,8 @@ Rectangle {
     property int currentWindowId: 0
     property int comboBoxCounter: 0
     property int windowIdForMenuAction: 0
+    property int uuidNumber
+    property string uuid
     enum MenuActionMode {
         MenuCall,
         Close,
@@ -109,6 +111,13 @@ Rectangle {
             text: "Duplicate"
             onClicked: menuAction(KawaiSwitchableWindows.MenuActionMode.Duplicate, windowIdForMenuAction)
         }
+    }
+
+    Component.onCompleted: {
+        uuid = uuidsList.getAndMark()
+    }
+    Component.onDestruction: {
+        uuidsList.unmark(uuid)
     }
 
     signal menuAction(int mode, int windowId)

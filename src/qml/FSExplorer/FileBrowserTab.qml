@@ -4,12 +4,12 @@ import "FileListTools.js" as FileListTools
 
 Rectangle {
     id: root
+    property string uuid
     visible: true
     anchors.fill: parent
 
     signal signalOnSimpleLeftClick(int numb)
 
-    Component.onCompleted: fsExplorerHandle.init()
     Rectangle {
         id: topBar
         anchors.top: parent.top
@@ -25,7 +25,7 @@ Rectangle {
             width: 30
             height: 30
             text: "..."
-            onClicked: fsExplorerHandle.slotShowDrivesList()
+            onClicked: fsExplorerHandle.slotShowDrivesList(uuid)
         }
         TextField {
             id: addressTextField
@@ -72,19 +72,35 @@ Rectangle {
     }
     Connections {
         target: fsExplorerHandle
-        function onDirInfo(dirInfo) {
-            addressTextField.text = dirInfo["currentDir"]
-            FileListTools.formFilesList(dirInfo)
-        }
-        function onDrivesList(drives) {
-            var drivesNames = []
-            var actions = []
-            for (var i = 0; drives["dir"][i]; i++)
+        function onDirInfo(dirInfo, expectedUuid) {
+            /*if (expectedUuid === uuid)
             {
-                drivesNames.push(drives["dir"][i]["filePath"])
-                actions.push(function(){fsh.slotCd(drivesNames[i])})
+                addressTextField.text = dirInfo["currentDir"] + "  UUID:" + uuid
+                FileListTools.formFilesList(dirInfo)
+                console.log(uuid + "|||" + expectedUuid + " +\n")
             }
-            FileListTools.createDrivesMenu(drivesNames, actions, driveButton.x, driveButton.y + driveButton.height)
+            else
+            {
+                console.log(uuid + " -\n")
+            }*/
+            if (expectedUuid === uuid)
+            {
+                addressTextField.text = dirInfo["currentDir"] + "  UUID:" + uuid
+                FileListTools.formFilesList(dirInfo)
+            }
+        }
+        function onDrivesList(drives, expectedUuid) {
+            if (expectedUuid === uuid)
+            {
+                var drivesNames = []
+                var actions = []
+                for (var i = 0; drives["dir"][i]; i++)
+                {
+                    drivesNames.push(drives["dir"][i]["filePath"])
+                    actions.push(function(){fsh.slotCd(drivesNames[i])})
+                }
+                FileListTools.createDrivesMenu(drivesNames, actions, driveButton.x, driveButton.y + driveButton.height)
+            }
         }
     }
 
@@ -96,7 +112,7 @@ Rectangle {
         id: contextMenu
         MenuItem {
             text: "Delete"
-            onClicked: fsh.slotRemoveFile(Tools.returnSelectedFilesPaths())
+            onClicked: fsExplorerHandle.slotRemoveFile(Tools.returnSelectedFilesPaths())
         }
     }
 
@@ -105,6 +121,15 @@ Rectangle {
         acceptedButtons: Qt.RightButton
         onClicked: contextMenu.popup()
     }
+
+    Component.onCompleted: {
+        uuid = uuidsList.getAndMark()
+        fsExplorerHandle.init(uuid)
+    }
+    Component.onDestruction: {
+        uuidsList.unmark(uuid)
+    }
+
     function simpleLestClickFunction(numb)
     {
         signalOnSimpleLeftClick(numb)

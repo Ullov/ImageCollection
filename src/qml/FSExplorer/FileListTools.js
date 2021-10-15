@@ -20,7 +20,7 @@ function createDrivesMenu(items, actions, xPos, yPos) {
         item.text = items[i]
         driveMenu.addItem(item)
         var f = function(it) {
-            it.triggered.connect(function(){fsExplorerHandle.slotCd(it.text)})
+            it.triggered.connect(function(){fsExplorerHandle.slotCd(it.text, uuid)})
         }
         f(item)
     }
