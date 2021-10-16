@@ -1,5 +1,6 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.5
+import QtQml.Models 2.2
 import "FileListTools.js" as FileListTools
 
 Rectangle {
@@ -41,7 +42,6 @@ Rectangle {
     ListView {
         id: listViewItem
         model: modelItem
-        delegate: delegateItem
         anchors.top: topBar.bottom
         anchors.left: parent.left
         anchors.right: parent.right
@@ -65,10 +65,13 @@ Rectangle {
                 root.signalOnSimpleLeftClick.connect(slotOnSimpleLeftClick)
             }
             Component.onDestruction: root.signalOnSimpleLeftClick.disconnect(slotOnSimpleLeftClick)
+            onSelectedChanged: DelegateModel.inPersistedItems = 1
         }
     }
-    ListModel {
+    DelegateModel {
         id: modelItem
+        model: ListModel {}
+        delegate: delegateItem
     }
     Connections {
         target: fsExplorerHandle

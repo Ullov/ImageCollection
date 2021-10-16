@@ -28,11 +28,11 @@ function createDrivesMenu(items, actions, xPos, yPos) {
 }
 
 function formFilesList(elements) {
-    modelItem.clear()
+    modelItem.model.clear()
     var gi = 0
     var jArr = elements["dir"]
     for (var i = 0; jArr[i]; i++, gi++) {
-        modelItem.append(
+        modelItem.model.append(
                     {
                         index: gi,
                         itemName: jArr[i]["fileName"],
@@ -48,7 +48,7 @@ function formFilesList(elements) {
 
     jArr = elements["file"]
     for (i = 0; jArr[i]; i++, gi++) {
-        modelItem.append(
+        modelItem.model.append(
                     {
                         index: gi,
                         itemName: jArr[i]["fileName"],
