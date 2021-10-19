@@ -115,7 +115,7 @@ Rectangle {
         id: contextMenu
         MenuItem {
             text: "Delete"
-            onClicked: fsExplorerHandle.slotRemoveFile(Tools.returnSelectedFilesPaths())
+            onClicked: fsExplorerHandle.slotRemoveFile(FileListTools.returnSelectedFilesPaths(), uuid)
         }
     }
 

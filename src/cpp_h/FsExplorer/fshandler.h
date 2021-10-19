@@ -34,12 +34,12 @@ signals:
 private:
     QJsonObject fileInfoToJsonObject(const QFileInfo &file);
     QJsonObject fileInfoListToJsonObject(const QFileInfoList &files, const QVariant &uuid);
-    bool cd(const QString &dir, const QVariant &uuid);
-    QDir createDirectory(const QString &path);
+    bool cd(QDir &dir, const QString &file, const QVariant &uuid);
+    QDir getDir(const QString &path);
 
 
     // variables
-    QMap<QVariant, QDir*> *currentDirs;
+    QMap<QVariant, QString> *currentDirs;
 };
 
 #endif // FSHANDLER_H

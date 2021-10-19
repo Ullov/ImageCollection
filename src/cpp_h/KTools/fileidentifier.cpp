@@ -10,6 +10,7 @@ QStringList KTools::FileIdentifier::identifyFileFromFileSystem(const QString &pa
         return {"", "Permission denied", ""};
     }
     QByteArray fileSignature = file.read<QByteArray>(20);
+    file.close();
     QStringList fileType;
     if (fileSignature.size() < 20)
     {

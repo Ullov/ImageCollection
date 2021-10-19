@@ -2,8 +2,8 @@ function returnSelectedFilesPaths()
 {
     var selected = []
     for (var i = 0; i < modelItem.count; i++)
-        if (modelItem.get(i).sel)
-            selected.push(modelItem.get(i).filePath)
+        if (modelItem.model.get(i).sel)
+            selected.push(modelItem.model.get(i).filePath)
     return selected
 }
 

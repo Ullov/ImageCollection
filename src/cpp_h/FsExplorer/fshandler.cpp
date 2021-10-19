@@ -4,7 +4,7 @@
 
 FsHandler::FsHandler()
 {
-    currentDirs = new QMap<QVariant, QDir*>();
+    currentDirs = new QMap<QVariant, QString>();
 }
 
 QJsonObject FsHandler::fileInfoToJsonObject(const QFileInfo &file)
@@ -51,39 +51,30 @@ QJsonObject FsHandler::fileInfoListToJsonObject(const QFileInfoList &files, cons
     tmp = QJsonObject();
     tmp["dir"] = dResult;
     tmp["file"] = fResult;
-    tmp["currentDir"] = currentDirs->value(uuid)->path();
+    tmp["currentDir"] = getDir(currentDirs->value(uuid)).path();
     return tmp;
 }
 
-bool FsHandler::cd(const QString &dir, const QVariant &uuid)
+bool FsHandler::cd(QDir &dir, const QString &file, const QVariant &uuid)
 {
-    bool res = currentDirs->value(uuid)->cd(dir);
-    KTools::Options::setParam("/fsExplorer/lastOpenedDirectory", currentDirs->value(uuid)->path());
+    bool res = dir.cd(file);
+    KTools::Options::setParam("/fsExplorer/lastOpenedDirectory", dir.path());
+    currentDirs->operator[](uuid) = dir.absolutePath();
     return res;
 }
 
 void FsHandler::init(const QVariant uuid)
 {
-    QDir *newDir = new QDir(KTools::Options::getParam("/fsExplorer/lastOpenedDirectory").toString());
-
-    for (int i = 0; !newDir->exists(); i++)
-    {
-        newDir->cdUp();
-        if (i > 30)
-        {
-            newDir->setPath("C:/");
-            break;
-        }
-    }
-    newDir->setFilter(QDir::AllDirs | QDir::AllEntries | QDir::Writable | QDir::Executable | QDir::Readable | QDir::Hidden | QDir::System | QDir::NoDot);
-    currentDirs->insert(uuid, newDir);
-    emit dirInfo(fileInfoListToJsonObject(newDir->entryInfoList(), uuid), uuid);
+    QDir tmpDir = getDir(KTools::Options::getParam("/fsExplorer/lastOpenedDirectory").toString());
+    currentDirs->insert(uuid, tmpDir.absolutePath());
+    emit dirInfo(fileInfoListToJsonObject(tmpDir.entryInfoList(), uuid), uuid);
 }
 
 void FsHandler::slotCd(const QString file, const QVariant uuid)
 {
-    if (cd(file, uuid))
-        emit dirInfo(fileInfoListToJsonObject(currentDirs->value(uuid)->entryInfoList(), uuid), uuid);
+    QDir tmpDir = getDir(currentDirs->value(uuid));
+    if (cd(tmpDir, file, uuid))
+        emit dirInfo(fileInfoListToJsonObject(tmpDir.entryInfoList(), uuid), uuid);
     else
         KTools::Log::writeError("Directory does not exist. file: " + file, "FsHandler::slotSd()");
 }
@@ -95,18 +86,43 @@ void FsHandler::slotOpenInDefaultApp(const QString path)
 
 void FsHandler::slotCdUp(const QVariant uuid)
 {
-    if (cd("..", uuid))
-        emit dirInfo(fileInfoListToJsonObject(currentDirs->value(uuid)->entryInfoList(), uuid), uuid);
+    QDir tmpDir = getDir(currentDirs->value(uuid));
+    if (cd(tmpDir, "..", uuid))
+        emit dirInfo(fileInfoListToJsonObject(tmpDir.entryInfoList(), uuid), uuid);
 }
 
 void FsHandler::slotShowDrivesList(const QVariant uuid)
 {
-    emit drivesList(fileInfoListToJsonObject(currentDirs->value(uuid)->drives(), uuid), uuid);
+    emit drivesList(fileInfoListToJsonObject(getDir(currentDirs->value(uuid)).drives(), uuid), uuid);
 }
 
 void FsHandler::slotRemoveFile(const QVariantList arr, const QVariant uuid)
 {
     for (int i = 0; i < arr.size(); i++)
-        QDir(arr[i].toString()).removeRecursively();
-    emit dirInfo(fileInfoListToJsonObject(currentDirs->value(uuid)->entryInfoList(), uuid), uuid);
+    {
+        if (KTools::File::isFile(arr[i].toString()))
+            QFile(arr[i].toString()).remove();
+        else
+            QDir(arr[i].toString()).removeRecursively();
+    }
+    QDir tmpDir = getDir(currentDirs->value(uuid));
+    tmpDir.refresh();
+    emit dirInfo(fileInfoListToJsonObject(tmpDir.entryInfoList(), uuid), uuid);
+}
+
+QDir FsHandler::getDir(const QString &path)
+{
+    QDir newDir(path);
+
+    for (int i = 0; !newDir.exists(); i++)
+    {
+        newDir.cdUp();
+        if (i > 30)
+        {
+            newDir.setPath("C:/");
+            break;
+        }
+    }
+    newDir.setFilter(QDir::AllDirs | QDir::AllEntries | QDir::Writable | QDir::Executable | QDir::Readable | QDir::Hidden | QDir::System | QDir::NoDot);
+    return newDir;
 }
