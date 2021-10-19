@@ -33,6 +33,8 @@ namespace KTools
         static T readFile(const QString &directory, const QString &fileName, const QIODevice::OpenMode &flags = QIODevice::ReadOnly);
         bool atEnd();
         bool resize(const qint64 &localSize);
+        static bool isFile(const QString &path);
+        void close();
 
     private:
         QFile *file;

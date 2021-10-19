@@ -150,6 +150,17 @@ T KTools::File::readFile(const QString &directory, const QString &fileName, cons
     return rFile.readAll();
 }
 
+bool KTools::File::isFile(const QString &path)
+{
+    QFileInfo file(path);
+    return file.isFile();
+}
+
+void KTools::File::close()
+{
+    file->close();
+}
+
 template void KTools::File::write<qint16>(const qint16&);
 template void KTools::File::write<qint64>(const qint64&);
 
