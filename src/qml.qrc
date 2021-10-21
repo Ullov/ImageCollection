@@ -31,5 +31,6 @@
         <file>resources/other/cacert.pem</file>
         <file>resources/other/fileSignatures.json</file>
         <file>resources/sampleFiles/configs.json</file>
+        <file>qml/ImageViewer/ImageViewer.qml</file>
     </qresource>
 </RCC>

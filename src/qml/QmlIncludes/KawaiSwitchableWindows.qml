@@ -156,11 +156,13 @@ Rectangle {
                 var params =
                         [
                             [
-                                obj["buttonText"],
-                                obj["qmlFilePath"]
+                                "Test",
+                                [
+                                    [obj["buttonText"], obj["qmlFilePath"], []]
+                                ]
                             ]
                         ]
-                addItems(params)
+                addItemsAndSections(params)
             }
         }
     }
@@ -170,19 +172,20 @@ Rectangle {
     {
         for (var i = 0 ; itemParams[i]; i++)
         {
-            var winId = createAndAddObject(itemParams[i][1], itemParams[i][0])
+            var winId = createAndAddObject(itemParams[i][1], itemParams[i][0], itemParams[i][2])
             leftBarListViewModelItem.append({buttonText: itemParams[i][0], windowId:winId, qmlFilePath:itemParams[i][1]})
         }
     }
-    function createAndAddObject(path, name)
+    function createAndAddObject(path, name, extraParams)
     {
+        var windowParams = {visible: false, extraParams: extraParams}
         var len = windowsObects.length
         var obj = Qt.createComponent(path)
         if (obj.status == Component.Error)
             console.log(obj.errorString())
         windowsObects.push([
             comboBoxCounter, // sectionId
-            obj.createObject(contentRectangle, {visible: false}),
+            obj.createObject(contentRectangle, windowParams),
             len, // windowId
             name // buttonText
         ]);
@@ -198,9 +201,21 @@ Rectangle {
     {
         for (var i = 0; params[i]; i++)
         {
-            comboBoxListModel.append({text:params[i][0], id:comboBoxCounter})
+            var isRepeat = false
+            for (var n = 0; n < comboBoxListModel.count; n++)
+            {
+                if (comboBoxListModel.get(n).text === params[i][0])
+                {
+                    isRepeat = true
+                    break
+                }
+            }
             addItems(params[i][1])
-            comboBoxCounter++
+            if (!isRepeat)
+            {
+                comboBoxListModel.append({text:params[i][0], id:comboBoxCounter})
+                comboBoxCounter++
+            }
         }
     }
     function comboBoxSelectionChanged()

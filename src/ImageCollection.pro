@@ -1,6 +1,6 @@
 QT += quick
 
-CONFIG += c++11
+CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -8,6 +8,7 @@ CONFIG += c++11
 
 SOURCES += \
         cpp_h/FsExplorer/fshandler.cpp \
+        cpp_h/ImageViewer/pixmapimage.cpp \
         cpp_h/KTools/HtmlAstMaker/object.cpp \
         cpp_h/KTools/HtmlAstMaker/tag.cpp \
         cpp_h/KTools/StaticVarsDeclarations.cpp \
@@ -39,6 +40,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     cpp_h/FsExplorer/fshandler.h \
+    cpp_h/ImageViewer/pixmapcontainer.h \
+    cpp_h/ImageViewer/pixmapimage.h \
     cpp_h/KTools/HtmlAstMaker/object.h \
     cpp_h/KTools/HtmlAstMaker/tag.h \
     cpp_h/KTools/archiverw.h \

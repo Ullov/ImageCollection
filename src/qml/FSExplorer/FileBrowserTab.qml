@@ -61,7 +61,7 @@ Rectangle {
         DelegateItemForFolderList {
             width: listViewItem.width
             Component.onCompleted: {
-                oneLineSelected.connect(root.simpleLestClickFunction)
+                oneLineSelected.connect(root.simpleLeftClickFunction)
                 root.signalOnSimpleLeftClick.connect(slotOnSimpleLeftClick)
             }
             Component.onDestruction: root.signalOnSimpleLeftClick.disconnect(slotOnSimpleLeftClick)
@@ -133,7 +133,7 @@ Rectangle {
         uuidsList.unmark(uuid)
     }
 
-    function simpleLestClickFunction(numb)
+    function simpleLeftClickFunction(numb)
     {
         signalOnSimpleLeftClick(numb)
     }

@@ -79,9 +79,17 @@ void FsHandler::slotCd(const QString file, const QVariant uuid)
         KTools::Log::writeError("Directory does not exist. file: " + file, "FsHandler::slotSd()");
 }
 
-void FsHandler::slotOpenInDefaultApp(const QString path)
+void FsHandler::slotOpenInDefaultApp(const QString path, const QString fileType, const QByteArray uuid)
 {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+    if ((fileType == ".jpg") || (fileType == ".png") || (fileType == ".gif") || (fileType == ".png") || (fileType == ".tiff"))
+    {
+        PixmapContainer *pix = new PixmapContainer();
+        pix->pixmap.load(path);
+        QQmlEngine::setObjectOwnership(pix, QQmlEngine::JavaScriptOwnership);
+        emit openImage(pix);
+    }
+    else
+        QDesktopServices::openUrl(QUrl::fromLocalFile(path));
 }
 
 void FsHandler::slotCdUp(const QVariant uuid)

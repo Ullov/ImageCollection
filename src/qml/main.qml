@@ -31,16 +31,33 @@ Window {
     }
 
     Component.onCompleted: {
-        var conf = [
+        var conf =
+                [
                     [
                         "Test",
                         [
-                            ["FSExplorer", "qrc:/qml/FSExplorer/StartObject.qml"],
-                            ["FSExplorer2.0", "qrc:/qml/FSExplorer/StartObject.qml"]
+                            ["FSExplorer", "qrc:/qml/FSExplorer/StartObject.qml", []],
+                            ["FSExplorer2.0", "qrc:/qml/FSExplorer/StartObject.qml", []]
                         ]
                     ]
                 ]
         switchableWindow.addItemsAndSections(conf)
         switchableWindow2.addItemsAndSections(conf)
+    }
+    Connections {
+        target: fsExplorerHandle
+        function onOpenImage(pix)
+        {
+            var conf =
+                    [
+                        [
+                            "Pictures",
+                            [
+                                ["Picture", "qrc:/qml/ImageViewer/ImageViewer.qml", pix]
+                            ]
+                        ]
+                    ]
+            switchableWindow.addItemsAndSections(conf)
+        }
     }
 }

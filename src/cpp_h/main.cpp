@@ -1,10 +1,12 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include "FsExplorer/fshandler.h"
 #include <QUuid>
-#include "KTools/uuidslist.h"
 #include <QQmlEngine>
+#include "FsExplorer/fshandler.h"
+#include "KTools/uuidslist.h"
+#include "ImageViewer/pixmapcontainer.h"
+#include "ImageViewer/pixmapimage.h"
 
 
 int main(int argc, char *argv[])
@@ -24,6 +26,8 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
 
     qmlRegisterType<UuidsList>("QmlUuidsList", 1, 0, "UuidsList");
+    qmlRegisterType<PixmapContainer>("QmlPixmapContainer", 1, 0, "PixmapContainer");
+    qmlRegisterType<PixmapImage>("QmlPixmapImage", 1, 0, "PixmapImage");
     static FsHandler *fsExplorerHandle = new FsHandler();
     static UuidsList ids;
     ids.init(&ids);

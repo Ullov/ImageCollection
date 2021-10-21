@@ -10,8 +10,10 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QVariant>
+#include <QPixmap>
 #include "../KTools/fileidentifier.h"
 #include "../KTools/options.h"
+#include "../ImageViewer/pixmapcontainer.h"
 
 class FsHandler : public QObject
 {
@@ -22,7 +24,7 @@ public:
 public slots:
     void init(const QVariant uuid);
     void slotCd(const QString file, const QVariant uuid);
-    void slotOpenInDefaultApp(const QString path);
+    void slotOpenInDefaultApp(const QString path, const QString fileType, const QByteArray uuid);
     void slotCdUp(const QVariant uuid);
     void slotShowDrivesList(const QVariant uuid);
     void slotRemoveFile(const QVariantList arr, const QVariant uuid);
@@ -30,6 +32,7 @@ public slots:
 signals:
     void dirInfo(const QJsonObject dirInfo, const QVariant uuid);
     void drivesList(const QJsonObject drives, const QVariant uuid);
+    void openImage(PixmapContainer *pix);
 
 private:
     QJsonObject fileInfoToJsonObject(const QFileInfo &file);

@@ -98,7 +98,7 @@ Rectangle {
         if (isDir)
             fsExplorerHandle.slotCd(itemName, uuid)
         else
-            fsExplorerHandle.slotOpenInDefaultApp(filePath, uuid)
+            fsExplorerHandle.slotOpenInDefaultApp(filePath, fileType, uuid)
     }
 
     function simpleLeftClick(mouse) {
