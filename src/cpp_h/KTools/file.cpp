@@ -5,10 +5,22 @@
 #include <QDir>
 #include "log.h"
 
-KTools::File::File() {}
+KTools::File::File()
+{
+    file = NULL;
+}
+
+KTools::File::~File()
+{
+    if (file != NULL)
+        delete file;
+}
 
 bool KTools::File::open(const QString &path, const QIODevice::OpenMode &flags)
 {
+    if (file != NULL)
+        delete file;
+
     file = new QFile(path);
     if (file->open(flags))
     {
@@ -44,7 +56,6 @@ void KTools::File::write(const T &data)
 template<>
 void KTools::File::write(const QByteArray &data)
 {
-    //file->write(data);
     if (file->write(data) == -1)
         KTools::Log::writeError("Write error. data: " + data, "KTools::File::write()");
 }

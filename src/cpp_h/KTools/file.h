@@ -12,6 +12,7 @@ namespace KTools
     {
     public:
         File();
+        ~File();
 
         bool open(const QString &path, const QIODevice::OpenMode &flags);
         bool seek(const qint64 &pos);
