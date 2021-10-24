@@ -78,3 +78,13 @@ QByteArray KTools::FileIdentifier::cutQString(const int &from, const int &lenght
 {
     return string.mid(from, lenghtCuttedString);
 }
+
+QStringList KTools::FileIdentifier::identifyFileFromFileInfo(const QFileInfo &file)
+{
+    QStringList result;
+    QString ext = file.suffix().toLower();
+    result.push_back('.' + ext);
+    result.push_back("");
+    result.push_back("qrc:/resources/FSExplorer/img/fileTypeIcons/" + ext + ".png");
+    return result;
+}

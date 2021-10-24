@@ -28,7 +28,7 @@ QJsonObject FsHandler::fileInfoToJsonObject(const QFileInfo &file)
     else
     {
         result["isDir"] = false;
-        QStringList strList = KTools::FileIdentifier::identifyFileFromFileSystem(file.filePath());
+        QStringList strList = KTools::FileIdentifier::identifyFileFromFileInfo(file);
         result["iconPath"] = strList[2];
         result["fileType"] = strList[0];
     }
@@ -81,7 +81,7 @@ void FsHandler::slotCd(const QString file, const QVariant uuid)
 
 void FsHandler::slotOpenInDefaultApp(const QString path, const QString fileType, const QByteArray uuid)
 {
-    if ((fileType == ".jpg") || (fileType == ".png") || (fileType == ".gif") || (fileType == ".png") || (fileType == ".tiff"))
+    if ((fileType == ".jpg") || (fileType == ".png") || (fileType == ".gif") || (fileType == ".png") || (fileType == ".tiff") || (fileType == ".jpeg") || (fileType == ".webp"))
     {
         PixmapContainer *pix = new PixmapContainer();
         pix->pixmap.load(path);

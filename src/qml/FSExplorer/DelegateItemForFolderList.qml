@@ -9,7 +9,7 @@ Rectangle {
     property bool selected: false
     signal oneLineSelected(int numb);
 
-    height: 23
+    height: 25
 
     MouseArea {
         id: mouseAreaItem
@@ -36,7 +36,7 @@ Rectangle {
                 anchors.left: selectCheckBox.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                width: 23
+                width: 25
             }
 
             Text {

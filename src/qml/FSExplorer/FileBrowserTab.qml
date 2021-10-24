@@ -76,19 +76,9 @@ Rectangle {
     Connections {
         target: fsExplorerHandle
         function onDirInfo(dirInfo, expectedUuid) {
-            /*if (expectedUuid === uuid)
-            {
-                addressTextField.text = dirInfo["currentDir"] + "  UUID:" + uuid
-                FileListTools.formFilesList(dirInfo)
-                console.log(uuid + "|||" + expectedUuid + " +\n")
-            }
-            else
-            {
-                console.log(uuid + " -\n")
-            }*/
             if (expectedUuid === uuid)
             {
-                addressTextField.text = dirInfo["currentDir"] + "  UUID:" + uuid
+                addressTextField.text = dirInfo["currentDir"]
                 FileListTools.formFilesList(dirInfo)
             }
         }
