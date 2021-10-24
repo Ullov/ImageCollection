@@ -13,7 +13,7 @@ public:
     Q_INVOKABLE void setImage(QObject *pixContainer);
     Q_INVOKABLE void setViewerHeight(const int dimension);
     Q_INVOKABLE void setViewerWidth(const int dimension);
-    Q_INVOKABLE void setCanvasScale(const int number);
+    Q_INVOKABLE void setCanvasScale(const qreal number);
 
 protected:
     virtual void paint(QPainter *painter) Q_DECL_OVERRIDE;

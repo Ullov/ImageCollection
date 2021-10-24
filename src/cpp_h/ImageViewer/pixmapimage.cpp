@@ -60,8 +60,11 @@ void PixmapImage::setViewerWidth(const int dimension)
     viewerWidth = dimension;
 }
 
-void PixmapImage::setCanvasScale(const int number)
+void PixmapImage::setCanvasScale(const qreal number)
 {
-    scaleNumb += number;
+    if (scaleNumb + number >= 1)
+        scaleNumb += number / 20;
+    else
+        scaleNumb += number;
     update();
 }
