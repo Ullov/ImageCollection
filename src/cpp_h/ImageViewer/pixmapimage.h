@@ -11,8 +11,7 @@ class PixmapImage : public QQuickPaintedItem
 public:
     PixmapImage(QQuickItem *parent = Q_NULLPTR);
     Q_INVOKABLE void setImage(QObject *pixContainer);
-    Q_INVOKABLE void setViewerHeight(const int dimension);
-    Q_INVOKABLE void setViewerWidth(const int dimension);
+    Q_INVOKABLE void setViewerDimensions(const int height, const int width);
     Q_INVOKABLE void setCanvasScale(const qreal number);
 
 protected:

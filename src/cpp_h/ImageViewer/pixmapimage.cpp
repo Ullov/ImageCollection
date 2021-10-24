@@ -6,6 +6,16 @@ void PixmapImage::setImage(QObject *pixContainer)
 {
     PixmapContainer *container = qobject_cast<PixmapContainer*>(pixContainer);
     mPixmapContainer.pixmap = container->pixmap;
+
+    if (viewerHeight < mPixmapContainer.pixmap.height())
+    {
+        scaleNumb = (viewerHeight - mPixmapContainer.pixmap.height()) / (mPixmapContainer.pixmap.height() / 100.0f);
+    }
+    else if (viewerWidth < mPixmapContainer.pixmap.width())
+    {
+        scaleNumb = (viewerWidth - mPixmapContainer.pixmap.width()) / (mPixmapContainer.pixmap.width() / 100.0f);
+    }
+
     update();
 }
 
@@ -50,14 +60,10 @@ void PixmapImage::paint(QPainter *painter)
     painter->drawPixmap(0, 0, mPixmapContainer.pixmap.width(), mPixmapContainer.pixmap.height(), mPixmapContainer.pixmap);
 }
 
-void PixmapImage::setViewerHeight(const int dimension)
+void PixmapImage::setViewerDimensions(const int height, const int width)
 {
-    viewerHeight = dimension;
-}
-
-void PixmapImage::setViewerWidth(const int dimension)
-{
-    viewerWidth = dimension;
+    viewerHeight = height;
+    viewerWidth = width;
 }
 
 void PixmapImage::setCanvasScale(const qreal number)

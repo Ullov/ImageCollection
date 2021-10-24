@@ -21,8 +21,7 @@ Rectangle {
         }
     }
     Component.onCompleted: {
-        pixImage.setViewerHeight(root.height)
-        pixImage.setViewerWidth(root.width)
+        pixImage.setViewerDimensions(root.height, root.width)
         pixImage.setImage(extraParams)
     }
 }
