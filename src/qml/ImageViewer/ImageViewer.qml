@@ -7,32 +7,18 @@ Rectangle {
     anchors.fill: parent
     color: "Blue"
     clip: true
-    Flickable {
+    MouseArea {
         anchors.fill: parent
-        contentHeight: pixImage.height + 500
-        contentWidth: pixImage.width + 500
-        contentX: contentHeight / 2
-        contentY: contentWidth / 2
-        MouseArea {
-            anchors.fill: parent
-            Rectangle {
-                id: pixRectangle
-                anchors.centerIn: parent
-                height: pixImage.height / 2
-                width: pixImage.width / 2
-                color: "#787878"
-                PixmapImage {
-                    id: pixImage
-                    height: 3000
-                    width: 3000
-                }
-            }
-            onWheel: {
-                wheel.accepted = true
-                pixImage.setCanvasScale(wheel.angleDelta.y / 120)
-            }
+        drag.target: pixImage
+        drag.axis: Drag.XAndYAxis
+        PixmapImage {
+            id: pixImage
+            height: 3000
+            width: 3000
         }
-        onFlickStarted: cancelFlick()
+        onWheel: {
+            pixImage.setCanvasScale(wheel.angleDelta.y / 120)
+        }
     }
     Component.onCompleted: {
         pixImage.setViewerHeight(root.height)
