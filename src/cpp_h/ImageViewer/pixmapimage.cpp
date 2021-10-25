@@ -4,6 +4,7 @@ PixmapImage::PixmapImage(QQuickItem *parent) : QQuickPaintedItem(parent) {}
 
 void PixmapImage::setImage(QObject *pixContainer)
 {
+    setAntialiasing(true);
     PixmapContainer *container = qobject_cast<PixmapContainer*>(pixContainer);
     mPixmapContainer.pixmap = container->pixmap;
 

@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.15
 import QtQuick.Controls 2.5
 import QtQuick.Controls.Styles 1.4
 import "qrc:/js/Tools.js" as Tools
@@ -37,6 +37,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 width: 25
+                smooth: true
             }
 
             Text {
