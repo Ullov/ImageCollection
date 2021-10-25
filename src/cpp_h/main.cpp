@@ -5,6 +5,7 @@
 #include <QQmlEngine>
 #include "FsExplorer/fshandler.h"
 #include "KTools/uuidslist.h"
+#include "KTools/options.h"
 #include "ImageViewer/pixmapcontainer.h"
 #include "ImageViewer/pixmapimage.h"
 
@@ -28,7 +29,13 @@ int main(int argc, char *argv[])
     qmlRegisterType<UuidsList>("QmlUuidsList", 1, 0, "UuidsList");
     qmlRegisterType<PixmapContainer>("QmlPixmapContainer", 1, 0, "PixmapContainer");
     qmlRegisterType<PixmapImage>("QmlPixmapImage", 1, 0, "PixmapImage");
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("settings.sqlite");
+    static KTools::Options options = KTools::Options(db);
     static FsHandler *fsExplorerHandle = new FsHandler();
+    fsExplorerHandle->optionsObj = options;
+
     static UuidsList ids;
     ids.init(&ids);
     ids.createItems(20);

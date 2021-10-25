@@ -58,14 +58,14 @@ QJsonObject FsHandler::fileInfoListToJsonObject(const QFileInfoList &files, cons
 bool FsHandler::cd(QDir &dir, const QString &file, const QVariant &uuid)
 {
     bool res = dir.cd(file);
-    KTools::Options::setParam("/fsExplorer/lastOpenedDirectory", dir.path());
+    optionsObj.updateParam("/FSExplorer/LastPath", dir.path());
     currentDirs->operator[](uuid) = dir.absolutePath();
     return res;
 }
 
 void FsHandler::init(const QVariant uuid)
 {
-    QDir tmpDir = getDir(KTools::Options::getParam("/fsExplorer/lastOpenedDirectory").toString());
+    QDir tmpDir = getDir(optionsObj.getParam("/FSExplorer/LastPath").toString());
     currentDirs->insert(uuid, tmpDir.absolutePath());
     emit dirInfo(fileInfoListToJsonObject(tmpDir.entryInfoList(), uuid), uuid);
 }

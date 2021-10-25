@@ -2,6 +2,7 @@
 #define KTOOLS_LOG_H
 
 #include "enums.h"
+#include "options.h"
 
 namespace KTools
 {
@@ -14,6 +15,7 @@ namespace KTools
         static QString logFileName;
         static QMap<KTools::Enums::LogType, QString> logTypePath;
         static QMap<KTools::Enums::LogType, QString> logTypeNames;
+        static KTools::Options optionsObj;
 
     public:
         static void writeCustomLog(const QString &message, const QString &from, const KTools::Enums::LogType &type = KTools::Enums::LogType::Custom);

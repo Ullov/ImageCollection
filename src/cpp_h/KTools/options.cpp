@@ -1,166 +1,70 @@
 #include "options.h"
 
-#include <QJsonArray>
-#include <QJsonObject>
-#include "file.h"
-#include "curl.h"
-#include "converter.h"
-#include "log.h"
+KTools::Options::Options() {}
 
-KTools::Options::Options()
+KTools::Options::Options(QSqlDatabase &db)
 {
-    bool wtf = KTools::File::fileExist(configPath + configFile);
-    if (wtf)
+    settings = db;
+    settings.open();
+    QSqlQuery res = settings.exec("SELECT * FROM General");
+    if (!res.next())
     {
-        rootProgramPath = KTools::File::readFile<QString>(configPath, configFile, QIODevice::ReadOnly | QIODevice::Text);
-    }
-    else
-    {
-        rootProgramPath = configPath;
-        KTools::File::writeFile(configPath.toUtf8(), configPath, configFile, QIODevice::WriteOnly | QIODevice::Text);
-    }
-    logRootPath = Options::rootProgramPath + "/log/";
-    KTools::Curl::cookiePath = Options::rootProgramPath + "/Cookie/";
+        settings.exec("CREATE TABLE General (Param TEXT, Value TEXT)");
+        settings.exec("INSERT INTO General (Param, Value) VALUES ('DataPath', '')"); // Path to directory where almost al app's data saved. If '' it's app's directory
 
-
-    if (!KTools::File::fileExist(rootProgramPath + "/Settings/configs.json"))
-    {
-        KTools::File::copyFile(":/resources/sampleFiles/configs.json", rootProgramPath + "/Settings", "configs.json");
+        settings.exec("CREATE TABLE FSExplorer (Param TEXT, Value TEXT)");
+        QString err = settings.lastError().text();
+        settings.exec("INSERT INTO FSExplorer (Param, Value) VALUES ('LastPath', 'C:/')");
     }
-    QString fileContent = KTools::File::readFile<QString>(rootProgramPath + "/Settings", "configs.json");
-    configsObj = KTools::Converter::convert<QString, QJsonObject*>(fileContent);
+    /*res = settings.exec("SELECT * FROM FSExplorer");
+    QString tmp = "";
+    while (res.next())
+    {
+        tmp += res.value(0).toString() + ":" + res.value(1).toString() + "  ";
+    }
+    settings.close();*/
 }
 
-bool KTools::Options::save()
+KTools::Options::~Options()
 {
-    return KTools::File::writeFile(KTools::Converter::convert<QJsonObject, QByteArray>(*configsObj), rootProgramPath + "/Settings", "configs.json");
+    settings.close();
+    QString connName = settings.connectionName();
+    settings = QSqlDatabase();
+    QSqlDatabase::removeDatabase(connName);
 }
 
-void KTools::Options::setRootProgramPath(const QString &path)
+void KTools::Options::updateParam(const QString &pathToParam, const QString &value)
 {
-    rootProgramPath = path;
-    KTools::File::writeFile(rootProgramPath.toUtf8(), configPath, configFile, QIODevice::WriteOnly | QIODevice::Text);
-    save();
-}
-
-QString KTools::Options::getRootProgramPath()
-{
-    return rootProgramPath;
-}
-
-QJsonValue KTools::Options::privateSetParam(QList<QString> pathToParam, QJsonValue currLevel, const QVariant param)
-{
-    QString name = pathToParam[0];
-    pathToParam.pop_front();
-    QJsonValue::Type jsValType = currLevel.type();
-    if (jsValType == QJsonValue::Type::Undefined)
-    {
-        KTools::Log::writeError("Attempt access to non existent parameter. name: " + name, "OptionsHandler::setParam()");
-        return QJsonValue();
-    }
-    if (pathToParam.size() > 1)
-    {
-        if (jsValType == QJsonValue::Type::Array)
-        {
-            QJsonArray jsVal = currLevel.toArray();
-            QJsonValueRef tmp = jsVal[name.toInt()];
-            jsVal[name.toInt()] = privateSetParam(pathToParam, tmp, param);
-            return jsVal;
-        }
-        else if (jsValType == QJsonValue::Type::Object)
-        {
-            QJsonObject jsVal = currLevel.toObject();
-            QJsonValueRef tmp = jsVal[name];
-            jsVal[name] = privateSetParam(pathToParam, tmp, param);
-            return jsVal;
-        }
-        else
-        {
-            KTools::Log::writeError("Wrong type. jsValType: " + static_cast<QString>(jsValType) + ", name: " + name, "OptionsHandler::setParam");
-        }
-    }
-    else
-    {
-        if (jsValType != QJsonValue::Type::Array)
-        {
-            QJsonObject jsVal = currLevel.toObject();
-            jsVal[name] = QJsonValue::fromVariant(param);
-            return jsVal;
-        }
-        else if (jsValType == QJsonValue::Type::Array)
-        {
-            QJsonArray jsVal = currLevel.toArray();
-            jsVal[name.toInt()] = QJsonValue::fromVariant(param);
-            return jsVal;
-        }
-    }
-    KTools::Log::writeError("Something went wrong. name: " + name, "OptionsHandler::privateSetParam()");
-    return QJsonValue();
-}
-
-QJsonValue KTools::Options::privateGetParam(QList<QString> pathToParam, const QJsonValue &previousLevel)
-{
-    QString name = pathToParam[0];
-    pathToParam.pop_front();
-    QJsonValue::Type jsValType = previousLevel.type();
-    if (jsValType == QJsonValue::Type::Undefined)
-    {
-        KTools::Log::writeError("Attempt access to non existent parameter. name: " + name, "OptionsHandler::getParam()");
-        return QJsonValue();
-    }
-
-    if (pathToParam.size() > 1)
-    {
-        if (jsValType == QJsonValue::Type::Array)
-        {
-            QJsonArray jsVal = previousLevel.toArray();
-            QJsonValueRef tmp = jsVal[name.toInt()];
-            return privateGetParam(pathToParam, tmp);
-        }
-        else if (jsValType == QJsonValue::Type::Object)
-        {
-            QJsonObject jsVal = previousLevel.toObject();
-            QJsonValueRef tmp = jsVal[name];
-            return privateGetParam(pathToParam, tmp);
-        }
-        else
-        {
-            KTools::Log::writeError("Wrong type. jsValType: " + static_cast<QString>(jsValType) + ", name: " + name, "OptionsHandler::getParam");
-            return QJsonValue();
-        }
-    }
-    else
-    {
-        if (jsValType != QJsonValue::Type::Array)
-        {
-            QJsonObject jsVal = previousLevel.toObject();
-            return jsVal[name];
-        }
-        else if (jsValType == QJsonValue::Type::Array)
-        {
-            QJsonArray jsVal = previousLevel.toArray();
-            return jsVal[name.toInt()];
-        }
-    }
-    KTools::Log::writeError("Something went wrong. name: " + name, "OptionsHandler::privateGetParam()");
-    return QJsonValue();
-}
-
-void KTools::Options::setParam(const QString &pathToParam, const QString &param)
-{
+    settings.open();
     QList<QString> list = pathToParam.split("/", Qt::SkipEmptyParts);
-    QString name = list[0];
-    list.pop_front();
-    QJsonValueRef jsVal = configsObj->operator[](name);
-    configsObj->operator[](name) = privateSetParam(list, jsVal, param);
-    save();
+    QString query = "UPDATE " + list[0] + " SET Value = '" + value + "' WHERE Param = '" + list[1] + "'";
+    QSqlQuery resp = settings.exec(query);
+    QSqlError err = resp.lastError();
+    QSqlError::ErrorType errType = err.type();
+    QString strErr = err.text();
 }
 
 QVariant KTools::Options::getParam(const QString &pathToParam)
 {
     QList<QString> list = pathToParam.split("/", Qt::SkipEmptyParts);
-    QString name = list[0];
-    list.pop_front();
-    QJsonValue jsVal = configsObj->operator[](name);
-    return privateGetParam(list, jsVal);
+    QSqlQuery resp;
+    QString res;
+    settings.open();
+    if (list[0] == "Path")
+    {
+        resp = settings.exec("SELECT Value FROM General WHERE Param = 'DataPath'");
+        resp.next();
+        QString dataPath = resp.value(0).toString();
+        if (list[1] == "Log")
+            res = dataPath + "/Log";
+        else if (list[1] == "Data")
+            res = dataPath;
+    }
+    else
+    {
+        resp = settings.exec("SELECT Value FROM " + list[0] + " WHERE Param = '" + list[1] + "'");
+        resp.next();
+        res = resp.value(0).toString();
+    }
+    return res;
 }
