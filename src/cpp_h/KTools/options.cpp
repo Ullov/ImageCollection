@@ -55,6 +55,8 @@ QVariant KTools::Options::getParam(const QString &pathToParam)
         resp = settings.exec("SELECT Value FROM General WHERE Param = 'DataPath'");
         resp.next();
         QString dataPath = resp.value(0).toString();
+        if (dataPath == "")
+            dataPath = QDir().path();
         if (list[1] == "Log")
             res = dataPath + "/Log";
         else if (list[1] == "Data")

@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QSqlError>
+#include <QDir>
 
 namespace KTools
 {
