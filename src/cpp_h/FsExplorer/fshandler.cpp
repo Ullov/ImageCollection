@@ -81,13 +81,8 @@ void FsHandler::slotCd(const QString file, const QVariant uuid)
 
 void FsHandler::slotOpenInDefaultApp(const QString path, const QString fileType, const QByteArray uuid)
 {
-    if ((fileType == ".jpg") || (fileType == ".png") || (fileType == ".gif") || (fileType == ".png") || (fileType == ".tiff") || (fileType == ".jpeg") || (fileType == ".webp"))
-    {
-        PixmapContainer *pix = new PixmapContainer();
-        pix->pixmap.load(path);
-        QQmlEngine::setObjectOwnership(pix, QQmlEngine::JavaScriptOwnership);
-        emit openImage(pix);
-    }
+    if ((fileType == ".jpg") || (fileType == ".gif") || (fileType == ".png") || (fileType == ".tiff") || (fileType == ".jpeg") || (fileType == ".webp"))
+        emit openImage(path);
     else
         QDesktopServices::openUrl(QUrl::fromLocalFile(path));
 }

@@ -2,22 +2,21 @@
 
 PixmapImage::PixmapImage(QQuickItem *parent) : QQuickPaintedItem(parent) {}
 
-void PixmapImage::setImage(QObject *pixContainer)
+void PixmapImage::setImage(QString path)
 {
     setAntialiasing(true);
-    PixmapContainer *container = qobject_cast<PixmapContainer*>(pixContainer);
-    mPixmapContainer.pixmap = container->pixmap;
 
-    if (viewerHeight < mPixmapContainer.pixmap.height())
-    {
-        scaleNumb = (viewerHeight - mPixmapContainer.pixmap.height()) / (mPixmapContainer.pixmap.height() / 100.0f);
-    }
-    else if (viewerWidth < mPixmapContainer.pixmap.width())
-    {
-        scaleNumb = (viewerWidth - mPixmapContainer.pixmap.width()) / (mPixmapContainer.pixmap.width() / 100.0f);
-    }
+    QFileInfo currPicInfo = QFileInfo(path);
+    pathToFolder = currPicInfo.absolutePath();
+    QString currPicName = currPicInfo.fileName();
+    QDir picDir = currPicInfo.absoluteDir();
+    QStringList filters;
+    filters << "*.jpg" << "*.jpeg" << "*.png" << "*.webp" << "*.tiff" << "*.gif";
+    picDir.setNameFilters(filters);
+    picsInCurrDir = picDir.entryList();
+    currPicId = picsInCurrDir.indexOf(currPicName);
 
-    update();
+    loadImage();
 }
 
 void PixmapImage::paint(QPainter *painter)
@@ -54,11 +53,11 @@ void PixmapImage::paint(QPainter *painter)
         actualScale = 0.99f - ((scaleNumb * -1.0f) / 100.0f);
     }
 
-    setHeight(mPixmapContainer.pixmap.height() * actualScale);
-    setWidth(mPixmapContainer.pixmap.width() * actualScale);
+    setHeight(mPixmap.height() * actualScale);
+    setWidth(mPixmap.width() * actualScale);
 
-    painter->setWindow(0, 0, mPixmapContainer.pixmap.width(), mPixmapContainer.pixmap.height());
-    painter->drawPixmap(0, 0, mPixmapContainer.pixmap.width(), mPixmapContainer.pixmap.height(), mPixmapContainer.pixmap);
+    painter->setWindow(0, 0, mPixmap.width(), mPixmap.height());
+    painter->drawPixmap(0, 0, mPixmap.width(), mPixmap.height(), mPixmap);
 }
 
 void PixmapImage::setViewerDimensions(const int height, const int width)
@@ -73,5 +72,39 @@ void PixmapImage::setCanvasScale(const qreal number)
         scaleNumb += number / 20;
     else
         scaleNumb += number;
+    update();
+}
+
+void PixmapImage::nextPicture()
+{
+    if (currPicId + 1 < picsInCurrDir.length())
+        currPicId++;
+
+    loadImage();
+}
+
+void PixmapImage::previousPicture()
+{
+    if (currPicId > 0)
+        currPicId--;
+
+    loadImage();
+}
+
+void PixmapImage::loadImage()
+{
+    QPixmap pix = QPixmap();
+    pix.load(pathToFolder + "/" + picsInCurrDir[currPicId]);
+    mPixmap = pix;
+
+    if (viewerHeight < mPixmap.height())
+    {
+        scaleNumb = (viewerHeight - mPixmap.height()) / (mPixmap.height() / 100.0f);
+    }
+    else if (viewerWidth < mPixmap.width())
+    {
+        scaleNumb = (viewerWidth - mPixmap.width()) / (mPixmap.width() / 100.0f);
+    }
+
     update();
 }

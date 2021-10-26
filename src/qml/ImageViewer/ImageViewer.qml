@@ -7,6 +7,7 @@ Rectangle {
     anchors.fill: parent
     color: "Blue"
     clip: true
+    focus: true
     MouseArea {
         anchors.fill: parent
         drag.target: pixImage
@@ -19,6 +20,12 @@ Rectangle {
         onWheel: {
             pixImage.setCanvasScale(wheel.angleDelta.y / 120)
         }
+    }
+    Keys.onPressed: {
+        if (event.key === Qt.Key_Left)
+            pixImage.previousPicture()
+        else if (event.key === Qt.Key_Right)
+            pixImage.nextPicture()
     }
     Component.onCompleted: {
         pixImage.setViewerDimensions(root.height, root.width)

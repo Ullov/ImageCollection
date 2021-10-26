@@ -13,7 +13,6 @@
 #include <QPixmap>
 #include "../KTools/fileidentifier.h"
 #include "../KTools/options.h"
-#include "../ImageViewer/pixmapcontainer.h"
 
 class FsHandler : public QObject
 {
@@ -33,7 +32,7 @@ public slots:
 signals:
     void dirInfo(const QJsonObject dirInfo, const QVariant uuid);
     void drivesList(const QJsonObject drives, const QVariant uuid);
-    void openImage(PixmapContainer *pix);
+    void openImage(QString path);
 
 private:
     QJsonObject fileInfoToJsonObject(const QFileInfo &file);

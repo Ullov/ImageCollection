@@ -39,7 +39,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     cpp_h/FsExplorer/fshandler.h \
-    cpp_h/ImageViewer/pixmapcontainer.h \
     cpp_h/ImageViewer/pixmapimage.h \
     cpp_h/KTools/HtmlAstMaker/object.h \
     cpp_h/KTools/HtmlAstMaker/tag.h \
