@@ -6,7 +6,6 @@
 #include "FsExplorer/fshandler.h"
 #include "KTools/uuidslist.h"
 #include "KTools/options.h"
-#include "ImageViewer/pixmapcontainer.h"
 #include "ImageViewer/pixmapimage.h"
 
 
@@ -27,7 +26,6 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
 
     qmlRegisterType<UuidsList>("QmlUuidsList", 1, 0, "UuidsList");
-    qmlRegisterType<PixmapContainer>("QmlPixmapContainer", 1, 0, "PixmapContainer");
     qmlRegisterType<PixmapImage>("QmlPixmapImage", 1, 0, "PixmapImage");
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");

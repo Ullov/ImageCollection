@@ -105,6 +105,9 @@ void PixmapImage::loadImage()
     {
         scaleNumb = (viewerWidth - mPixmap.width()) / (mPixmap.width() / 100.0f);
     }
-
+    else
+    {
+        scaleNumb = 1;
+    }
     update();
 }
