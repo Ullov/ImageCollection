@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("settings.sqlite");
     static KTools::Options options = KTools::Options(db);
-    static FsHandler *fsExplorerHandle = new FsHandler();
+    FsHandler *fsExplorerHandle = new FsHandler();
     fsExplorerHandle->optionsObj = options;
 
     static UuidsList ids;

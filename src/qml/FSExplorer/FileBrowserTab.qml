@@ -6,6 +6,7 @@ import "FileListTools.js" as FileListTools
 Rectangle {
     id: root
     property string uuid
+    property string openedDir
     visible: true
     anchors.fill: parent
 
@@ -73,12 +74,12 @@ Rectangle {
         model: ListModel {}
         delegate: delegateItem
     }
+
     Connections {
         target: fsExplorerHandle
         function onDirInfo(dirInfo, expectedUuid) {
             if (expectedUuid === uuid)
             {
-                addressTextField.text = dirInfo["currentDir"]
                 FileListTools.formFilesList(dirInfo)
             }
         }

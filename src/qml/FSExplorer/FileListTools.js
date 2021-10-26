@@ -27,9 +27,20 @@ function createDrivesMenu(items, actions, xPos, yPos) {
     driveMenu.open()
 }
 
-function formFilesList(elements) {
-    modelItem.model.clear()
-    var gi = 0
+function formFilesList(elements, append) {
+    if (elements["refresh"])
+    {
+        addressTextField.text = elements["currentDir"]
+        modelItem.model.clear()
+        var gi = 0
+    }
+    else
+    {
+        if (elements["currentDir"] !== addressTextField.text)
+            return
+
+        gi = modelItem.model.count
+    }
     var jArr = elements["dir"]
     for (var i = 0; jArr[i]; i++, gi++) {
         modelItem.model.append(

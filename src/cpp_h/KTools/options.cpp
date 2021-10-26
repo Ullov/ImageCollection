@@ -38,10 +38,7 @@ void KTools::Options::updateParam(const QString &pathToParam, const QString &val
     settings.open();
     QList<QString> list = pathToParam.split("/", Qt::SkipEmptyParts);
     QString query = "UPDATE " + list[0] + " SET Value = '" + value + "' WHERE Param = '" + list[1] + "'";
-    QSqlQuery resp = settings.exec(query);
-    QSqlError err = resp.lastError();
-    QSqlError::ErrorType errType = err.type();
-    QString strErr = err.text();
+    settings.exec(query);
 }
 
 QVariant KTools::Options::getParam(const QString &pathToParam)

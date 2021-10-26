@@ -67,14 +67,14 @@ void FsHandler::init(const QVariant uuid)
 {
     QDir tmpDir = getDir(optionsObj.getParam("/FSExplorer/LastPath").toString());
     currentDirs->insert(uuid, tmpDir.absolutePath());
-    emit dirInfo(fileInfoListToJsonObject(tmpDir.entryInfoList(), uuid), uuid);
+    asyncSendDirInfo(tmpDir.entryInfoList(), uuid);
 }
 
 void FsHandler::slotCd(const QString file, const QVariant uuid)
 {
     QDir tmpDir = getDir(currentDirs->value(uuid));
     if (cd(tmpDir, file, uuid))
-        emit dirInfo(fileInfoListToJsonObject(tmpDir.entryInfoList(), uuid), uuid);
+        asyncSendDirInfo(tmpDir.entryInfoList(), uuid);
     else
         KTools::Log::writeError("Directory does not exist. file: " + file, "FsHandler::slotSd()");
 }
@@ -128,4 +128,39 @@ QDir FsHandler::getDir(const QString &path)
     }
     newDir.setFilter(QDir::AllDirs | QDir::AllEntries | QDir::Writable | QDir::Executable | QDir::Readable | QDir::Hidden | QDir::System | QDir::NoDot);
     return newDir;
+}
+
+void FsHandler::asyncSendDirInfo(const QFileInfoList files, const QVariant uuid)
+{
+    while (thr.isRunning())
+        itsTimeToStopIt = true;
+
+    itsTimeToStopIt = false;
+    thr = QtConcurrent::run([=]()
+    {
+        bool run = true;
+        int i = 0;
+        QFileInfoList list;
+        while (run && !itsTimeToStopIt)
+        {
+            int startPos = (100 * i) - 1;
+            int len = files.length() - ((100 * i) - 1);
+            if (len < 100)
+            {
+                list = files.mid(startPos, len);
+                run = false;
+            }
+            else
+                list = files.mid(startPos, 100);
+
+            QJsonObject tmp = fileInfoListToJsonObject(list, uuid);
+            if (i == 0)
+                tmp["refresh"] = true;
+            else
+                tmp["refresh"] = false;
+
+            emit dirInfo(tmp, uuid);
+            i++;
+        }
+    });
 }

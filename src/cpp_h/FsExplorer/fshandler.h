@@ -11,6 +11,8 @@
 #include <QUrl>
 #include <QVariant>
 #include <QPixmap>
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
 #include "../KTools/fileidentifier.h"
 #include "../KTools/options.h"
 
@@ -39,10 +41,12 @@ private:
     QJsonObject fileInfoListToJsonObject(const QFileInfoList &files, const QVariant &uuid);
     bool cd(QDir &dir, const QString &file, const QVariant &uuid);
     QDir getDir(const QString &path);
-
+    void asyncSendDirInfo(const QFileInfoList files, const QVariant uuid);
 
     // variables
     QMap<QVariant, QString> *currentDirs;
+    QFuture<void> thr;
+    bool itsTimeToStopIt = false;
 };
 
 #endif // FSHANDLER_H
