@@ -42,34 +42,16 @@ function formFilesList(elements, append) {
         gi = modelItem.model.count
     }
     var jArr = elements["dir"]
-    for (var i = 0; jArr[i]; i++, gi++) {
-        modelItem.model.append(
-                    {
-                        index: gi,
-                        itemName: jArr[i]["fileName"],
-                        iconPath: jArr[i]["iconPath"],
-                        filePath: jArr[i]["filePath"],
-                        isDir: true,
-                        fileType: "Folder",
-                        size: 0,
-                        sel: false,
-                        hov: false
-                    })
+    for (var i = 0; jArr[i]; i++, gi++)
+    {
+        jArr[i]["index"] = gi
+        modelItem.model.append(jArr[i])
     }
 
     jArr = elements["file"]
-    for (i = 0; jArr[i]; i++, gi++) {
-        modelItem.model.append(
-                    {
-                        index: gi,
-                        itemName: jArr[i]["fileName"],
-                        iconPath: jArr[i]["iconPath"],
-                        filePath: jArr[i]["filePath"],
-                        isDir: false,
-                        fileType: jArr[i]["fileType"],
-                        size: jArr[i]["size"],
-                        sel: false,
-                        hov: false
-                    })
+    for (i = 0; jArr[i]; i++, gi++)
+    {
+        jArr[i]["index"] = gi
+        modelItem.model.append(jArr[i])
     }
 }

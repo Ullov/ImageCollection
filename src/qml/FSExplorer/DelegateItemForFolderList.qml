@@ -46,7 +46,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.margins: 2
-                text: itemName
+                text: fileName
                 width: 500
 
                 color: "Black"
@@ -97,7 +97,7 @@ Rectangle {
 
     function openFileOrFolder() {
         if (isDir)
-            fsExplorerHandle.slotCd(itemName, uuid)
+            fsExplorerHandle.slotCd(fileName, uuid)
         else
             fsExplorerHandle.slotOpenInDefaultApp(filePath, fileType, uuid)
     }

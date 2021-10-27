@@ -18,7 +18,6 @@ SOURCES += \
         cpp_h/KTools/exforstring.cpp \
         cpp_h/KTools/file.cpp \
         cpp_h/KTools/fileidentifier.cpp \
-        cpp_h/KTools/ktoolsqmlinterface.cpp \
         cpp_h/KTools/log.cpp \
         cpp_h/KTools/options.cpp \
         cpp_h/KTools/uuidslist.cpp \
@@ -49,7 +48,6 @@ HEADERS += \
     cpp_h/KTools/exforstring.h \
     cpp_h/KTools/file.h \
     cpp_h/KTools/fileidentifier.h \
-    cpp_h/KTools/ktoolsqmlinterface.h \
     cpp_h/KTools/log.h \
     cpp_h/KTools/options.h \
     cpp_h/KTools/uuidslist.h
