@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QmlPixmapImage 1.0
+import "../../js/Tools.js" as Tools
 
 Rectangle {
     property var extraParams
@@ -8,8 +9,28 @@ Rectangle {
     color: "Blue"
     clip: true
     focus: true
+    Rectangle {
+        id: topRect
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 30
+        border.color: "Black"
+        Text {
+            id: infoLabel
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.margins: 5
+            font.pixelSize: 14
+        }
+    }
+
     MouseArea {
-        anchors.fill: parent
+        id: clickArea
+        anchors.top: topRect.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
         drag.target: pixImage
         drag.axis: Drag.XAndYAxis
         PixmapImage {
@@ -31,9 +52,18 @@ Rectangle {
             centerImage()
     }
     Component.onCompleted: {
-        pixImage.setViewerDimensions(root.height, root.width)
+        pixImage.setViewerDimensions(clickArea.height, clickArea.width)
         pixImage.setImage(extraParams)
     }
+    onFocusChanged: console.log(focus)
+    Connections {
+        target: pixImage
+        function onImageInfo(info)
+        {
+            infoLabel.text = info.width + "x" + info.height + " || " + Tools.bytesToHumanReadable(info.size) + " || " + info.path
+        }
+    }
+
     function centerImage()
     {
         pixImage.anchors.centerIn = clickArea

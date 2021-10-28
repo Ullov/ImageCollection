@@ -31,6 +31,9 @@ private:
     QStringList picsInCurrDir;
     int currPicId;
     QString pathToFolder;
+
+signals:
+    void imageInfo(QVariantMap info);
 };
 
 #endif // PIXMAPIMAGE_H

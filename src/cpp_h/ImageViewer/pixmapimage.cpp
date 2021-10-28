@@ -37,7 +37,7 @@ void PixmapImage::paint(QPainter *painter)
     // (n * -1): n it's number that i want convert to some number in interval. -1 need because my n negative.
     // Yes, i can aftervards * formula result on -1 but computer work slower with negative nubers.
     //
-    // If give to formula n bigger than 1 it will give x bigger than 1.
+    // If give to formula n smaller than -100 it will give x bigger than 1.
     actualScale = scaleNumb;
     if (scaleNumb < 1.0f)
     {
@@ -110,4 +110,20 @@ void PixmapImage::loadImage()
         scaleNumb = 1;
     }
     update();
+
+    QVariantMap info;
+    info.insert("path", pathToFolder + "/" + picsInCurrDir[currPicId]);
+    info.insert("name", picsInCurrDir[currPicId]);
+    info.insert("size", QFileInfo(pathToFolder + "/" + picsInCurrDir[currPicId]).size());
+    info.insert("height", mPixmap.height());
+    info.insert("heightMM", mPixmap.heightMM());
+    info.insert("width", mPixmap.width());
+    info.insert("widthMM", mPixmap.widthMM());
+    info.insert("defaultDepth", mPixmap.defaultDepth()); // Depth used by application
+    info.insert("depth", mPixmap.depth());
+    info.insert("cacheKey", mPixmap.cacheKey()); // Something like hash
+    info.insert("hasAlpha", mPixmap.hasAlpha()); // Trueif have alpha channel or mask
+    info.insert("colorCount", mPixmap.colorCount()); // Number of colors avaliable for paint device
+    info.insert("devType", mPixmap.devType());
+    emit imageInfo(info);
 }
