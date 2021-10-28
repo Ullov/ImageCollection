@@ -2,9 +2,13 @@
 
 #include "../KTools/log.h"
 
+extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
+//qt_ntfs_permission_lookup++;
+
 FsHandler::FsHandler()
 {
     currentDirs = new QMap<QVariant, QString>();
+    qt_ntfs_permission_lookup++;
 }
 
 QJsonObject FsHandler::fileInfoToJsonObject(const QFileInfo &file)
@@ -13,8 +17,19 @@ QJsonObject FsHandler::fileInfoToJsonObject(const QFileInfo &file)
     result["whenModified"] = file.lastModified().toString("yyyy.MM.dd hh:ss:mm:zzz");
     result["whenReaded"] = file.lastRead().toString("yyyy.MM.dd hh:ss:mm:zzz");
     result["whenMetadataChanged"] = file.metadataChangeTime().toString("yyyy.MM.dd hh:ss:mm:zzz");
+    result["whenCreated"] = file.birthTime().toString("yyyy.MM.dd hh:ss:mm:zzz");
+    result["group"] = file.group();
+    result["groupId"] = QString::number(file.groupId());
     result["owner"] = file.owner();
     result["ownerId"] = QString::number(file.ownerId());
+    result["isHidden"] = file.isHidden();
+    result["isJunction"] = file.isJunction();
+    result["isReadable"] = file.isReadable();
+    result["isRoot"] = file.isRoot();
+    result["isShortcut"] = file.isShortcut();
+    result["isSymLink"] = file.isSymLink();
+    result["isWritable"] = file.isWritable();
+    result["symLinkTarget"] = file.symLinkTarget();
     result["size"] = file.size();
     result["extension"] = file.suffix();
     result["path"] = file.absolutePath();

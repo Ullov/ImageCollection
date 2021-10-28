@@ -10,6 +10,8 @@ Rectangle {
     property string borderColorC: "Black"
     property string onPressedBorderColor: "Black"
     property string onHoveredBorderColor: "Black"
+    property real onPressedOpacity: 1
+    property real onHoveredOpacity: 1
     property string labelTextColor: "Black"
     //property string onPressedLabelTextColor: "Black"
     //property string onHoveredLabelTextColor: "Black"
@@ -49,6 +51,7 @@ Rectangle {
                 target: root
                 color: onPressedColor
                 border.color: onPressedBorderColor
+                opacity: onPressedOpacity
             }
         },
         State {
@@ -58,6 +61,7 @@ Rectangle {
                 target: root
                 color: onHoveredColor
                 border.color: onHoveredBorderColor
+                opacity: onHoveredOpacity
             }
         }
     ]

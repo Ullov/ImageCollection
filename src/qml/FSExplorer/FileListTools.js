@@ -45,6 +45,7 @@ function formFilesList(elements, append) {
     for (var i = 0; jArr[i]; i++, gi++)
     {
         jArr[i]["index"] = gi
+        jArr[i]["sel"] = false
         modelItem.model.append(jArr[i])
     }
 
@@ -52,6 +53,7 @@ function formFilesList(elements, append) {
     for (i = 0; jArr[i]; i++, gi++)
     {
         jArr[i]["index"] = gi
+        jArr[i]["sel"] = false
         modelItem.model.append(jArr[i])
     }
 }

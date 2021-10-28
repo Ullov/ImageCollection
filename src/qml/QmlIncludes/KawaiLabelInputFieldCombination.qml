@@ -1,36 +1,50 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.5
+import QtQuick 2.11
+import QtQuick.Controls 2.4
 
 Rectangle {
-    property alias klifcLabel: label
-    property alias klifcTextField: textField
-    property alias klifcDecorativeRectangle: decorativeRectangle
-    height: 40
+    property alias label: label
+    property alias textField: textField
+    property alias decorativeRectangle: decorativeRectangle
+    property int fontSize: 10
+    property bool onlyRead: false
+    id: root
+    height: 37
     width: 300
-    border.color: "Black"
+    anchors.margins: 3
     Text {
         id: label
         anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.margins: 5
-        font.pixelSize: 14
+        anchors.top: parent.top
+        font.pixelSize: fontSize
+        font.family: fixedFont.name
+        text: "Sample text"
+        height: 18
     }
-    TextArea {
-        id: textField
+
+    ScrollView {
+        anchors.left: parent.left
         anchors.right: parent.right
-        anchors.left: label.right
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.margins: 5
-        background: Rectangle {
-            id: decorativeRectangle
-            //border.color: textField.activeFocus ? "Grey" : "Transparent"
+        anchors.bottom: parent.bottom
+        TextArea {
+            id: textField
+            background: Rectangle {
+                id: decorativeRectangle
+                anchors.fill: parent
+                border.color: textField.activeFocus ? "Black" : "#dfdfdf"
+                color: textField.activeFocus ? "White" : "#edfeff"
+                height: 20 // To silence warning
+                width: 20 // To silence warning
+            }
+            font.pixelSize: fontSize
+            font.family: fixedFont.name
+            text: "Sample text"
+            readOnly: onlyRead
+            selectByMouse: true
         }
-        font.pixelSize: 15
     }
-    KawaiHorisontalLine {
-        anchors.top: textField.bottom
-        anchors.left: textField.left
-        anchors.right: textField.right
-        border.color: textField.activeFocus ? "Grey" : "Transparent"
+
+    FontLoader {
+        id: fixedFont
+        source: "qrc:/resources/fonts/RobotoMono-Regular.ttf"
     }
 }

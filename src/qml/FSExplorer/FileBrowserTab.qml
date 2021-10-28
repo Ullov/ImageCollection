@@ -108,6 +108,10 @@ Rectangle {
             text: "Delete"
             onClicked: fsExplorerHandle.slotRemoveFile(FileListTools.returnSelectedFilesPaths(), uuid)
         }
+        MenuItem {
+            text: "Show file info"
+            onClicked: openFileInfo()
+        }
     }
 
     MouseArea {
@@ -127,5 +131,23 @@ Rectangle {
     function simpleLeftClickFunction(numb)
     {
         signalOnSimpleLeftClick(numb)
+    }
+
+    function openFileInfo()
+    {
+        for (var i = 0; i < modelItem.count; i++)
+        {
+            if (modelItem.model.get(i).sel)
+            {
+                var info = modelItem.model.get(i)
+
+                var obj = Qt.createComponent("qrc:/qml/FSExplorer/FileInfoWindow.qml")
+                if (obj.status === Component.Error)
+                    console.log(obj.errorString())
+                obj.createObject(root, {info:info})
+
+                break
+            }
+        }
     }
 }

@@ -91,7 +91,6 @@ Rectangle {
         }
         onClicked: simpleLeftClick(mouse)
         onDoubleClicked: openFileOrFolder()
-        onContainsMouseChanged: hov = containsMouse
         Component.onCompleted: hoverEnabled = true
     }
 
