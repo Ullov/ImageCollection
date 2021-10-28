@@ -16,6 +16,7 @@ Rectangle {
             id: pixImage
             height: 3000
             width: 3000
+            onWidthChanged: centerImage()
         }
         onWheel: {
             pixImage.setCanvasScale(wheel.angleDelta.y / 120)
@@ -26,10 +27,17 @@ Rectangle {
             pixImage.previousPicture()
         else if (event.key === Qt.Key_Right)
             pixImage.nextPicture()
+        else if (event.key === Qt.Key_C)
+            centerImage()
     }
     Component.onCompleted: {
         pixImage.setViewerDimensions(root.height, root.width)
         pixImage.setImage(extraParams)
+    }
+    function centerImage()
+    {
+        pixImage.anchors.centerIn = clickArea
+        pixImage.anchors.centerIn = undefined
     }
 }
 // E:/UgiU4MOllPU.jpg
