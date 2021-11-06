@@ -46,6 +46,7 @@ function formFilesList(elements, append) {
     {
         jArr[i]["index"] = gi
         jArr[i]["sel"] = false
+        jArr[i]["fileType"] = "Directory"
         modelItem.model.append(jArr[i])
     }
 
