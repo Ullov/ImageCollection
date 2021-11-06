@@ -7,6 +7,7 @@
 #include "KTools/uuidslist.h"
 #include "KTools/options.h"
 #include "ImageViewer/pixmapimage.h"
+#include "ImageStorage/imagestorage.h"
 
 
 int main(int argc, char *argv[])
@@ -27,10 +28,14 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<UuidsList>("QmlUuidsList", 1, 0, "UuidsList");
     qmlRegisterType<PixmapImage>("QmlPixmapImage", 1, 0, "PixmapImage");
+    qmlRegisterType<ImageStorage>("QmlImageStorage", 1, 0, "ImageStorage");
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "db");
     db.setDatabaseName("settings.sqlite");
     static KTools::Options options = KTools::Options(db);
+    QSqlDatabase imgDb = QSqlDatabase::addDatabase("QSQLITE", "imgDb");
+    imgDb.setDatabaseName(options.getParam("/Path/Data").toString() + "/images.sqlite");
+    ImageStorage imgStor(imgDb);
     FsHandler *fsExplorerHandle = new FsHandler();
     fsExplorerHandle->optionsObj = options;
 
@@ -40,6 +45,7 @@ int main(int argc, char *argv[])
 
     engine.rootContext()->setContextProperty("uuidsList", &ids);
     engine.rootContext()->setContextProperty("fsExplorerHandle", fsExplorerHandle);
+    engine.rootContext()->setContextProperty("imageStorage", &imgStor);
     engine.load(url);
 
     return app.exec();

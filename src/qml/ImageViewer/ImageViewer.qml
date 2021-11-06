@@ -4,6 +4,7 @@ import "../../js/Tools.js" as Tools
 
 Rectangle {
     property var extraParams
+    property var imageInfo
     id: root
     anchors.fill: parent
     color: "Blue"
@@ -33,6 +34,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         drag.target: pixImage
         drag.axis: Drag.XAndYAxis
+        acceptedButtons: Qt.RightButton | Qt.LeftButton
         PixmapImage {
             id: pixImage
             height: 3000
@@ -41,6 +43,10 @@ Rectangle {
         }
         onWheel: {
             pixImage.setCanvasScale(wheel.angleDelta.y / 120)
+        }
+        onClicked: {
+            if (mouse.button === Qt.RightButton)
+                openAddToStorageWindow()
         }
     }
     Keys.onPressed: {
@@ -61,6 +67,7 @@ Rectangle {
         function onImageInfo(info)
         {
             infoLabel.text = info.width + "x" + info.height + " || " + Tools.bytesToHumanReadable(info.size) + " || " + info.path
+            imageInfo = info
         }
     }
 
@@ -68,6 +75,14 @@ Rectangle {
     {
         pixImage.anchors.centerIn = clickArea
         pixImage.anchors.centerIn = undefined
+    }
+
+    function openAddToStorageWindow()
+    {
+        var obj = Qt.createComponent("qrc:/qml/ImageViewer/AddToStorageWindow.qml")
+        if (obj.status === Component.Error)
+            console.log(obj.errorString())
+        obj.createObject(root, {info:imageInfo})
     }
 }
 // E:/UgiU4MOllPU.jpg

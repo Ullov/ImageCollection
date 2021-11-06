@@ -121,6 +121,11 @@
         <file>resources/FSExplorer/img/fileTypeIcons/cda.png</file>
         <file>qml/FSExplorer/FileInfoWindow.qml</file>
         <file>resources/fonts/RobotoMono-Regular.ttf</file>
+        <file>qml/ImageStorage/ImageStorage.qml</file>
+        <file>qml/ImageStorage/TagWindow.qml</file>
+        <file>qml/ImageStorage/AddTagWindow.qml</file>
+        <file>qml/ImageStorage/DelegateItemForTags.qml</file>
+        <file>qml/ImageViewer/AddToStorageWindow.qml</file>
         <file>qml/QmlIncludes/LabelComboBoxCombination.qml</file>
     </qresource>
 </RCC>

@@ -20,6 +20,7 @@ Window {
                         "Test",
                         [
                             ["FSExplorer", "qrc:/qml/FSExplorer/StartObject.qml", []],
+                            ["Image Storage", "qrc:/qml/ImageStorage/ImageStorage.qml", []]
                         ]
                     ]
                 ]
