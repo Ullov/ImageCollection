@@ -1,0 +1,63 @@
+Image
+Id  | Name | Hash | Size | Height | Width | GalleryId | Extension | FormerExtension | CreationTime | ModificationTime | AdditionTime | ImageData
+int | text | text | int  | int    | int   | int       | int       | int             | int          | int              | int          | blob
+
+|||
+ImageTag
+Id  | ImageId | TagId
+int | int     | int
+
+|||
+Tag
+Id  | Name | ParentTagId | Summary | CreationTime | ModificationTime
+int | text | int         | text    | int          | int
+
+|||
+ParentChildTag
+Id  | ParentTagId | ChildTagId
+int | int         | int
+
+|||
+Gallery
+Id  | Name | Summary | CreationTime | ModificationTime
+int | text | text    | int          | int
+
+|||
+GalleryImage
+Id  | GalleryId | ImageId
+int | int       | int
+
+|||
+ExtensionEnum
+Id  | Value
+int | text
+
+|||
+Attribute
+Id  | DataType | TextValue | IntValue | BoolValue | BlobValue | RealValue
+int | int      | text      | int      | bool      | blob      | real
+
+|||
+DataTypeEnum
+Id  | Value
+int | text
+
+|||
+ImageAttribute
+Id  | ImageId | AttributeId
+int | int     | int
+
+
+Image parameters that will be represented as attributes:
+name                text
+hash                text
+size                int
+height              int
+width               int
+galleryId           int
+EnumExtension       int
+EnumFormerExtension int
+conversionQuality   int
+creationTime        int
+modificationTime    int
+additionTime        int

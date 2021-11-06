@@ -1,0 +1,102 @@
+Image
+Id  | ImageData
+int | blob
+
+|||
+ImageTag
+Id  | ImageId | TagId
+int | int     | int
+
+|||
+Tag
+Id  | ParentTagId
+int | int
+
+|||
+ParentChildTag
+Id  | ParentTagId | ChildTagId
+int | int         | int
+
+|||
+Gallery
+Id
+int
+
+|||
+GalleryImage
+Id  | GalleryId | ImageId
+int | int       | int
+
+|||
+ExtensionEnum
+Id  | Value
+int | text
+
+|||
+Attribute
+Id  | Name | Value
+int | text | blob
+
+|||
+List
+Id  | DataType
+int | int
+
+|||
+ListItems
+Id  | ListId | Value
+int | int    | blob
+
+|||
+DataTypeEnum
+Id  | Value
+int | text
+
+|||
+ImageAttribute
+Id  | ImageId | AttributeId | DataType
+int | int     | int         | int
+
+|||
+TagAttribute
+Id  | ImageId | AttributeId | DataType
+int | int     | int         | int
+
+|||
+GalleryAttribute
+Id  | ImageId | AttributeId | DataType
+int | int     | int         | int
+
+DataTypeEnum values:
+INT
+REAL
+TEXT
+BOOL
+BLOB
+LIST
+
+Image parameters that will be represented as attributes:
+name                text
+hash                text
+size                int
+height              int
+width               int
+galleryId           int
+EnumExtension       int
+EnumFormerExtension int
+conversionQuality   int
+creationTime        int
+modificationTime    int
+additionTime        int
+
+Tag parameters that will be represented as attributes:
+name
+summary
+creationTime
+modificationTime
+
+Gallery parameters that will be represented as attributes:
+name
+summary
+creationTime
+modificationTime
