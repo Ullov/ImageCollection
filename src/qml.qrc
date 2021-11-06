@@ -121,5 +121,6 @@
         <file>resources/FSExplorer/img/fileTypeIcons/cda.png</file>
         <file>qml/FSExplorer/FileInfoWindow.qml</file>
         <file>resources/fonts/RobotoMono-Regular.ttf</file>
+        <file>qml/QmlIncludes/LabelComboBoxCombination.qml</file>
     </qresource>
 </RCC>
