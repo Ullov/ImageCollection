@@ -35,7 +35,17 @@ int | text
 |||
 Attribute
 Id  | Name | Value
-int | text | blob
+int | int  | blob
+
+|||
+AttributeName
+Id  | Name | ParentAttributeId | DataType
+int | text | int               | int
+
+|||
+ParentChildAttribute
+Id  | ParentAttributeId | ChildAttributeId
+int | int               | int
 
 |||
 List
@@ -54,18 +64,18 @@ int | text
 
 |||
 ImageAttribute
-Id  | ImageId | AttributeId | DataType
-int | int     | int         | int
+Id  | ImageId | AttributeId
+int | int     | int
 
 |||
 TagAttribute
-Id  | ImageId | AttributeId | DataType
-int | int     | int         | int
+Id  | TagId | AttributeId
+int | int   | int
 
 |||
 GalleryAttribute
-Id  | ImageId | AttributeId | DataType
-int | int     | int         | int
+Id  | GalleryId | AttributeId
+int | int       | int
 
 DataTypeEnum values:
 INT

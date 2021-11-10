@@ -78,8 +78,8 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        var allTags = imageStorage.getAllTags()
-        refreshListView(allTags)
+        //var allTags = imageStorage.getAllTags()
+        //refreshListView(allTags)
     }
 
     function refreshListView(allTags)
