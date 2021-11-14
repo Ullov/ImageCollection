@@ -22,6 +22,8 @@ public:
     static QVariant ret;
     static QVariant varArg;
 
+    static UuidsList ids;
+
 private:
     static QVector<QByteArray> data;
     static QVector<bool> dataBool;

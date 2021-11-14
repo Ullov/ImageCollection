@@ -39,11 +39,10 @@ int main(int argc, char *argv[])
     FsHandler *fsExplorerHandle = new FsHandler();
     fsExplorerHandle->optionsObj = options;
 
-    static UuidsList ids;
-    ids.init(&ids);
-    ids.createItems(20);
+    UuidsList::ids.init(&UuidsList::ids);
+    UuidsList::ids.createItems(20);
 
-    engine.rootContext()->setContextProperty("uuidsList", &ids);
+    engine.rootContext()->setContextProperty("uuidsList", &UuidsList::ids);
     engine.rootContext()->setContextProperty("fsExplorerHandle", fsExplorerHandle);
     engine.rootContext()->setContextProperty("imageStorage", &imgStor);
     engine.load(url);

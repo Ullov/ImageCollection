@@ -4,6 +4,7 @@ QVector<QByteArray> UuidsList::data;
 QVector<bool> UuidsList::dataBool;
 QVariant UuidsList::ret;
 QVariant UuidsList::varArg;
+UuidsList UuidsList::ids;
 
 UuidsList::UuidsList() {}
 
