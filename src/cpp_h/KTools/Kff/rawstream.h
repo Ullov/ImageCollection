@@ -9,24 +9,33 @@ namespace KTools::Kff {
     class RawStream
     {
     public:
-        RawStream(Manager *man);
+        RawStream(Manager *man, const bool writeInInode = false);
         ~RawStream();
 
         qint64 write(const QByteArray &content);
         QByteArray readAll();
         void seek(const qint64 pos);
         qint64 pos();
-        QByteArray read(const qint64 len);
+        QByteArray read(qint64 len);
+        void toEnd();
+        qint64 size();
 
-    private:
+    protected:
         Manager *manager;
-        qint64 size;
-        static const int blockSize;
-        QList<qint64> clusters;
-        KTools::File *file;
-        qint64 position;
 
         void appendCluster();
+        qint64 getAbolutePos();
+
+    private:
+        KTools::File *file;
+        qint64 vsize;
+        bool inodeWrited;
+        qint64 position;
+        QList<qint64> clusters;
+        static const int blockSize;
+
+        qint64 trueSeek(const qint64 posi); // This function sets pos of file and returns pos
+
     };
 }
 

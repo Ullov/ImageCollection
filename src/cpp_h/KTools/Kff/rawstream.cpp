@@ -4,13 +4,17 @@
 
 const int KTools::Kff::RawStream::blockSize = 4096;
 
-KTools::Kff::RawStream::RawStream(Manager *man)
+KTools::Kff::RawStream::RawStream(Manager *man, const bool writeInInode)
 {
     manager = man;
     file = &manager->file;
     appendCluster();
-    manager->writeInode(clusters.last());
-    size = 0;
+
+    inodeWrited = writeInInode;
+    if (writeInInode)
+        manager->writeInode(clusters.last());
+
+    vsize = 0;
     position = 0;
 }
 
@@ -21,10 +25,10 @@ qint64 KTools::Kff::RawStream::write(const QByteArray &content)
     qint64 writed = 0;
     qint64 firstPiece;
 
-    if (size > 4080)
-        firstPiece = 4080 - (size % 4080);
+    if (position > 4080)
+        firstPiece = 4080 - (position % 4080);
     else
-        firstPiece = 4080 - size;
+        firstPiece = 4080 - position;
 
     file->seek(clusters.last() + 16 + (4080 - firstPiece));
     if (content.length() < firstPiece)
@@ -53,7 +57,14 @@ qint64 KTools::Kff::RawStream::write(const QByteArray &content)
             writed += filler.length();
         }
     }
-    size += writed;
+    vsize += writed;
+    position += writed;
+    if (inodeWrited)
+    {
+        qint64 tmpPos = file->pos();
+        manager->writeInode(clusters[0], size());
+        file->seek(tmpPos);
+    }
     return writed;
 }
 
@@ -76,8 +87,8 @@ QByteArray KTools::Kff::RawStream::readAll()
     for (int i = 0; i < clusters.length(); i++)
     {
         file->seek(clusters[i] + 16);
-        if (size - readed < 4080)
-            result += file->read<QByteArray>(size - readed);
+        if (size() - readed < 4080)
+            result += file->read<QByteArray>(size() - readed);
         else
             result += file->read<QByteArray>(4080);
         readed = result.size();
@@ -95,13 +106,11 @@ qint64 KTools::Kff::RawStream::pos()
     return position;
 }
 
-QByteArray KTools::Kff::RawStream::read(const qint64 len)
+QByteArray KTools::Kff::RawStream::read(qint64 len)
 {
-    if (len + position > size)
-    {
-        KTools::Log::writeError("Attempt read more than you can. len + position:" + QString::number(len + position) + "  size:" + QString::number(size), "KTools::Kff::RawStream::read()");
-        return "Attempt read more than you can. len + position:" + QByteArray::number(len + position) + "  size:" + QByteArray::number(size);
-    }
+    if (len + position > size())
+        len -= (len + position) - size();
+
     QByteArray result;
     qint64 localPos;
     qint64 clsNumber;
@@ -129,4 +138,32 @@ QByteArray KTools::Kff::RawStream::read(const qint64 len)
     }
 
     return result;
+}
+
+void KTools::Kff::RawStream::toEnd()
+{
+    position = size();
+}
+
+qint64 KTools::Kff::RawStream::getAbolutePos()
+{
+    return trueSeek(position);
+}
+
+qint64 KTools::Kff::RawStream::trueSeek(const qint64 posi)
+{
+    position = posi;
+    qint64 firstPiece;
+    if (position > 4080)
+        firstPiece = 4080 - (position % 4080);
+    else
+        firstPiece = 4080 - position;
+
+    file->seek(clusters.last() + 16 + (4080 - firstPiece));
+    return file->pos();
+}
+
+qint64 KTools::Kff::RawStream::size()
+{
+    return vsize;
 }

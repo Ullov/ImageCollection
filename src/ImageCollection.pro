@@ -12,6 +12,7 @@ SOURCES += \
         cpp_h/ImageViewer/pixmapimage.cpp \
         cpp_h/KTools/HtmlAstMaker/object.cpp \
         cpp_h/KTools/HtmlAstMaker/tag.cpp \
+        cpp_h/KTools/Kff/fixedtypes.cpp \
         cpp_h/KTools/Kff/manager.cpp \
         cpp_h/KTools/Kff/rawstream.cpp \
         cpp_h/KTools/StaticVarsDeclarations.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
     cpp_h/ImageViewer/pixmapimage.h \
     cpp_h/KTools/HtmlAstMaker/object.h \
     cpp_h/KTools/HtmlAstMaker/tag.h \
+    cpp_h/KTools/Kff/fixedtypes.h \
     cpp_h/KTools/Kff/manager.h \
     cpp_h/KTools/Kff/rawstream.h \
     cpp_h/KTools/archiverw.h \

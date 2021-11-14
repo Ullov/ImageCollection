@@ -16,6 +16,11 @@ KTools::Kff::Manager::Manager(const QString &path, const OpenMode lMode = OpenMo
     constructFs();
 }
 
+KTools::Kff::Manager::~Manager()
+{
+    delete numbers;
+}
+
 void KTools::Kff::Manager::constructFs()
 {
     file.seek(0);
@@ -25,6 +30,7 @@ void KTools::Kff::Manager::constructFs()
     inodeArea.append(160, 0);
     file.write(inodeArea);
     offsets.data = offsets.inodes + inodeArea.length();
+    numbers = new FixedTypes(this);
 }
 
 void KTools::Kff::Manager::intToChar(char result[], const qint64 numb)
@@ -35,7 +41,7 @@ void KTools::Kff::Manager::intToChar(char result[], const qint64 numb)
 
 KTools::Kff::RawStream KTools::Kff::Manager::getStream()
 {
-    RawStream raw(this);
+    RawStream raw(this, true);
     return raw;
 }
 
@@ -56,25 +62,45 @@ qint64 KTools::Kff::Manager::allocCluster()
     return clusters.last().first;
 }
 
-void KTools::Kff::Manager::writeInode(const qint64 clust)
+void KTools::Kff::Manager::writeInode(const qint64 clust, const qint64 size)
 {
-    char addr[8];
-    char zero[8];
-    intToChar(addr, clust);
-    intToChar(zero, 0ll);
-    QByteArray content;
-    content.append(addr, 8); // First cluster address
-    content.append(zero, 8); // Entity size
-    file.seek(offsets.inodes);
-    for (int i = 0; ;i++)
+    if (size == -1)
     {
-        if (file.read<qint64>() == 0)
+        char addr[8];
+        char zero[8];
+        intToChar(addr, clust);
+        intToChar(zero, 0ll);
+        QByteArray content;
+        content.append(addr, 8); // First cluster address
+        content.append(zero, 8); // Entity size
+        file.seek(offsets.inodes);
+        for (int i = 0; ;i++)
         {
-            qint64 pos = offsets.inodes + (i * sizes.inode);
-            file.seek(pos); // Seeks current inode
-            break;
+            if (file.read<qint64>() == 0)
+            {
+                qint64 pos = offsets.inodes + (i * sizes.inode);
+                file.seek(pos); // Seeks current inode
+                break;
+            }
+            file.seek(offsets.inodes + ((i + 1) * sizes.inode)); // Seeks next inode
         }
-        file.seek(offsets.inodes + ((i + 1) * sizes.inode)); // Seeks next inode
+        file.write(content);
     }
-    file.write(content);
+    else
+    {
+        for (int i = 0; file.pos() < offsets.data; i++)
+        {
+            file.seek(offsets.inodes + (i * sizes.inode));
+            if (file.read<qint64>() == clust)
+            {
+                file.seek(offsets.inodes + (i * sizes.inode) + 16);
+                file.write<qint64>(size);
+            }
+        }
+    }
+}
+
+KTools::Kff::FixedTypes* KTools::Kff::Manager::getNumbers()
+{
+    return numbers;
 }

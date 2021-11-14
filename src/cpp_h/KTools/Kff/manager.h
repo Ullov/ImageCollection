@@ -3,6 +3,7 @@
 
 #include "../file.h"
 #include "rawstream.h"
+#include "fixedtypes.h"
 
 namespace KTools::Kff {
     class Manager
@@ -13,11 +14,13 @@ namespace KTools::Kff {
             Keep
         };
         Manager();
+        ~Manager();
         Manager(const QString &path, const OpenMode lMode);
 
         RawStream getStream();
         qint64 allocCluster();
-        void writeInode(const qint64 clust);
+        void writeInode(const qint64 clust, const qint64 size = -1);
+        FixedTypes* getNumbers();
 
         KTools::File file;
 
@@ -42,6 +45,7 @@ namespace KTools::Kff {
 
         OpenMode mode;
         QList<QPair<qint64, bool>> clusters;
+        FixedTypes *numbers;
     };
 }
 
