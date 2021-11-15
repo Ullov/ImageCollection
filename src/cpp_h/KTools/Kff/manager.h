@@ -19,6 +19,7 @@ namespace KTools::Kff {
 
         RawStream getStream();
         qint64 allocCluster();
+        void freeCluster(const qint64 cls);
         void writeInode(const qint64 clust, const qint64 size = -1);
         FixedTypes* getNumbers();
 

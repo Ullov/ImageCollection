@@ -167,3 +167,36 @@ qint64 KTools::Kff::RawStream::size()
 {
     return vsize;
 }
+
+void KTools::Kff::RawStream::resize(const qint64 nsize)
+{
+    qint64 diff = nsize - size();
+    if (diff > 0)
+    {
+        qint64 modulo = vsize % 4080;
+        vsize -= modulo;
+        diff += modulo;
+        modulo = diff % 4080;
+        qint64 clsNumb = (diff - modulo) / 4080;
+        for (int i = 0; i < clsNumb; i++)
+        {
+            appendCluster();
+        }
+        vsize = ((clusters.length() - 1) * 4080) + modulo;
+    }
+    else
+    {
+        diff = diff * -1;
+        qint64 modulo = 4080 - (vsize % 4080);
+        vsize -= modulo;
+        diff +=modulo;
+        modulo = diff % 4080;
+        qint64 clsNumb = (diff - modulo) / 4080;
+        for (int i = 0; i < clsNumb; i++)
+        {
+            manager->freeCluster(clusters.last());
+            clusters.removeLast();
+        }
+        vsize = (clusters.length() * 4080) - modulo;
+    }
+}

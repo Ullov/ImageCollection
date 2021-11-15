@@ -19,6 +19,7 @@ namespace KTools::Kff {
         QByteArray read(qint64 len);
         void toEnd();
         qint64 size();
+        void resize(const qint64 nsize);
 
     protected:
         Manager *manager;

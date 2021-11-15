@@ -47,6 +47,14 @@ KTools::Kff::RawStream KTools::Kff::Manager::getStream()
 
 qint64 KTools::Kff::Manager::allocCluster()
 {
+    for (int i = 0; i < clusters.length(); i++)
+    {
+        if (clusters[i].second == true)
+        {
+            clusters[i].second = false;
+            return clusters[i].first;
+        }
+    }
     clusters.append({(clusters.length() * sizes.cluster) + offsets.data, false});
 
     char zero[8];
@@ -103,4 +111,20 @@ void KTools::Kff::Manager::writeInode(const qint64 clust, const qint64 size)
 KTools::Kff::FixedTypes* KTools::Kff::Manager::getNumbers()
 {
     return numbers;
+}
+
+void KTools::Kff::Manager::freeCluster(const qint64 cls)
+{
+    QByteArray content;
+    content.append(4096, *KTools::Converter::toByteArray<qint8>('0'));
+    file.seek(cls);
+    file.write(content);
+    for (int i = 0; i < clusters.length(); i++)
+    {
+        if (clusters[i].first == cls)
+        {
+            clusters[i].second = true;
+            break;
+        }
+    }
 }
