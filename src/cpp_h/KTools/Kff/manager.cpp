@@ -116,7 +116,7 @@ KTools::Kff::FixedTypes* KTools::Kff::Manager::getNumbers()
 void KTools::Kff::Manager::freeCluster(const qint64 cls)
 {
     QByteArray content;
-    content.append(4096, *KTools::Converter::toByteArray<qint8>('0'));
+    content.append(4096, char(0));
     file.seek(cls);
     file.write(content);
     for (int i = 0; i < clusters.length(); i++)
