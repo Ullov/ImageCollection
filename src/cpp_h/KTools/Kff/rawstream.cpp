@@ -57,7 +57,8 @@ qint64 KTools::Kff::RawStream::write(const QByteArray &content)
             writed += filler.length();
         }
     }
-    vsize += writed;
+    if ((position + writed) > size())
+        vsize = position + writed;
     position += writed;
     if (inodeWrited)
     {
