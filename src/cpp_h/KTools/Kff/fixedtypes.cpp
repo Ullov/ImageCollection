@@ -57,6 +57,32 @@ T KTools::Kff::FixedTypes::get(const qint64 position)
     return KTools::Converter::byteArrayToT<T>(read(sizeof(T)));
 }
 
+bool KTools::Kff::FixedTypes::remove(const qint64 position)
+{
+    if (position > size())
+    {
+        KTools::Log::writeError("Position > size.", "KTools::Kff::FixedTypes::remove()");
+        return false;
+    }
+    seek(position);
+    QByteArray tryRead = read(1);
+    if (*tryRead.data() == '\0')
+    {
+        KTools::Log::writeError("Attempt remove already empty value or position is wrong.", "KTools::Kff::FixedTypes::remove()");
+        return false;
+    }
+    qint8 valSize = Size::get(static_cast<Type>(*tryRead.data()));
+    QByteArray content;
+    content.append((1 + valSize), char(0));
+    seek(position);
+    write(content);
+    if ((size() - position) == content.length())
+    {
+        resize(size() - content.length());
+    }
+    return true;
+}
+
 template qint64 KTools::Kff::FixedTypes::add<qint8>(const qint8, const Type);
 template qint64 KTools::Kff::FixedTypes::add<qint16>(const qint16, const Type);
 template qint64 KTools::Kff::FixedTypes::add<qint32>(const qint32, const Type);
