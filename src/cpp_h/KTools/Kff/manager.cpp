@@ -123,7 +123,14 @@ void KTools::Kff::Manager::freeCluster(const qint64 cls)
     {
         if (clusters[i].first == cls)
         {
-            clusters[i].second = true;
+            if (clusters.length() == (i + 1))
+            {
+                clusters.removeLast();
+                file.resize(file.size() - 4096);
+            }
+            else
+                clusters[i].second = true;
+
             break;
         }
     }
