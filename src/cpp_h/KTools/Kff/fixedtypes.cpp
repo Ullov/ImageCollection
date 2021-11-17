@@ -16,14 +16,9 @@ qint64 KTools::Kff::FixedTypes::add(const T data, const Type type)
     seek(lastSeek);
     for (int i = 0; pos() < size() ; i++)
     {
+        QByteArray voidNumb = QByteArray() + (char)Size::getVoidTypeNumb(type);
         QByteArray tryRead = read(1);
-        if (*tryRead.data() != '\0')
-        {
-            Type readedType = static_cast<Type>(*tryRead.data());
-            seek(lastSeek + 1 + Size::get(readedType));
-            lastSeek = pos();
-        }
-        else
+        if (*tryRead.data() == '\0' || tryRead == voidNumb)
         {
             QByteArray content;
             content.append(static_cast<quint8>(type));
@@ -32,6 +27,12 @@ qint64 KTools::Kff::FixedTypes::add(const T data, const Type type)
             write(content);
             writed = true;
             break;
+        }
+        else
+        {
+            Type readedType = static_cast<Type>(*tryRead.data());
+            seek(lastSeek + 1 + Size::get(readedType));
+            lastSeek = pos();
         }
     }
     if (!writed)
@@ -73,7 +74,8 @@ bool KTools::Kff::FixedTypes::remove(const qint64 position)
     }
     qint8 valSize = Size::get(static_cast<Type>(*tryRead.data()));
     QByteArray content;
-    content.append((1 + valSize), char(0));
+    content.append(Size::getVoidTypeNumb(static_cast<Type>(*tryRead.data())));
+    content.append(valSize, char(0));
     seek(position);
     write(content);
     if ((size() - position) == content.length())

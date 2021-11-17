@@ -21,7 +21,11 @@ namespace KTools::Kff {
             UInt64 = 8,
             Float = 9,
             Bool = 10,
-            Pointer = 11
+            Pointer = 11,
+            Void8 = 12,
+            Void16 = 13,
+            Void32 = 14,
+            Void64 = 15
         };
 
     private:
@@ -38,6 +42,10 @@ namespace KTools::Kff {
             static const qint8 Float = 8;
             static const qint8 Bool = 1;
             static const qint8 Pointer = 8;
+            static const qint8 Void8 = 1;
+            static const qint8 Void16 = 2;
+            static const qint8 Void32 = 4;
+            static const qint8 Void64 = 8;
         public:
             static constexpr qint8 get(const Type type)
             {
@@ -54,7 +62,24 @@ namespace KTools::Kff {
                     case Type::Float : return Float;
                     case Type::Bool : return Bool;
                     case Type::Pointer : return Pointer;
+                    case Type::Void8 : return Void8;
+                    case Type::Void16 : return Void16;
+                    case Type::Void32 : return Void32;
+                    case Type::Void64 : return Void64;
                 }
+                return 0; // To silence warning
+            }
+            static constexpr qint8 getVoidTypeNumb(const Type type)
+            {
+                qint8 typeSize = get(type);
+                switch (typeSize)
+                {
+                    case 1 : return static_cast<qint8>(Type::Void8);
+                    case 2 : return static_cast<qint8>(Type::Void16);
+                    case 4 : return static_cast<qint8>(Type::Void32);
+                    case 8 : return static_cast<qint8>(Type::Void64);
+                }
+                return 0; // To silence warning
             }
         };
 
