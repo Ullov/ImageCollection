@@ -2,7 +2,7 @@
 
 #include "manager.h"
 
-const int KTools::Kff::RawStream::blockSize = 4096;
+const qint64 KTools::Kff::RawStream::Sizes::rawData = 4080;
 
 KTools::Kff::RawStream::RawStream(Manager *man, const bool writeInInode)
 {
@@ -25,12 +25,12 @@ qint64 KTools::Kff::RawStream::write(const QByteArray &content)
     qint64 writed = 0;
     qint64 firstPiece;
 
-    if (position > 4080)
-        firstPiece = 4080 - (position % 4080);
+    if (position > Sizes::rawData)
+        firstPiece = Sizes::rawData - (position % Sizes::rawData);
     else
-        firstPiece = 4080 - position;
+        firstPiece = Sizes::rawData - position;
 
-    file->seek(clusters.last() + 16 + (4080 - firstPiece));
+    file->seek(clusters.last() + 16 + (Sizes::rawData - firstPiece));
     if (content.length() < firstPiece)
     {
         file->write(content);
@@ -44,9 +44,9 @@ qint64 KTools::Kff::RawStream::write(const QByteArray &content)
         for (int i = 0; writed < content.length(); i++)
         {
             appendCluster();
-            if (content.length() - writed > 4080)
+            if (content.length() - writed > Sizes::rawData)
             {
-                filler = content.mid(writed, 4080);
+                filler = content.mid(writed, Sizes::rawData);
             }
             else
             {
@@ -88,10 +88,10 @@ QByteArray KTools::Kff::RawStream::readAll()
     for (int i = 0; i < clusters.length(); i++)
     {
         file->seek(clusters[i] + 16);
-        if (size() - readed < 4080)
+        if (size() - readed < Sizes::rawData)
             result += file->read<QByteArray>(size() - readed);
         else
-            result += file->read<QByteArray>(4080);
+            result += file->read<QByteArray>(Sizes::rawData);
         readed = result.size();
     }
     return result;
@@ -116,10 +116,10 @@ QByteArray KTools::Kff::RawStream::read(qint64 len)
     qint64 localPos;
     qint64 clsNumber;
     qint64 readed = 0;
-    if (position > 4080)
+    if (position > Sizes::rawData)
     {
-        localPos = position % 4080;
-        clsNumber = (position - localPos) / 4080;
+        localPos = position % Sizes::rawData;
+        clsNumber = (position - localPos) / Sizes::rawData;
     }
     else
     {
@@ -129,8 +129,8 @@ QByteArray KTools::Kff::RawStream::read(qint64 len)
     for (int i = 0; readed < len; i++)
     {
         file->seek(clusters[clsNumber] + 16 + localPos);
-        if ((len - readed) > (4080 - localPos))
-            result.append(file->read<QByteArray>(4080 - localPos));
+        if ((len - readed) > (Sizes::rawData - localPos))
+            result.append(file->read<QByteArray>(Sizes::rawData - localPos));
         else
             result.append(file->read<QByteArray>(len - readed));
         localPos = 0;
@@ -155,12 +155,12 @@ qint64 KTools::Kff::RawStream::trueSeek(const qint64 posi)
 {
     position = posi;
     qint64 firstPiece;
-    if (position > 4080)
-        firstPiece = 4080 - (position % 4080);
+    if (position > Sizes::rawData)
+        firstPiece = Sizes::rawData - (position % Sizes::rawData);
     else
-        firstPiece = 4080 - position;
+        firstPiece = Sizes::rawData - position;
 
-    file->seek(clusters.last() + 16 + (4080 - firstPiece));
+    file->seek(clusters.last() + 16 + (Sizes::rawData - firstPiece));
     return file->pos();
 }
 
@@ -174,30 +174,30 @@ void KTools::Kff::RawStream::resize(const qint64 nsize)
     qint64 diff = nsize - size();
     if (diff > 0)
     {
-        qint64 modulo = vsize % 4080;
+        qint64 modulo = vsize % Sizes::rawData;
         vsize -= modulo;
         diff += modulo;
-        modulo = diff % 4080;
-        qint64 clsNumb = (diff - modulo) / 4080;
+        modulo = diff % Sizes::rawData;
+        qint64 clsNumb = (diff - modulo) / Sizes::rawData;
         for (int i = 0; i < clsNumb; i++)
         {
             appendCluster();
         }
-        vsize = ((clusters.length() - 1) * 4080) + modulo;
+        vsize = ((clusters.length() - 1) * Sizes::rawData) + modulo;
     }
     else
     {
         diff = diff * -1;
-        qint64 modulo = 4080 - (vsize % 4080);
+        qint64 modulo = Sizes::rawData - (vsize % Sizes::rawData);
         vsize -= modulo;
         diff +=modulo;
-        modulo = diff % 4080;
-        qint64 clsNumb = (diff - modulo) / 4080;
+        modulo = diff % Sizes::rawData;
+        qint64 clsNumb = (diff - modulo) / Sizes::rawData;
         for (int i = 0; i < clsNumb; i++)
         {
             manager->freeCluster(clusters.last());
             clusters.removeLast();
         }
-        vsize = (clusters.length() * 4080) - modulo;
+        vsize = (clusters.length() * Sizes::rawData) - modulo;
     }
 }

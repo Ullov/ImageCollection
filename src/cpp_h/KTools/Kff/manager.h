@@ -29,16 +29,16 @@ namespace KTools::Kff {
         void constructFs();
         void intToChar(char result[], const qint64 numb);
 
-        static const QByteArray signature;
+        static constexpr char signature[] = "KFFS0000";
 
         struct Offsets {
-            static const qint64 inodes;
+            const qint64 inodes = sizeof(signature) - 1;
             qint64 data = 0;
         };
         struct Sizes {
-            static const qint64 inode;
-            static const qint64 cluster;
-            static const qint64 signature;
+            static const qint64 inode = 16;
+            static const qint64 cluster = 4096;
+            static const qint64 signature = sizeof(signature) - 1;
         };
 
         Sizes sizes;

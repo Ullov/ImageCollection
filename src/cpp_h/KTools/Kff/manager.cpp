@@ -1,10 +1,5 @@
 #include "manager.h"
 
-const QByteArray KTools::Kff::Manager::signature = "KFFS0000";
-const qint64 KTools::Kff::Manager::Offsets::inodes = signature.length();
-const qint64 KTools::Kff::Manager::Sizes::signature = Manager::signature.length();
-const qint64 KTools::Kff::Manager::Sizes::cluster = 4096;
-const qint64 KTools::Kff::Manager::Sizes::inode = 16;
 
 KTools::Kff::Manager::Manager(const QString &path, const OpenMode lMode = OpenMode::Clear)
 {
@@ -24,7 +19,7 @@ KTools::Kff::Manager::~Manager()
 void KTools::Kff::Manager::constructFs()
 {
     file.seek(0);
-    file.write(signature);
+    file.write<QByteArray>(signature);
 
     QByteArray inodeArea;
     inodeArea.append(160, 0);
