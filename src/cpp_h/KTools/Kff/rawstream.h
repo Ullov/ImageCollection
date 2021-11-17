@@ -24,9 +24,7 @@ namespace KTools::Kff {
     protected:
         Manager *manager;
 
-        void appendCluster();
-        qint64 getAbolutePos();
-
+    private:
         struct Sizes {
             static const qint64 nextCls = sizeof(qint64); // Next cluster address size
             static const qint64 prevCls = sizeof(qint64); // Previous cluster address size
@@ -34,15 +32,13 @@ namespace KTools::Kff {
             static const qint64 all = 4096;
         };
 
-    private:
         KTools::File *file;
         qint64 vsize;
         bool inodeWrited;
         qint64 position;
         QList<qint64> clusters;
 
-        qint64 trueSeek(const qint64 posi); // This function sets pos of file and returns pos
-
+        void appendCluster();
     };
 }
 

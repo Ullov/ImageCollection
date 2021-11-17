@@ -146,24 +146,6 @@ void KTools::Kff::RawStream::toEnd()
     position = size();
 }
 
-qint64 KTools::Kff::RawStream::getAbolutePos()
-{
-    return trueSeek(position);
-}
-
-qint64 KTools::Kff::RawStream::trueSeek(const qint64 posi)
-{
-    position = posi;
-    qint64 firstPiece;
-    if (position > Sizes::rawData)
-        firstPiece = Sizes::rawData - (position % Sizes::rawData);
-    else
-        firstPiece = Sizes::rawData - position;
-
-    file->seek(clusters.last() + 16 + (Sizes::rawData - firstPiece));
-    return file->pos();
-}
-
 qint64 KTools::Kff::RawStream::size()
 {
     return vsize;
