@@ -278,6 +278,8 @@ template qint32 KTools::Converter::byteArrayToT<qint32>(const QByteArray&);
 template quint32 KTools::Converter::byteArrayToT<quint32>(const QByteArray&);
 template qint64 KTools::Converter::byteArrayToT<qint64>(const QByteArray&);
 template quint64 KTools::Converter::byteArrayToT<quint64>(const QByteArray&);
+template double KTools::Converter::byteArrayToT<double>(const QByteArray&);
+template bool KTools::Converter::byteArrayToT<bool>(const QByteArray&);
 
 template QByteArray KTools::Converter::toByteArray<qint8>(const qint8&);
 template QByteArray KTools::Converter::toByteArray<quint8>(const quint8&);
@@ -287,3 +289,5 @@ template QByteArray KTools::Converter::toByteArray<qint32>(const qint32&);
 template QByteArray KTools::Converter::toByteArray<quint32>(const quint32&);
 template QByteArray KTools::Converter::toByteArray<qint64>(const qint64&);
 template QByteArray KTools::Converter::toByteArray<quint64>(const quint64&);
+template QByteArray KTools::Converter::toByteArray<double>(const double&);
+template QByteArray KTools::Converter::toByteArray<bool>(const bool&);
