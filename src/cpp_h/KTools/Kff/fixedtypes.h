@@ -90,6 +90,9 @@ namespace KTools::Kff {
         template <typename T>
         T get(const qint64 position);
 
+        template <typename T>
+        bool change(const T data, const qint64 position);
+
         bool remove(const qint64 position);
     };
 }

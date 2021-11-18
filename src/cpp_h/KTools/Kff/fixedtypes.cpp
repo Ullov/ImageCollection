@@ -85,6 +85,26 @@ bool KTools::Kff::FixedTypes::remove(const qint64 position)
     return true;
 }
 
+template <typename T>
+bool KTools::Kff::FixedTypes::change(const T data, const qint64 position)
+{
+    if (position > size())
+    {
+        KTools::Log::writeError("Position > size.", "KTools::Kff::FixedTypes::change()");
+        return false;
+    }
+    seek(position);
+    qint8 valSize = Size::get(static_cast<Type>(*read(1).data()));
+    if (valSize != sizeof(T))
+    {
+        KTools::Log::writeError("Size of type value and passed to template type not equal. " + QString::number(valSize) + " != " + QString::number(sizeof(T)), "KTools::Kff::FixedTypes::change()");
+        return false;
+    }
+    seek(position + 1);
+    write(KTools::Converter::toByteArray(data));
+    return true;
+}
+
 template qint64 KTools::Kff::FixedTypes::add<qint8>(const qint8, const Type);
 template qint64 KTools::Kff::FixedTypes::add<qint16>(const qint16, const Type);
 template qint64 KTools::Kff::FixedTypes::add<qint32>(const qint32, const Type);
@@ -98,3 +118,10 @@ template qint32 KTools::Kff::FixedTypes::get<qint32>(const qint64);
 template qint64 KTools::Kff::FixedTypes::get<qint64>(const qint64);
 //template double KTools::Kff::FixedTypes::get<double>(const qint64);
 //template bool KTools::Kff::FixedTypes::get<bool>(const qint64);
+
+template bool KTools::Kff::FixedTypes::change<qint8>(const qint8, const qint64);
+template bool KTools::Kff::FixedTypes::change<qint16>(const qint16, const qint64);
+template bool KTools::Kff::FixedTypes::change<qint32>(const qint32, const qint64);
+template bool KTools::Kff::FixedTypes::change<qint64>(const qint64, const qint64);
+//template bool KTools::Kff::FixedTypes::change<double>(const double, const qint64);
+//template bool KTools::Kff::FixedTypes::change<bool>(const bool, const qint64);
