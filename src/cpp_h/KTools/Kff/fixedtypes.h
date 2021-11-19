@@ -5,7 +5,7 @@
 #include "../converter.h"
 
 namespace KTools::Kff {
-    class FixedTypes : public RawStream
+    class FixedTypes : private RawStream
     {
     public:
         FixedTypes(Manager *man);
