@@ -4,6 +4,7 @@
 #include "../file.h"
 #include "rawstream.h"
 #include "fixedtypes.h"
+#include "variabletypes.h"
 
 namespace KTools::Kff {
     class Manager
@@ -22,6 +23,7 @@ namespace KTools::Kff {
         void freeCluster(const qint64 cls);
         void writeInode(const qint64 clust, const qint64 size = -1);
         FixedTypes* getNumbers();
+        VariableTypes* getStrings();
 
         KTools::File file;
 
@@ -47,6 +49,7 @@ namespace KTools::Kff {
         OpenMode mode;
         QList<QPair<qint64, bool>> clusters;
         FixedTypes *numbers;
+        VariableTypes *strs;
     };
 }
 

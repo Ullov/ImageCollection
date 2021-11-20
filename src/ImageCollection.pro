@@ -15,6 +15,7 @@ SOURCES += \
         cpp_h/KTools/Kff/fixedtypes.cpp \
         cpp_h/KTools/Kff/manager.cpp \
         cpp_h/KTools/Kff/rawstream.cpp \
+        cpp_h/KTools/Kff/variabletypes.cpp \
         cpp_h/KTools/StaticVarsDeclarations.cpp \
         cpp_h/KTools/archiverw.cpp \
         cpp_h/KTools/converter.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     cpp_h/KTools/Kff/fixedtypes.h \
     cpp_h/KTools/Kff/manager.h \
     cpp_h/KTools/Kff/rawstream.h \
+    cpp_h/KTools/Kff/variabletypes.h \
     cpp_h/KTools/archiverw.h \
     cpp_h/KTools/converter.h \
     cpp_h/KTools/curl.h \
@@ -70,4 +72,4 @@ LIBS += -L$$PWD/libs/karchive-5.69.0/lib/ -llibKF5Archive.dll
 INCLUDEPATH += $$PWD/libs/karchive-5.69.0/include
 DEPENDPATH += $$PWD/libs/karchive-5.69.0/include
 
-QMAKE_CXXFLAGS += -O3
+QMAKE_CXXFLAGS += -O0
