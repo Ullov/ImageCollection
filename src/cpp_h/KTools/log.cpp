@@ -5,10 +5,6 @@
 #include "file.h"
 #include "options.h"
 
-#ifdef KAWAI_DEBUG
-#include <iostream>
-#endif
-
 QString KTools::Log::logFileName = QDateTime::currentDateTime().toString("yyyy.MM.dd") + ".log";
 
 QMap<KTools::Enums::LogType, QString> KTools::Log::logTypePath = {
