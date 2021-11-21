@@ -14,7 +14,12 @@ namespace KTools::Kff {
             Clear,
             Keep
         };
-        Manager();
+        enum class PointerTarget : quint8 {
+            FixedTypes = 1,
+            VariableTypes = 2,
+            File = 3
+        };
+
         ~Manager();
         Manager(const QString &path, const OpenMode lMode);
 
@@ -29,7 +34,6 @@ namespace KTools::Kff {
 
     private:
         void constructFs();
-        void intToChar(char result[], const qint64 numb);
 
         static constexpr char signature[] = "KFFS0000";
 

@@ -10,12 +10,6 @@ namespace KTools::Kff {
     public:
         FixedTypes(Manager *man);
 
-        enum class PointerTarget : quint8 {
-            FixedTypes = 1,
-            VariableTypes = 2,
-            File = 3
-        };
-
         enum class Type : quint8 {
             Int8 = 1,
             Int16 = 2,

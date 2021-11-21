@@ -14,6 +14,7 @@ KTools::Kff::Manager::Manager(const QString &path, const OpenMode lMode = OpenMo
 KTools::Kff::Manager::~Manager()
 {
     delete numbers;
+    delete strs;
 }
 
 void KTools::Kff::Manager::constructFs()
@@ -27,12 +28,6 @@ void KTools::Kff::Manager::constructFs()
     offsets.data = offsets.inodes + inodeArea.length();
     numbers = new FixedTypes(this);
     strs = new VariableTypes(this);
-}
-
-void KTools::Kff::Manager::intToChar(char result[], const qint64 numb)
-{
-    for (int i = 0; i < 8; i++)
-        result[i] = numb >> (8 - 1 - i) * 8;
 }
 
 KTools::Kff::RawStream KTools::Kff::Manager::getStream()
@@ -53,12 +48,8 @@ qint64 KTools::Kff::Manager::allocCluster()
     }
     clusters.append({(clusters.length() * sizes.cluster) + offsets.data, false});
 
-    char zero[8];
-    char singleZero = 0;
-    intToChar(zero, 0ll);
     QByteArray content;
-    content.append(2, *zero);
-    content.append(4080, singleZero);
+    content.append(Sizes::cluster, '\0');
 
     file.seek(clusters.last().first);
     file.write(content);
@@ -70,13 +61,9 @@ void KTools::Kff::Manager::writeInode(const qint64 clust, const qint64 size)
 {
     if (size == -1)
     {
-        char addr[8];
-        char zero[8];
-        intToChar(addr, clust);
-        intToChar(zero, 0ll);
         QByteArray content;
-        content.append(addr, 8); // First cluster address
-        content.append(zero, 8); // Entity size
+        content.append(KTools::Converter::toByteArray(clust)); // First cluster address
+        content.append(KTools::Converter::toByteArray<qint64>(0ll)); // Entity size
         file.seek(offsets.inodes);
         for (int i = 0; ;i++)
         {
