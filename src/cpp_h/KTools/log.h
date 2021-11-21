@@ -4,9 +4,9 @@
 #include "enums.h"
 #include "options.h"
 
-#define KLOG_INFO(msg) (KTools::Log::writeDebug(msg, Q_FUNC_INFO))
+#define KLOG_INFO(msg) (KTools::Log::writeInfo(msg, Q_FUNC_INFO))
 #define KLOG_DEBUG(msg) (KTools::Log::writeDebug(msg, Q_FUNC_INFO))
-#define KLOG_ERROR(msg) (KTools::Log::writeDebug(msg, Q_FUNC_INFO))
+#define KLOG_ERROR(msg) (KTools::Log::writeError(msg, Q_FUNC_INFO))
 
 namespace KTools
 {
