@@ -2,7 +2,7 @@
 
 KTools::Kff::VariableTypes::VariableTypes(Manager *man) : RawStream(man, true) {}
 
-qint64 KTools::Kff::VariableTypes::add(const QByteArray data, const Type type)
+qint64 KTools::Kff::VariableTypes::add(const QByteArray &data, const Type type)
 {
     bool run = true;
     bool first = true;
@@ -89,12 +89,53 @@ qint64 KTools::Kff::VariableTypes::add(const QByteArray data, const Type type)
 
 QByteArray KTools::Kff::VariableTypes::readString(const qint64 position)
 {
+    return readVariable(position, Type::String);
+}
+
+qint64 KTools::Kff::VariableTypes::appendPointers(const QList<QByteArray> &pointers, const qint64 position)
+{
+    if (position == -1)
+    {
+        QByteArray content;
+        for (int i = 0; i < pointers.size(); i++)
+            content.append(pointers[i]);
+        return add(content, Type::ListOfPointers);
+    }
+    return -1;
+}
+
+qint64 KTools::Kff::VariableTypes::rewriteVariable(const QByteArray &data, const qint64 position, const Type type)
+{
+    seek(position);
+    qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
+    if (tryRead != static_cast<qint8>(type))
+    {
+        KLOG_ERROR("Wrong type or wrong position. position: " + QString::number(position));
+        return -1;
+    }
+    QByteArray content;
+    content.append(Sizes::all, '\0');
+    qint64 lastPos = 0;
+    qint64 next = position;
+    while (next != -1)
+    {
+        lastPos = next;
+        seek(lastPos + 1);
+        next = KTools::Converter::byteArrayToT<qint64>(read(8));
+        seek(lastPos);
+        write(content);
+    }
+    return add(data, type);
+}
+
+QByteArray KTools::Kff::VariableTypes::readVariable(const qint64 position, const Type type)
+{
     QByteArray result;
     seek(position);
     qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
-    if (tryRead != static_cast<qint8>(Type::String))
+    if (tryRead != static_cast<qint8>(type))
     {
-        KLOG_ERROR("This is no string or wrong position. position: " + QString::number(position));
+        KLOG_ERROR("Wrong type or wrong position. position: " + QString::number(position));
         return QByteArray();
     }
     seek(position + 1);

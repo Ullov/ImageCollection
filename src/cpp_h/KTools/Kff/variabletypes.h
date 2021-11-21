@@ -16,8 +16,10 @@ namespace KTools::Kff {
             OccupiedCls = 3 // All clusters aside from first cluster in variable
         };
 
-        qint64 add(const QByteArray data, const Type type);
+        qint64 add(const QByteArray &data, const Type type);
         QByteArray readString(const qint64 position);
+        qint64 appendPointers(const QList<QByteArray> &pointers, const qint64 position = -1); // If position -1 will created new pointer list
+        qint64 rewriteVariable(const QByteArray &data, const qint64 position, const Type type);
 
     private:
         struct Sizes {
@@ -28,6 +30,8 @@ namespace KTools::Kff {
             static const qint64 occupiedData = data + 8;
             static const qint64 all = 128;
         };
+
+        QByteArray readVariable(const qint64 position, const Type type);
     };
 }
 
