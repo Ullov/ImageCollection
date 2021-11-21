@@ -123,3 +123,11 @@ KTools::Kff::VariableTypes* KTools::Kff::Manager::getStrings()
 {
     return strs;
 }
+
+QByteArray KTools::Kff::Manager::makePointer(const PointerType type, const qint64 position)
+{
+    QByteArray pointer;
+    pointer.append(KTools::Converter::toByteArray(static_cast<qint8>(type)));
+    pointer.append(KTools::Converter::toByteArray(position));
+    return pointer;
+}

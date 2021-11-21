@@ -14,7 +14,7 @@ namespace KTools::Kff {
             Clear,
             Keep
         };
-        enum class PointerTarget : quint8 {
+        enum class PointerType : quint8 {
             FixedTypes = 1,
             VariableTypes = 2,
             File = 3
@@ -29,6 +29,7 @@ namespace KTools::Kff {
         void writeInode(const qint64 clust, const qint64 size = -1);
         FixedTypes* getNumbers();
         VariableTypes* getStrings();
+        QByteArray makePointer(const PointerType type, const qint64 position);
 
         KTools::File file;
 
