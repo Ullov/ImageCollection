@@ -94,12 +94,26 @@ QByteArray KTools::Kff::VariableTypes::readString(const qint64 position)
 
 qint64 KTools::Kff::VariableTypes::appendPointers(const QList<QByteArray> &pointers, const qint64 position)
 {
-    if (position == -1)
+    QByteArray content;
+    for (int i = 0; i < pointers.size(); i++)
+        content.append(pointers[i]);
+    seek(position);
+    qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
+    if (tryRead == static_cast<qint8>(Type::String) || tryRead == static_cast<qint8>(Type::OccupiedCls))
     {
-        QByteArray content;
-        for (int i = 0; i < pointers.size(); i++)
-            content.append(pointers[i]);
+        KLOG_ERROR("Trying rewrite variable with different type or wrong position. position: " + QString::number(position));
+    }
+    else if (tryRead == 0)
+    {
         return add(content, Type::ListOfPointers);
+    }
+    else if (tryRead == static_cast<qint8>(Type::ListOfPointers))
+    {
+        return rewriteVariable(content, position, Type::ListOfPointers);
+    }
+    else
+    {
+        KLOG_ERROR("Wrong position. position: " + QString::number(position) + " ... tryRead: " + QString::number(tryRead));
     }
     return -1;
 }
