@@ -57,38 +57,22 @@ qint64 KTools::Kff::Manager::allocCluster()
     return clusters.last().first;
 }
 
-void KTools::Kff::Manager::writeInode(const qint64 clust, const qint64 size)
+void KTools::Kff::Manager::writeInode(const qint64 clust)
 {
-    if (size == -1)
+    QByteArray content;
+    content.append(KTools::Converter::toByteArray(clust)); // First cluster address
+    file.seek(offsets.inodes);
+    for (int i = 0; ;i++)
     {
-        QByteArray content;
-        content.append(KTools::Converter::toByteArray(clust)); // First cluster address
-        content.append(KTools::Converter::toByteArray<qint64>(0ll)); // Entity size
-        file.seek(offsets.inodes);
-        for (int i = 0; ;i++)
+        if (file.read<qint64>() == 0)
         {
-            if (file.read<qint64>() == 0)
-            {
-                qint64 pos = offsets.inodes + (i * sizes.inode);
-                file.seek(pos); // Seeks current inode
-                break;
-            }
-            file.seek(offsets.inodes + ((i + 1) * sizes.inode)); // Seeks next inode
+            qint64 pos = offsets.inodes + (i * sizes.inode);
+            file.seek(pos); // Seeks current inode
+            break;
         }
-        file.write(content);
+        file.seek(offsets.inodes + ((i + 1) * sizes.inode)); // Seeks next inode
     }
-    else
-    {
-        for (int i = 0; file.pos() < offsets.data; i++)
-        {
-            file.seek(offsets.inodes + (i * sizes.inode));
-            if (file.read<qint64>() == clust)
-            {
-                file.seek(offsets.inodes + (i * sizes.inode) + 16);
-                file.write<qint64>(size);
-            }
-        }
-    }
+    file.write(content);
 }
 
 KTools::Kff::FixedTypes* KTools::Kff::Manager::getNumbers()

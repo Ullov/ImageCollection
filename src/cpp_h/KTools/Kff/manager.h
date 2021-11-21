@@ -26,7 +26,7 @@ namespace KTools::Kff {
         RawStream getStream();
         qint64 allocCluster();
         void freeCluster(const qint64 cls);
-        void writeInode(const qint64 clust, const qint64 size = -1);
+        void writeInode(const qint64 clust);
         FixedTypes* getNumbers();
         VariableTypes* getStrings();
         QByteArray makePointer(const PointerType type, const qint64 position);
@@ -43,7 +43,7 @@ namespace KTools::Kff {
             qint64 data = 0;
         };
         struct Sizes {
-            static const qint64 inode = 16;
+            static const qint64 inode = 8;
             static const qint64 cluster = 4096;
             static const qint64 signature = sizeof(signature) - 1;
         };

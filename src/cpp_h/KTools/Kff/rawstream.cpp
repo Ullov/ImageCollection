@@ -60,12 +60,6 @@ qint64 KTools::Kff::RawStream::write(const QByteArray &content)
     if ((position + writed) > size())
         vsize = position + writed;
     position += writed;
-    if (inodeWrited)
-    {
-        qint64 tmpPos = file->pos();
-        manager->writeInode(clusters[0], size());
-        file->seek(tmpPos);
-    }
     return writed;
 }
 
