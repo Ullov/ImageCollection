@@ -3,6 +3,7 @@
 
 #include <QFileInfo>
 #include "../KTools/file.h"
+#include "log.h"
 
 namespace KTools
 {

@@ -7,7 +7,7 @@ qint64 KTools::Kff::FixedTypes::add(const T data, const Type type)
 {
     if (Size::get(type) != sizeof(T))
     {
-        KTools::Log::writeError("Size of type value and passed to template type not equal. " + QString::number(Size::get(type)) + " != " + QString::number(sizeof(T)), "KTools::Kff::FixedTypes::add()");
+        KLOG_ERROR("Size of type value and passed to template type not equal. " + QString::number(Size::get(type)) + " != " + QString::number(sizeof(T)));
         return -1;
     }
 
@@ -51,7 +51,7 @@ T KTools::Kff::FixedTypes::get(const qint64 position)
     seek(position);
     if (Size::get(static_cast<Type>(*read(1).data())) != sizeof(T))
     {
-        KTools::Log::writeError("Attempt read wrong data type.", "KTools::Kff::FixedTypes::get()");
+        KLOG_ERROR("Attempt read wrong data type.");
         return T();
     }
     seek(position + 1);
@@ -62,14 +62,14 @@ bool KTools::Kff::FixedTypes::remove(const qint64 position)
 {
     if (position > size())
     {
-        KTools::Log::writeError("Position > size.", "KTools::Kff::FixedTypes::remove()");
+        KLOG_ERROR("Position > size.");
         return false;
     }
     seek(position);
     QByteArray tryRead = read(1);
     if (*tryRead.data() == '\0')
     {
-        KTools::Log::writeError("Attempt remove already empty value or position is wrong.", "KTools::Kff::FixedTypes::remove()");
+        KLOG_ERROR("Attempt remove already empty value or position is wrong.");
         return false;
     }
     qint8 valSize = Size::get(static_cast<Type>(*tryRead.data()));
@@ -90,14 +90,14 @@ bool KTools::Kff::FixedTypes::change(const T data, const qint64 position)
 {
     if (position > size())
     {
-        KTools::Log::writeError("Position > size.", "KTools::Kff::FixedTypes::change()");
+        KLOG_ERROR("Position > size.");
         return false;
     }
     seek(position);
     qint8 valSize = Size::get(static_cast<Type>(*read(1).data()));
     if (valSize != sizeof(T))
     {
-        KTools::Log::writeError("Size of type value and passed to template type not equal. " + QString::number(valSize) + " != " + QString::number(sizeof(T)), "KTools::Kff::FixedTypes::change()");
+        KLOG_ERROR("Size of type value and passed to template type not equal. " + QString::number(valSize) + " != " + QString::number(sizeof(T)));
         return false;
     }
     seek(position + 1);

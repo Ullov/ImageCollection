@@ -10,6 +10,12 @@ namespace KTools::Kff {
     public:
         FixedTypes(Manager *man);
 
+        enum class PointerTarget : quint8 {
+            FixedTypes = 1,
+            VariableTypes = 2,
+            File = 3
+        };
+
         enum class Type : quint8 {
             Int8 = 1,
             Int16 = 2,
@@ -25,7 +31,8 @@ namespace KTools::Kff {
             Void8 = 12,
             Void16 = 13,
             Void32 = 14,
-            Void64 = 15
+            Void64 = 15,
+            Void65 = 16
         };
 
     private:
@@ -41,11 +48,12 @@ namespace KTools::Kff {
             static const qint8 UInt64 = 8;
             static const qint8 Float = 8;
             static const qint8 Bool = 1;
-            static const qint8 Pointer = 8;
+            static const qint8 Pointer = 9;
             static const qint8 Void8 = 1;
             static const qint8 Void16 = 2;
             static const qint8 Void32 = 4;
             static const qint8 Void64 = 8;
+            static const qint8 Void65 = 9;
         public:
             static constexpr qint8 get(const Type type)
             {
@@ -66,6 +74,7 @@ namespace KTools::Kff {
                     case Type::Void16 : return Void16;
                     case Type::Void32 : return Void32;
                     case Type::Void64 : return Void64;
+                    case Type::Void65 : return Void65;
                 }
                 return 0; // To silence warning
             }

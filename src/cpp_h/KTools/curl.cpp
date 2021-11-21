@@ -327,35 +327,35 @@ const QString& KTools::Curl::getPostParam()
 void KTools::Curl::curlEasySetopt(const CURLoption &option, std::string &parameter)
 {
     if (curl_easy_setopt(handlesList->at(numb)->handle, option, parameter.c_str()) != CURLE_OK)
-        KTools::Log::writeError("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: " + parameter.c_str(), "KTools::Curl::curlEasySetopt()");
+        KLOG_ERROR("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: " + parameter.c_str());
 }
 
 void KTools::Curl::curlEasySetopt(const CURLoption &option, long parameter)
 {
     if (curl_easy_setopt(handlesList->at(numb)->handle, option, parameter) != CURLE_OK)
-        KTools::Log::writeError("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: " + QString::number(parameter), "KTools::Curl::curlEasySetopt()");
+        KLOG_ERROR("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: " + QString::number(parameter));
 }
 
 void KTools::Curl::curlEasySetopt(const CURLoption &option, QByteArray &parameter)
 {
     if (curl_easy_setopt(handlesList->at(numb)->handle, option, &parameter) != CURLE_OK)
-        KTools::Log::writeError("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: " + parameter, "KTools::Curl::curlEasySetopt()");
+        KLOG_ERROR("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: " + parameter);
 }
 
 void KTools::Curl::curlEasySetopt(const CURLoption &option, std::nullptr_t parameter)
 {
     if (curl_easy_setopt(handlesList->at(numb)->handle, option, parameter) != CURLE_OK)
-        KTools::Log::writeError("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: nullptr", "KTools::Curl::curlEasySetopt()");
+        KLOG_ERROR("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: nullptr");
 }
 
 void KTools::Curl::curlEasySetopt(const CURLoption &option, curl_slist *parameter)
 {
     if (curl_easy_setopt(handlesList->at(numb)->handle, option, parameter) != CURLE_OK)
-        KTools::Log::writeError("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: curl_slist*", "KTools::Curl::curlEasySetopt()");
+        KLOG_ERROR("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: curl_slist*");
 }
 
 void KTools::Curl::curlEasySetopt(const CURLoption &option, FILE *parameter)
 {
     if (curl_easy_setopt(handlesList->at(numb)->handle, option, parameter) != CURLE_OK)
-        KTools::Log::writeError("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: FILE*", "KTools::Curl::curlEasySetopt()");
+        KLOG_ERROR("Something went wrong. numb: " + QString::number(numb) + "; option: " + QString::number(option) + "; parameter: FILE*");
 }

@@ -28,7 +28,7 @@ bool KTools::File::open(const QString &path, const QIODevice::OpenMode &flags)
     }
     else
     {
-        KTools::Log::writeError("Failed to open file. path: " + path, "KTools::File::open()");
+        KLOG_ERROR("Failed to open file. path: " + path);
         return false;
     }
 }
@@ -39,7 +39,7 @@ bool KTools::File::seek(const qint64 &pos)
         return true;
     else
     {
-        KTools::Log::writeError("Seek failed. pos: " + QString::number(pos), "KTools::File::seek()");
+        KLOG_ERROR("Seek failed. pos: " + QString::number(pos));
         return false;
     }
     return file->seek(pos);
@@ -60,14 +60,14 @@ void KTools::File::write(const T &data)
 {
     QByteArray tmp = KTools::Converter::toByteArray(data);
     if (file->write(tmp) == -1)
-        KTools::Log::writeError("Write error. data: " + tmp, "KTools::File::write()");
+        KLOG_ERROR("Write error. data: " + tmp);
 }
 
 template<>
 void KTools::File::write(const QByteArray &data)
 {
     if (file->write(data) == -1)
-        KTools::Log::writeError("Write error. data: " + data, "KTools::File::write()");
+        KLOG_ERROR("Write error. data: " + data);
 }
 
 template<typename T>
@@ -76,7 +76,7 @@ T KTools::File::read(const qint64 &lenght)
     QByteArray content = file->read(lenght);
     if (content == "")
     {
-        KTools::Log::writeError("Can not read or no data avaliable.", "KTools::File::write()");
+        KLOG_ERROR("Can not read or no data avaliable.");
         return T();
     }
     else
@@ -108,7 +108,7 @@ bool KTools::File::writeFile(const QByteArray &data, const QString &directory, c
     }
     else
     {
-        KTools::Log::writeError("Can't open file. full path: " + correctPath + '/' + fileName, "KTools::File::writeFile()");
+        KLOG_ERROR("Can't open file. full path: " + correctPath + '/' + fileName);
         file.close();
         return false;
     }
@@ -121,7 +121,7 @@ void KTools::File::makePath(const QString &path)
         QDir dir(path);
         if (!dir.mkpath("."))
         {
-            KTools::Log::writeError("Can't open make path. path: " + path, "KTools::File::makePath()");
+            KLOG_ERROR("Can't open make path. path: " + path);
         }
     }
 }
@@ -166,7 +166,7 @@ bool KTools::File::copyFile(const QString &oldPathToFile, const QString &newPath
         return true;
     else
     {
-        KTools::Log::writeError("Can't open make path. oldPathToFile: " + oldPathToFile + ";   newPath: " + newPath + ";   newFileName: " + newFileName, "KTools::File::copyFile()");
+        KLOG_ERROR("Can't open make path. oldPathToFile: " + oldPathToFile + ";   newPath: " + newPath + ";   newFileName: " + newFileName);
         return false;
     }
 }
@@ -176,14 +176,14 @@ T KTools::File::readFile(const QString &directory, const QString &fileName, cons
 {
     if (!fileExist(directory + '\\' + fileName))
     {
-        KTools::Log::writeError("File does not exist or it's not file. file path: " + directory + '\\' + fileName, "KTools::File::readFile()");
+        KLOG_ERROR("File does not exist or it's not file. file path: " + directory + '\\' + fileName);
         return T();
     }
 
     QFile rFile(directory + '\\' + fileName);
     if (!rFile.open(flags))
     {
-        KTools::Log::writeError("Failed to open file. file path: " + directory + '\\' + fileName, "KTools::File::readFile()");
+        KLOG_ERROR("Failed to open file. file path: " + directory + '\\' + fileName);
         return T();
     }
 

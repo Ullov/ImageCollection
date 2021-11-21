@@ -7,6 +7,7 @@ QStringList KTools::FileIdentifier::identifyFileFromFileSystem(const QString &pa
     KTools::File file = KTools::File();
     if (!file.open(path, QIODevice::ReadOnly))
     {
+        KLOG_ERROR("Permission denied.");
         return {"", "Permission denied", ""};
     }
     QByteArray fileSignature = file.read<QByteArray>(20);

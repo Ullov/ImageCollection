@@ -26,6 +26,7 @@ void KTools::Kff::Manager::constructFs()
     file.write(inodeArea);
     offsets.data = offsets.inodes + inodeArea.length();
     numbers = new FixedTypes(this);
+    strs = new VariableTypes(this);
 }
 
 void KTools::Kff::Manager::intToChar(char result[], const qint64 numb)
@@ -129,4 +130,9 @@ void KTools::Kff::Manager::freeCluster(const qint64 cls)
             break;
         }
     }
+}
+
+KTools::Kff::VariableTypes* KTools::Kff::Manager::getStrings()
+{
+    return strs;
 }

@@ -94,11 +94,10 @@ QByteArray KTools::Kff::VariableTypes::readString(const qint64 position)
     qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
     if (tryRead != static_cast<qint8>(Type::String))
     {
-        KTools::Log::writeError("This is no string or wrong position. position: " + QString::number(position), "KTools::Kff::VariableTypes::readString()");
+        KLOG_ERROR("This is no string or wrong position. position: " + QString::number(position));
         return QByteArray();
     }
     seek(position + 1);
-    //qint64 nextClsAddr = KTools::Converter::byteArrayToT<qint64>(read(8));
     qint64 next = KTools::Converter::byteArrayToT<qint64>(read(8));
     seek(position + 9);
     qint64 varSize = KTools::Converter::byteArrayToT<qint64>(read(8));
@@ -119,7 +118,6 @@ QByteArray KTools::Kff::VariableTypes::readString(const qint64 position)
             seek(curr + 1);
             next = KTools::Converter::byteArrayToT<qint64>(read(8));
             seek(curr + 9);
-            KTools::Log::writeDebug(QString::number(next), Q_FUNC_INFO);
             if (next == -1)
             {
                 result.append(read(varSize - readed));
@@ -130,7 +128,6 @@ QByteArray KTools::Kff::VariableTypes::readString(const qint64 position)
                 result.append(read(Sizes::occupiedData));
             }
             readed += Sizes::occupiedData;
-            //nextClsAddr = KTools::Converter::byteArrayToT<qint64>(read(8));
         }
     }
     return result;
