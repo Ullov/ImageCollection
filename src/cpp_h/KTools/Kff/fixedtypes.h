@@ -81,6 +81,7 @@ namespace KTools::Kff {
                     case 2 : return static_cast<qint8>(Type::Void16);
                     case 4 : return static_cast<qint8>(Type::Void32);
                     case 8 : return static_cast<qint8>(Type::Void64);
+                    case 9 : return static_cast<qint8>(Type::Void65);
                 }
                 return 0; // To silence warning
             }

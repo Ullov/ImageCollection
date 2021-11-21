@@ -31,6 +31,7 @@ namespace KTools::Kff {
             static const qint64 rawData; // How much data can be writed in one cluster
             static const qint64 all = 4096;
         };
+        static const qint64 dataOffset = 8;
 
         KTools::File *file;
         qint64 vsize;
@@ -39,6 +40,7 @@ namespace KTools::Kff {
         QList<qint64> clusters;
 
         void appendCluster();
+        void writeSizeVariable();
     };
 }
 

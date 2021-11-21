@@ -60,6 +60,7 @@ qint64 KTools::Kff::RawStream::write(const QByteArray &content)
     if ((position + writed) > size())
         vsize = position + writed;
     position += writed;
+    writeSizeVariable();
     return writed;
 }
 
@@ -93,12 +94,12 @@ QByteArray KTools::Kff::RawStream::readAll()
 
 void KTools::Kff::RawStream::seek(const qint64 pos)
 {
-    position = pos;
+    position = pos + dataOffset;
 }
 
 qint64 KTools::Kff::RawStream::pos()
 {
-    return position;
+    return position - dataOffset;
 }
 
 QByteArray KTools::Kff::RawStream::read(qint64 len)
@@ -176,4 +177,11 @@ void KTools::Kff::RawStream::resize(const qint64 nsize)
         }
         vsize = (clusters.length() * Sizes::rawData) - modulo;
     }
+    writeSizeVariable();
+}
+
+void KTools::Kff::RawStream::writeSizeVariable()
+{
+    file->seek(clusters.first() + 16);
+    file->write(size());
 }
