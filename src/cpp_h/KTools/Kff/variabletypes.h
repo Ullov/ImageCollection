@@ -21,6 +21,7 @@ namespace KTools::Kff {
         qint64 appendPointers(const QList<QByteArray> &pointers, const qint64 position = -1); // If position -1 will created new pointer list
         qint64 rewriteVariable(const QByteArray &data, const qint64 position, const Type type);
         bool deleteVariable(const qint64 position);
+        QList<QByteArray> getPointers(const qint64 position);
 
     private:
         struct Sizes {

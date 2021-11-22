@@ -208,3 +208,14 @@ bool KTools::Kff::VariableTypes::deleteVariable(const qint64 position)
     }
     return true;
 }
+
+QList<QByteArray> KTools::Kff::VariableTypes::getPointers(const qint64 position)
+{
+    QList<QByteArray> result;
+    QByteArray rawData = readVariable(position, Type::ListOfPointers);
+    for (int i = 0; i < rawData.length(); i += 9)
+    {
+        result.append(rawData.mid(i, 9));
+    }
+    return result;
+}
