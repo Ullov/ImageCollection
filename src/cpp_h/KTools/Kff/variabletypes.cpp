@@ -135,18 +135,7 @@ qint64 KTools::Kff::VariableTypes::rewriteVariable(const QByteArray &data, const
         KLOG_ERROR("Wrong type or wrong position. position: " + QString::number(position));
         return -1;
     }
-    QByteArray content;
-    content.append(Sizes::all, '\0');
-    qint64 lastPos = 0;
-    qint64 next = position;
-    while (next != -1)
-    {
-        lastPos = next;
-        seek(lastPos + 1);
-        next = KTools::Converter::byteArrayToT<qint64>(read(8));
-        seek(lastPos);
-        write(content);
-    }
+    deleteVariable(position);
     return add(data, type);
 }
 
@@ -194,4 +183,28 @@ QByteArray KTools::Kff::VariableTypes::readVariable(const qint64 position, const
         }
     }
     return result;
+}
+
+bool KTools::Kff::VariableTypes::deleteVariable(const qint64 position)
+{
+    seek(position);
+    qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
+    if (tryRead < 1 || tryRead > 3)
+    {
+        KLOG_ERROR("Wrong position. position: " + QString::number(position));
+        return false;
+    }
+    QByteArray content;
+    content.append(Sizes::all, '\0');
+    qint64 lastPos = 0;
+    qint64 next = position;
+    while (next != -1)
+    {
+        lastPos = next;
+        seek(lastPos + 1);
+        next = KTools::Converter::byteArrayToT<qint64>(read(8));
+        seek(lastPos);
+        write(content);
+    }
+    return true;
 }
