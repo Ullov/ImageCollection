@@ -2,6 +2,8 @@
 
 KTools::Kff::FixedTypes::FixedTypes(Manager *man) : RawStream(man, true) {}
 
+KTools::Kff::FixedTypes::FixedTypes(Manager *man, const qint64 position) : RawStream(man, position) {}
+
 template<typename T>
 qint64 KTools::Kff::FixedTypes::add(const T data, const Type type)
 {

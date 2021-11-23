@@ -9,6 +9,7 @@ namespace KTools::Kff {
     {
     public:
         FixedTypes(Manager *man);
+        FixedTypes(Manager *man, const qint64 position);
 
         enum class Type : quint8 {
             Int8 = 1,

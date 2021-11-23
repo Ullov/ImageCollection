@@ -10,12 +10,29 @@ KTools::Kff::RawStream::RawStream(Manager *man, const bool writeInInode)
     file = &manager->file;
     appendCluster();
 
-    inodeWrited = writeInInode;
     if (writeInInode)
         manager->writeInode(clusters.last());
 
     vsize = 0;
     position = 0;
+}
+
+KTools::Kff::RawStream::RawStream(Manager *man, const qint64 lPosition)
+{
+    manager = man;
+    file = &manager->file;
+    file->seek(lPosition + 16);
+    vsize = file->read<qint64>();
+
+    qint64 next = lPosition;
+    while (next != 0)
+    {
+        clusters.append(next);
+        manager->addClusterPos(next);
+        file->seek(next + 8);
+        next = file->read<qint64>();
+    }
+    seek(0);
 }
 
 KTools::Kff::RawStream::~RawStream() {}

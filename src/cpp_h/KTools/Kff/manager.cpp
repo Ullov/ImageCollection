@@ -4,11 +4,15 @@
 KTools::Kff::Manager::Manager(const QString &path, const OpenMode lMode = OpenMode::Clear)
 {
     mode = lMode;
+    if (!KTools::File::fileExist(path))
+        mode = OpenMode::Clear;
+
     if (mode == OpenMode::Keep)
         file.open(path, QIODevice::ReadWrite);
     else if (mode == OpenMode::Clear)
         file.open(path, QIODevice::Truncate | QIODevice::ReadWrite);
-    constructFs();
+
+    constructFs(lMode);
 }
 
 KTools::Kff::Manager::~Manager()
@@ -17,17 +21,36 @@ KTools::Kff::Manager::~Manager()
     delete strs;
 }
 
-void KTools::Kff::Manager::constructFs()
+void KTools::Kff::Manager::constructFs(const OpenMode mode)
 {
-    file.seek(0);
-    file.write<QByteArray>(signature);
+    if (mode == OpenMode::Clear)
+    {
+        file.seek(0);
+        file.write<QByteArray>(signature);
 
-    QByteArray inodeArea;
-    inodeArea.append(160, 0);
-    file.write(inodeArea);
-    offsets.data = offsets.inodes + inodeArea.length();
-    numbers = new FixedTypes(this);
-    strs = new VariableTypes(this);
+        QByteArray inodeArea;
+        inodeArea.append(Sizes::allInodes, '\0');
+        file.write(inodeArea);
+        numbers = new FixedTypes(this);
+        strs = new VariableTypes(this);
+    }
+    else if (mode == OpenMode::Keep)
+    {
+        file.seek(0);
+        if (file.read<QByteArray>(Sizes::signature) != signature)
+        {
+            KLOG_ERROR("Failed to recognize signature.");
+            return;
+        }
+        QList<qint64> list;
+        for (int i = 0; i < Sizes::allInodes; i += Sizes::inode)
+        {
+            file.seek(i + offsets.inodes);
+            list.append(file.read<qint64>());
+        }
+        numbers = new FixedTypes(this, list[0]);
+        strs = new VariableTypes(this, list[1]);
+    }
 }
 
 KTools::Kff::RawStream KTools::Kff::Manager::getStream()
@@ -114,4 +137,10 @@ QByteArray KTools::Kff::Manager::makePointer(const PointerType type, const qint6
     pointer.append(KTools::Converter::toByteArray(static_cast<qint8>(type)));
     pointer.append(KTools::Converter::toByteArray(position));
     return pointer;
+}
+
+void KTools::Kff::Manager::addClusterPos(const qint64 position)
+{
+    clusters.append({position, false});
+    //std::sort(clusters.begin(), clusters.end());
 }

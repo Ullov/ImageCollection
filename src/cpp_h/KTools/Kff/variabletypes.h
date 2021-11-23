@@ -9,6 +9,7 @@ namespace KTools::Kff {
     {
     public:
         VariableTypes(Manager *man);
+        VariableTypes(Manager *man, const qint64 position);
 
         enum class Type : qint8 {
             String = 1,

@@ -10,6 +10,7 @@ namespace KTools::Kff {
     {
     public:
         RawStream(Manager *man, const bool writeInInode = false);
+        RawStream(Manager *man, const qint64 lPosition);
         ~RawStream();
 
         qint64 write(const QByteArray &content);
@@ -35,7 +36,6 @@ namespace KTools::Kff {
 
         KTools::File *file;
         qint64 vsize;
-        bool inodeWrited;
         qint64 position;
         QList<qint64> clusters;
 

@@ -1,6 +1,7 @@
 #include "variabletypes.h"
 
 KTools::Kff::VariableTypes::VariableTypes(Manager *man) : RawStream(man, true) {}
+KTools::Kff::VariableTypes::VariableTypes(Manager *man, const qint64 position) : RawStream(man, position) {}
 
 qint64 KTools::Kff::VariableTypes::add(const QByteArray &data, const Type type)
 {

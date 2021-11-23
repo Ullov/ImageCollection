@@ -30,22 +30,24 @@ namespace KTools::Kff {
         FixedTypes* getNumbers();
         VariableTypes* getStrings();
         QByteArray makePointer(const PointerType type, const qint64 position);
+        void addClusterPos(const qint64 position);
 
         KTools::File file;
 
     private:
-        void constructFs();
+        void constructFs(const OpenMode mode);
 
         static constexpr char signature[] = "KFFS0000";
 
-        struct Offsets {
-            const qint64 inodes = sizeof(signature) - 1;
-            qint64 data = 0;
-        };
         struct Sizes {
             static const qint64 inode = 8;
             static const qint64 cluster = 4096;
-            static const qint64 signature = sizeof(signature) - 1;
+            static constexpr qint64 signature = sizeof(signature) - 1;
+            static const qint64 allInodes = 160;
+        };
+        struct Offsets {
+            const qint64 inodes = Sizes::signature;
+            const qint64 data = inodes + Sizes::allInodes;
         };
 
         Sizes sizes;
