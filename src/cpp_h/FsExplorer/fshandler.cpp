@@ -2,13 +2,15 @@
 
 #include "../KTools/log.h"
 
+KTools::Options *FsHandler::optionsObj;
+
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 //qt_ntfs_permission_lookup++;
 
 FsHandler::FsHandler()
 {
     currentDirs = new QMap<QVariant, QString>();
-    qt_ntfs_permission_lookup++;
+    //qt_ntfs_permission_lookup++;
 }
 
 QJsonObject FsHandler::fileInfoToJsonObject(const QFileInfo &file)
@@ -73,14 +75,14 @@ QJsonObject FsHandler::fileInfoListToJsonObject(const QFileInfoList &files, cons
 bool FsHandler::cd(QDir &dir, const QString &file, const QVariant &uuid)
 {
     bool res = dir.cd(file);
-    optionsObj.updateParam("/FSExplorer/LastPath", dir.path());
+    optionsObj->updateParam("FSExplorer:LastPath", KTools::Converter::convert<QString, QByteArray>(dir.path()), KTools::Options::ParamType::String);
     currentDirs->operator[](uuid) = dir.absolutePath();
     return res;
 }
 
 void FsHandler::init(const QVariant uuid)
 {
-    QDir tmpDir = getDir(optionsObj.getParam("/FSExplorer/LastPath").toString());
+    QDir tmpDir = getDir(optionsObj->getParam("FSExplorer:LastPath").toString());
     currentDirs->insert(uuid, tmpDir.absolutePath());
     asyncSendDirInfo(tmpDir.entryInfoList(), uuid);
 }

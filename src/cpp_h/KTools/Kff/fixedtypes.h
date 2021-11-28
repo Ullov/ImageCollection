@@ -3,6 +3,7 @@
 
 #include "rawstream.h"
 #include "../converter.h"
+#include "../log.h"
 
 namespace KTools::Kff {
     class FixedTypes : private RawStream

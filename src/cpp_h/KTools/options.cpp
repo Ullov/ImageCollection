@@ -1,69 +1,127 @@
 #include "options.h"
+#include "../FsExplorer/fshandler.h"
 
-KTools::Options::Options() {}
-
-KTools::Options::Options(QSqlDatabase &db)
+KTools::Options::Options() : KTools::Kff::Manager(QDir::currentPath() + "/options.kff", KTools::Kff::Manager::OpenMode::Keep)
 {
-    settings = db;
-    settings.open();
-    QSqlQuery res = settings.exec("SELECT * FROM General");
-    if (!res.next())
+    using KTools::Converter;
+    KTools::Log::assignOptionObject(this);
+    FsHandler::optionsObj = this;
+    if (mode == Kff::Manager::OpenMode::Clear)
     {
-        settings.exec("CREATE TABLE General (Param TEXT, Value TEXT)");
-        settings.exec("INSERT INTO General (Param, Value) VALUES ('DataPath', '')"); // Path to directory where almost al app's data saved. If '' it's app's directory
-
-        settings.exec("CREATE TABLE FSExplorer (Param TEXT, Value TEXT)");
-        QString err = settings.lastError().text();
-        settings.exec("INSERT INTO FSExplorer (Param, Value) VALUES ('LastPath', 'C:/')");
+        addStringVariable("Path:Data", Converter::convert<QString, QByteArray>(QDir::currentPath()));
+        addStringVariable("Path:Log", Converter::convert<QString, QByteArray>(QDir::currentPath()) + "/Log/");
+        addStringVariable("FSExplorer:LastPath", "C:/");
     }
-    /*res = settings.exec("SELECT * FROM FSExplorer");
-    QString tmp = "";
-    while (res.next())
-    {
-        tmp += res.value(0).toString() + ":" + res.value(1).toString() + "  ";
-    }
-    settings.close();*/
+    KLOG_DEBUG(getParam("LastPath").toByteArray());
 }
 
-KTools::Options::~Options()
+void KTools::Options::updateParam(const QString &name, const QByteArray &value, const ParamType type)
 {
-    settings.close();
-    QString connName = settings.connectionName();
-    settings = QSqlDatabase();
-    QSqlDatabase::removeDatabase(connName);
+    for (int i = 0; i < defaultStream->size(); i += 19)
+    {
+        defaultStream->seek(i);
+        QByteArray entity = defaultStream->read(19);
+        if (entity[0] != '\0')
+        {
+            QByteArray readedName = getDataFromPointer(entity.mid(1, 9));
+            if (readedName == name)
+            {
+                if (type == ParamType::String)
+                {
+                    qint64 addr = strs->rewriteVariable(value, KTools::Converter::byteArrayToT<qint64>(entity.mid(11)), KTools::Kff::VariableTypes::Type::String);
+                    entity.insert(11, KTools::Converter::toByteArray(addr));
+                    defaultStream->seek(i);
+                    defaultStream->write(entity);
+                }
+                else
+                {
+                    switch (type)
+                    {
+                        case ParamType::Int8 : numbers->change(KTools::Converter::byteArrayToT<qint8>(value), KTools::Converter::byteArrayToT<qint64>(entity.mid(12))); break;
+                        case ParamType::Int16 : numbers->change(KTools::Converter::byteArrayToT<qint16>(value), KTools::Converter::byteArrayToT<qint64>(entity.mid(12))); break;
+                        case ParamType::Int32 : numbers->change(KTools::Converter::byteArrayToT<qint32>(value), KTools::Converter::byteArrayToT<qint64>(entity.mid(12))); break;
+                        case ParamType::Int64 : numbers->change(KTools::Converter::byteArrayToT<qint64>(value), KTools::Converter::byteArrayToT<qint64>(entity.mid(12))); break;
+                        case ParamType::UInt8 : numbers->change(KTools::Converter::byteArrayToT<quint8>(value), KTools::Converter::byteArrayToT<qint64>(entity.mid(12))); break;
+                        case ParamType::UInt16 : numbers->change(KTools::Converter::byteArrayToT<quint16>(value), KTools::Converter::byteArrayToT<qint64>(entity.mid(12))); break;
+                        case ParamType::UInt32 : numbers->change(KTools::Converter::byteArrayToT<quint32>(value), KTools::Converter::byteArrayToT<qint64>(entity.mid(12))); break;
+                        case ParamType::UInt64 : numbers->change(KTools::Converter::byteArrayToT<quint64>(value), KTools::Converter::byteArrayToT<qint64>(entity.mid(12))); break;
+                        case ParamType::Bool : numbers->change(KTools::Converter::byteArrayToT<bool>(value), KTools::Converter::byteArrayToT<qint64>(entity.mid(12))); break;
+                        case ParamType::Float : numbers->change(KTools::Converter::byteArrayToT<double>(value), KTools::Converter::byteArrayToT<qint64>(entity.mid(12))); break;
+                        default : KLOG_ERROR("There is something crazy"); break; // To silence warning
+                    }
+                }
+                break;
+            }
+        }
+    }
 }
 
-void KTools::Options::updateParam(const QString &pathToParam, const QString &value)
+QVariant KTools::Options::getParam(const QString &name)
 {
-    settings.open();
-    QList<QString> list = pathToParam.split("/", Qt::SkipEmptyParts);
-    QString query = "UPDATE " + list[0] + " SET Value = '" + value + "' WHERE Param = '" + list[1] + "'";
-    settings.exec(query);
+    QVariant result;
+    for (int i = 0; i < defaultStream->size(); i += 19)
+    {
+        defaultStream->seek(i);
+        QByteArray entity = defaultStream->read(19);
+        if (entity[0] != '\0')
+        {
+            QByteArray readedName = getDataFromPointer(entity.mid(1, 9));
+            if (readedName == name)
+            {
+                result = getDataFromPointer(entity.mid(10));
+                break;
+            }
+        }
+    }
+    return result;
 }
 
-QVariant KTools::Options::getParam(const QString &pathToParam)
+void KTools::Options::addInt8Variable(const QByteArray &name, const qint8 data)
 {
-    QList<QString> list = pathToParam.split("/", Qt::SkipEmptyParts);
-    QSqlQuery resp;
-    QString res;
-    settings.open();
-    if (list[0] == "Path")
+    QByteArray content;
+    content.append(static_cast<quint8>(ParamType::Int8));
+
+    qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
+    QByteArray pointer = makePointer(PointerType::VariableTypes, address);
+    content.append(pointer);
+
+    address = numbers->add(data, Kff::FixedTypes::Type::Int8);
+    pointer = makePointer(PointerType::FixedTypes, address);
+    content.append(pointer);
+
+    for (int i = 0; i < defaultStream->size(); i += content.size())
     {
-        resp = settings.exec("SELECT Value FROM General WHERE Param = 'DataPath'");
-        resp.next();
-        QString dataPath = resp.value(0).toString();
-        if (dataPath == "")
-            dataPath = QDir().path();
-        if (list[1] == "Log")
-            res = dataPath + "/Log";
-        else if (list[1] == "Data")
-            res = dataPath;
+        defaultStream->seek(i);
+        if (*defaultStream->read(1) == '\0')
+        {
+            defaultStream->seek(i);
+            defaultStream->write(content);
+            break;
+        }
     }
-    else
+}
+
+void KTools::Options::addStringVariable(const QByteArray &name, const QByteArray &data)
+{
+    QByteArray content;
+    content.append(static_cast<quint8>(ParamType::Int8));
+
+    qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
+    QByteArray pointer = makePointer(PointerType::VariableTypes, address);
+    content.append(pointer);
+
+    address = strs->add(data, Kff::VariableTypes::Type::String);
+    pointer = makePointer(PointerType::VariableTypes, address);
+    content.append(pointer);
+
+    for (int i = 0; i < defaultStream->size() + 19; i += content.size())
     {
-        resp = settings.exec("SELECT Value FROM " + list[0] + " WHERE Param = '" + list[1] + "'");
-        resp.next();
-        res = resp.value(0).toString();
+        defaultStream->seek(i);
+        if (*defaultStream->read(1) == '\0')
+        {
+            defaultStream->seek(i);
+            defaultStream->write(content);
+            break;
+        }
     }
-    return res;
 }

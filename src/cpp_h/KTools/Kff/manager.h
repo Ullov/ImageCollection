@@ -2,11 +2,11 @@
 #define KTOOLS_KFF_MANAGER_H
 
 #include "../file.h"
-#include "rawstream.h"
-#include "fixedtypes.h"
-#include "variabletypes.h"
 
 namespace KTools::Kff {
+    class RawStream;
+    class FixedTypes;
+    class VariableTypes;
     class Manager
     {
     public:
@@ -23,7 +23,7 @@ namespace KTools::Kff {
         ~Manager();
         Manager(const QString &path, const OpenMode lMode);
 
-        RawStream getStream();
+        RawStream* getDefaultStream();
         qint64 allocCluster();
         void freeCluster(const qint64 cls);
         void writeInode(const qint64 clust);
@@ -31,11 +31,19 @@ namespace KTools::Kff {
         VariableTypes* getStrings();
         QByteArray makePointer(const PointerType type, const qint64 position);
         void addClusterPos(const qint64 position);
+        RawStream getNewStream();
+        QByteArray getDataFromPointer(const QByteArray &pointer);
 
         KTools::File file;
 
+    protected:
+        OpenMode mode;
+        FixedTypes *numbers;
+        VariableTypes *strs;
+        RawStream *defaultStream;
+
     private:
-        void constructFs(const OpenMode mode);
+        void constructFs();
 
         static constexpr char signature[] = "KFFS0000";
 
@@ -53,10 +61,7 @@ namespace KTools::Kff {
         Sizes sizes;
         Offsets offsets;
 
-        OpenMode mode;
         QList<QPair<qint64, bool>> clusters;
-        FixedTypes *numbers;
-        VariableTypes *strs;
     };
 }
 

@@ -4,6 +4,8 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QSqlError>
+#include <QDateTime>
 #include "../KTools/log.h"
 
 class ImageStorage : public QObject

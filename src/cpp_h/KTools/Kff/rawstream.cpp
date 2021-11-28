@@ -1,6 +1,7 @@
 #include "rawstream.h"
-
 #include "manager.h"
+#include "../file.h"
+#include "../log.h"
 
 const qint64 KTools::Kff::RawStream::Sizes::rawData = 4080;
 

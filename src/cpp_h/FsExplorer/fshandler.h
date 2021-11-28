@@ -21,7 +21,7 @@ class FsHandler : public QObject
     Q_OBJECT
 public:
     FsHandler();
-    KTools::Options optionsObj;
+    static KTools::Options *optionsObj;
 
 public slots:
     void init(const QVariant uuid);

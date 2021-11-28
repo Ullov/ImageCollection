@@ -1,8 +1,11 @@
 #ifndef KTOOLS_KFF_RAWSTREAM_H
 #define KTOOLS_KFF_RAWSTREAM_H
 
-#include "../file.h"
-#include "../log.h"
+#include <QList>
+
+namespace KTools {
+    class File;
+}
 
 namespace KTools::Kff {
     class Manager;

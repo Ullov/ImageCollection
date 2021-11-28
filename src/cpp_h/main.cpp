@@ -30,14 +30,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<PixmapImage>("QmlPixmapImage", 1, 0, "PixmapImage");
     qmlRegisterType<ImageStorage>("QmlImageStorage", 1, 0, "ImageStorage");
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "db");
-    db.setDatabaseName("settings.sqlite");
-    static KTools::Options options = KTools::Options(db);
+    static KTools::Options *options = new KTools::Options();
     QSqlDatabase imgDb = QSqlDatabase::addDatabase("QSQLITE", "imgDb");
-    imgDb.setDatabaseName(options.getParam("/Path/Data").toString() + "/images.sqlite");
+    imgDb.setDatabaseName(options->getParam("/Path/Data").toString() + "/images.sqlite");
     ImageStorage imgStor(imgDb);
     FsHandler *fsExplorerHandle = new FsHandler();
-    fsExplorerHandle->optionsObj = options;
 
     UuidsList::ids.init(&UuidsList::ids);
     UuidsList::ids.createItems(20);

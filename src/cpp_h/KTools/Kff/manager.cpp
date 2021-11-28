@@ -1,18 +1,22 @@
 #include "manager.h"
 
+#include "rawstream.h"
+#include "fixedtypes.h"
+#include "variabletypes.h"
 
 KTools::Kff::Manager::Manager(const QString &path, const OpenMode lMode = OpenMode::Clear)
 {
-    mode = lMode;
     if (!KTools::File::fileExist(path))
         mode = OpenMode::Clear;
+    else
+        mode = lMode;
 
     if (mode == OpenMode::Keep)
         file.open(path, QIODevice::ReadWrite);
     else if (mode == OpenMode::Clear)
         file.open(path, QIODevice::Truncate | QIODevice::ReadWrite);
 
-    constructFs(lMode);
+    constructFs();
 }
 
 KTools::Kff::Manager::~Manager()
@@ -21,7 +25,7 @@ KTools::Kff::Manager::~Manager()
     delete strs;
 }
 
-void KTools::Kff::Manager::constructFs(const OpenMode mode)
+void KTools::Kff::Manager::constructFs()
 {
     if (mode == OpenMode::Clear)
     {
@@ -33,6 +37,7 @@ void KTools::Kff::Manager::constructFs(const OpenMode mode)
         file.write(inodeArea);
         numbers = new FixedTypes(this);
         strs = new VariableTypes(this);
+        defaultStream = new RawStream(this, true);
     }
     else if (mode == OpenMode::Keep)
     {
@@ -50,13 +55,13 @@ void KTools::Kff::Manager::constructFs(const OpenMode mode)
         }
         numbers = new FixedTypes(this, list[0]);
         strs = new VariableTypes(this, list[1]);
+        defaultStream = new RawStream(this, list[2]);
     }
 }
 
-KTools::Kff::RawStream KTools::Kff::Manager::getStream()
+KTools::Kff::RawStream* KTools::Kff::Manager::getDefaultStream()
 {
-    RawStream raw(this, true);
-    return raw;
+    return defaultStream;
 }
 
 qint64 KTools::Kff::Manager::allocCluster()
@@ -143,4 +148,27 @@ void KTools::Kff::Manager::addClusterPos(const qint64 position)
 {
     clusters.append({position, false});
     //std::sort(clusters.begin(), clusters.end());
+}
+
+KTools::Kff::RawStream KTools::Kff::Manager::getNewStream()
+{
+    RawStream stream(this, false);
+    return stream;
+}
+
+QByteArray KTools::Kff::Manager::getDataFromPointer(const QByteArray &pointer)
+{
+    if (pointer[0] == static_cast<quint8>(PointerType::File))
+    {
+        return pointer.mid(1);
+    }
+    else if (pointer[0] == static_cast<quint8>(PointerType::FixedTypes))
+    {
+        return numbers->get<QByteArray>(KTools::Converter::byteArrayToT<qint64>(pointer.mid(1)));
+    }
+    else if (pointer[0] == static_cast<quint8>(PointerType::VariableTypes))
+    {
+        return strs->readString(KTools::Converter::byteArrayToT<qint64>(pointer.mid(1)));
+    }
+    return "";
 }
