@@ -74,15 +74,7 @@ template<typename T>
 T KTools::File::read(const qint64 &lenght)
 {
     QByteArray content = file->read(lenght);
-    if (content == "")
-    {
-        KLOG_ERROR("Can not read or no data avaliable.");
-        return T();
-    }
-    else
-    {
-        return KTools::Converter::byteArrayToT<T>(content);
-    }
+    return KTools::Converter::byteArrayToT<T>(content);
 }
 
 template<typename T>
