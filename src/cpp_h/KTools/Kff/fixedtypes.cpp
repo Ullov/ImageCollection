@@ -60,6 +60,16 @@ T KTools::Kff::FixedTypes::get(const qint64 position)
     return KTools::Converter::byteArrayToT<T>(read(sizeof(T)));
 }
 
+template <>
+QByteArray KTools::Kff::FixedTypes::get<QByteArray>(const qint64 position)
+{
+    seek(position);
+    qint8 varSize = Size::get(static_cast<Type>(*read(1).data()));
+
+    seek(position + 1);
+    return read(varSize);
+}
+
 bool KTools::Kff::FixedTypes::remove(const qint64 position)
 {
     if (position > size())
@@ -111,6 +121,10 @@ template qint64 KTools::Kff::FixedTypes::add<qint8>(const qint8, const Type);
 template qint64 KTools::Kff::FixedTypes::add<qint16>(const qint16, const Type);
 template qint64 KTools::Kff::FixedTypes::add<qint32>(const qint32, const Type);
 template qint64 KTools::Kff::FixedTypes::add<qint64>(const qint64, const Type);
+template qint64 KTools::Kff::FixedTypes::add<quint8>(const quint8, const Type);
+template qint64 KTools::Kff::FixedTypes::add<quint16>(const quint16, const Type);
+template qint64 KTools::Kff::FixedTypes::add<quint32>(const quint32, const Type);
+template qint64 KTools::Kff::FixedTypes::add<quint64>(const quint64, const Type);
 template qint64 KTools::Kff::FixedTypes::add<double>(const double, const Type);
 template qint64 KTools::Kff::FixedTypes::add<bool>(const bool, const Type);
 
@@ -118,6 +132,10 @@ template qint8 KTools::Kff::FixedTypes::get<qint8>(const qint64);
 template qint16 KTools::Kff::FixedTypes::get<qint16>(const qint64);
 template qint32 KTools::Kff::FixedTypes::get<qint32>(const qint64);
 template qint64 KTools::Kff::FixedTypes::get<qint64>(const qint64);
+template quint8 KTools::Kff::FixedTypes::get<quint8>(const qint64);
+template quint16 KTools::Kff::FixedTypes::get<quint16>(const qint64);
+template quint32 KTools::Kff::FixedTypes::get<quint32>(const qint64);
+template quint64 KTools::Kff::FixedTypes::get<quint64>(const qint64);
 template double KTools::Kff::FixedTypes::get<double>(const qint64);
 template bool KTools::Kff::FixedTypes::get<bool>(const qint64);
 
@@ -125,5 +143,9 @@ template bool KTools::Kff::FixedTypes::change<qint8>(const qint8, const qint64);
 template bool KTools::Kff::FixedTypes::change<qint16>(const qint16, const qint64);
 template bool KTools::Kff::FixedTypes::change<qint32>(const qint32, const qint64);
 template bool KTools::Kff::FixedTypes::change<qint64>(const qint64, const qint64);
+template bool KTools::Kff::FixedTypes::change<quint8>(const quint8, const qint64);
+template bool KTools::Kff::FixedTypes::change<quint16>(const quint16, const qint64);
+template bool KTools::Kff::FixedTypes::change<quint32>(const quint32, const qint64);
+template bool KTools::Kff::FixedTypes::change<quint64>(const quint64, const qint64);
 template bool KTools::Kff::FixedTypes::change<double>(const double, const qint64);
 template bool KTools::Kff::FixedTypes::change<bool>(const bool, const qint64);
