@@ -164,18 +164,18 @@ bool KTools::File::copyFile(const QString &oldPathToFile, const QString &newPath
 }
 
 template<typename T>
-T KTools::File::readFile(const QString &directory, const QString &fileName, const QIODevice::OpenMode &flags)
+T KTools::File::readFile(const QString &path, const QIODevice::OpenMode &flags)
 {
-    if (!fileExist(directory + '\\' + fileName))
+    if (!fileExist(path))
     {
-        KLOG_ERROR("File does not exist or it's not file. file path: " + directory + '\\' + fileName);
+        KLOG_ERROR("File does not exist or it's not file. path: " + path);
         return T();
     }
 
-    QFile rFile(directory + '\\' + fileName);
+    QFile rFile(path);
     if (!rFile.open(flags))
     {
-        KLOG_ERROR("Failed to open file. file path: " + directory + '\\' + fileName);
+        KLOG_ERROR("Failed to open file. path: " + path);
         return T();
     }
 
@@ -208,5 +208,5 @@ template qint64 KTools::File::read<qint64>();
 template quint64 KTools::File::read<quint64>();
 template qint16 KTools::File::read<qint16>();
 
-template QString KTools::File::readFile<QString>(const QString&, const QString&, const QIODevice::OpenMode&);
-template QByteArray KTools::File::readFile<QByteArray>(const QString&, const QString&, const QIODevice::OpenMode&);
+template QString KTools::File::readFile<QString>(const QString&, const QIODevice::OpenMode&);
+template QByteArray KTools::File::readFile<QByteArray>(const QString&, const QIODevice::OpenMode&);

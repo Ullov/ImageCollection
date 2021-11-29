@@ -31,7 +31,7 @@ namespace KTools
         static bool dirExist(const QString &path);
         static bool copyFile(const QString &oldPathToFile, const QString &newPath, const QString &newFileName);
         template<typename T>
-        static T readFile(const QString &directory, const QString &fileName, const QIODevice::OpenMode &flags = QIODevice::ReadOnly);
+        static T readFile(const QString &path, const QIODevice::OpenMode &flags = QIODevice::ReadOnly);
         bool atEnd();
         bool resize(const qint64 &localSize);
         static bool isFile(const QString &path);
