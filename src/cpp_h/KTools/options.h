@@ -34,6 +34,9 @@ namespace KTools
     private:
         void addInt8Variable(const QByteArray &name, const qint8 data);
         void addStringVariable(const QByteArray &name, const QByteArray &data);
+        void addInt16Variable(const QByteArray &name, const qint16 data);
+        void addInt32Variable(const QByteArray &name, const qint32 data);
+        void addInt64Variable(const QByteArray &name, const qint64 data);
     };
 }
 
