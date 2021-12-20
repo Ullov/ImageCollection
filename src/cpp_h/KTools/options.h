@@ -28,8 +28,9 @@ namespace KTools
             List = 12
         };
 
-        void updateParam(const QString &name, const QByteArray &value, const ParamType type);
-        QVariant getParam(const QString &name);
+        void updateParam(const QByteArray &name, const QByteArray &value, const ParamType type);
+        template <typename T>
+        T getParam(const QByteArray &name);
 
     private:
         void addInt8Variable(const QByteArray &name, const qint8 data);

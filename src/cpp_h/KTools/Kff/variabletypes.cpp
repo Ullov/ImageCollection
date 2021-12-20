@@ -93,18 +93,18 @@ QByteArray KTools::Kff::VariableTypes::readString(const qint64 position)
     return readVariable(position, Type::String);
 }
 
-qint64 KTools::Kff::VariableTypes::appendPointers(const QList<QByteArray> &pointers, const qint64 position)
+qint64 KTools::Kff::VariableTypes::appendPointers(QList<Pointer> &pointers, const qint64 position)
 {
     QByteArray content;
     for (int i = 0; i < pointers.size(); i++)
-        content.append(pointers[i]);
+        content.append(pointers[i].getAll());
     seek(position);
     qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
     if (position == -1)
     {
         QByteArray content;
         for (int i = 0; i < pointers.length(); i++)
-            content.append(pointers[i]);
+            content.append(pointers[i].getAll());
         return add(content, Type::ListOfPointers);
     }
     else if (tryRead == static_cast<qint8>(Type::String) || tryRead == static_cast<qint8>(Type::OccupiedCls))
@@ -210,13 +210,23 @@ bool KTools::Kff::VariableTypes::deleteVariable(const qint64 position)
     return true;
 }
 
-QList<QByteArray> KTools::Kff::VariableTypes::getPointers(const qint64 position)
+QList<KTools::Kff::Pointer> KTools::Kff::VariableTypes::getPointers(const qint64 position)
 {
-    QList<QByteArray> result;
+    QList<Pointer> result;
     QByteArray rawData = readVariable(position, Type::ListOfPointers);
     for (int i = 0; i < rawData.length(); i += 9)
     {
-        result.append(rawData.mid(i, 9));
+        result.append(Pointer(manager, rawData.mid(i, 9)));
     }
     return result;
+}
+
+qint64 KTools::Kff::VariableTypes::rewritePointers(const QList<Pointer> &list, const qint64 position)
+{
+    QByteArray content;
+    for (int i = 0; i < list.size(); i++)
+    {
+        content += list[i].getAll();
+    }
+    return rewriteVariable(content, position, Type::ListOfPointers);
 }

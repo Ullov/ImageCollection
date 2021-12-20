@@ -2,6 +2,7 @@
 #define KTOOLS_KFF_RAWSTREAM_H
 
 #include <QList>
+#include "pointer.h"
 
 namespace KTools {
     class File;
@@ -24,9 +25,12 @@ namespace KTools::Kff {
         void toEnd();
         qint64 size();
         void resize(const qint64 nsize);
+        Pointer getPointer();
 
     protected:
         Manager *manager;
+        qint64 dataOffset = 8;
+        QList<qint64> clusters;
 
     private:
         struct Sizes {
@@ -35,12 +39,10 @@ namespace KTools::Kff {
             static const qint64 rawData; // How much data can be writed in one cluster
             static const qint64 all = 4096;
         };
-        static const qint64 dataOffset = 8;
 
         KTools::File *file;
         qint64 vsize;
         qint64 position;
-        QList<qint64> clusters;
 
         void appendCluster();
         void writeSizeVariable();

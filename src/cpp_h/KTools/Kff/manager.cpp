@@ -47,12 +47,7 @@ void KTools::Kff::Manager::constructFs()
             KLOG_ERROR("Failed to recognize signature.");
             return;
         }
-        QList<qint64> list;
-        for (int i = 0; i < Sizes::allInodes; i += Sizes::inode)
-        {
-            file.seek(i + offsets.inodes);
-            list.append(file.read<qint64>());
-        }
+        QList<qint64> list = readInodes();
         numbers = new FixedTypes(this, list[0]);
         strs = new VariableTypes(this, list[1]);
         defaultStream = new RawStream(this, list[2]);
@@ -136,14 +131,6 @@ KTools::Kff::VariableTypes* KTools::Kff::Manager::getStrings()
     return strs;
 }
 
-QByteArray KTools::Kff::Manager::makePointer(const PointerType type, const qint64 position)
-{
-    QByteArray pointer;
-    pointer.append(KTools::Converter::toByteArray(static_cast<qint8>(type)));
-    pointer.append(KTools::Converter::toByteArray(position));
-    return pointer;
-}
-
 void KTools::Kff::Manager::addClusterPos(const qint64 position)
 {
     clusters.append({position, false});
@@ -156,19 +143,13 @@ KTools::Kff::RawStream KTools::Kff::Manager::getNewStream()
     return stream;
 }
 
-QByteArray KTools::Kff::Manager::getDataFromPointer(const QByteArray &pointer)
+QList<qint64> KTools::Kff::Manager::readInodes()
 {
-    if (pointer[0] == static_cast<quint8>(PointerType::File))
+    QList<qint64> list;
+    for (int i = 0; i < Sizes::allInodes; i += Sizes::inode)
     {
-        return pointer.mid(1);
+        file.seek(i + offsets.inodes);
+        list.append(file.read<qint64>());
     }
-    else if (pointer[0] == static_cast<quint8>(PointerType::FixedTypes))
-    {
-        return numbers->get<QByteArray>(KTools::Converter::byteArrayToT<qint64>(pointer.mid(1)));
-    }
-    else if (pointer[0] == static_cast<quint8>(PointerType::VariableTypes))
-    {
-        return strs->readString(KTools::Converter::byteArrayToT<qint64>(pointer.mid(1)));
-    }
-    return "";
+    return list;
 }

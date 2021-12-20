@@ -11,11 +11,15 @@ KTools::Options::Options() : KTools::Kff::Manager(QDir::currentPath() + "/option
         addStringVariable("Path:Data", Converter::convert<QString, QByteArray>(QDir::currentPath()));
         addStringVariable("Path:Log", Converter::convert<QString, QByteArray>(QDir::currentPath()) + "/Log/");
         addStringVariable("FSExplorer:LastPath", "C:/");
+        addInt8Variable("ImageStorage:Quality:Webp", 97);
+        addInt8Variable("ImageStorage:Quality:Jpg", 97);
+        addInt8Variable("ImageStorage:Quality:Png", 100);
+        addInt8Variable("ImageStorage:Quality:Gif", 100);
+        addInt8Variable("ImageStorage:Quality:Tiff", 100);
     }
-    KLOG_DEBUG(getParam("LastPath").toByteArray());
 }
 
-void KTools::Options::updateParam(const QString &name, const QByteArray &value, const ParamType type)
+void KTools::Options::updateParam(const QByteArray &name, const QByteArray &value, const ParamType type)
 {
     for (int i = 0; i < defaultStream->size(); i += 19)
     {
@@ -23,8 +27,8 @@ void KTools::Options::updateParam(const QString &name, const QByteArray &value, 
         QByteArray entity = defaultStream->read(19);
         if (entity[0] != '\0')
         {
-            QByteArray readedName = getDataFromPointer(entity.mid(1, 9));
-            if (readedName == name)
+            KTools::Kff::Pointer readedName(this, entity.mid(1, 9));
+            if (readedName.getData<QByteArray>() == name)
             {
                 if (type == ParamType::String)
                 {
@@ -56,19 +60,20 @@ void KTools::Options::updateParam(const QString &name, const QByteArray &value, 
     }
 }
 
-QVariant KTools::Options::getParam(const QString &name)
+template <typename T>
+T KTools::Options::getParam(const QByteArray &name)
 {
-    QVariant result;
+    T result = T();
     for (int i = 0; i < defaultStream->size(); i += 19)
     {
         defaultStream->seek(i);
         QByteArray entity = defaultStream->read(19);
         if (entity[0] != '\0')
         {
-            QByteArray readedName = getDataFromPointer(entity.mid(1, 9));
-            if (readedName == name)
+            KTools::Kff::Pointer readedName(this, entity.mid(1, 9));
+            if (readedName.getData<QByteArray>() == name)
             {
-                result = getDataFromPointer(entity.mid(10));
+                result = KTools::Kff::Pointer(this, entity.mid(10)).getData<T>();
                 break;
             }
         }
@@ -82,12 +87,12 @@ void KTools::Options::addInt8Variable(const QByteArray &name, const qint8 data)
     content.append(static_cast<quint8>(ParamType::Int8));
 
     qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
-    QByteArray pointer = makePointer(PointerType::VariableTypes, address);
-    content.append(pointer);
+    KTools::Kff::Pointer pointer(this, KTools::Kff::Pointer::PointerType::VariableTypes, address);
+    content.append(pointer.getAll());
 
     address = numbers->add(data, Kff::FixedTypes::Type::Int8);
-    pointer = makePointer(PointerType::FixedTypes, address);
-    content.append(pointer);
+    pointer.setAll(KTools::Kff::Pointer::PointerType::FixedTypes, address);
+    content.append(pointer.getAll());
 
     for (int i = 0; i < defaultStream->size(); i += content.size())
     {
@@ -107,12 +112,12 @@ void KTools::Options::addStringVariable(const QByteArray &name, const QByteArray
     content.append(static_cast<quint8>(ParamType::Int8));
 
     qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
-    QByteArray pointer = makePointer(PointerType::VariableTypes, address);
-    content.append(pointer);
+    KTools::Kff::Pointer pointer(this, KTools::Kff::Pointer::PointerType::VariableTypes, address);
+    content.append(pointer.getAll());
 
     address = strs->add(data, Kff::VariableTypes::Type::String);
-    pointer = makePointer(PointerType::VariableTypes, address);
-    content.append(pointer);
+    pointer.setAll(KTools::Kff::Pointer::PointerType::VariableTypes, address);
+    content.append(pointer.getAll());
 
     for (int i = 0; i < defaultStream->size() + 19; i += content.size())
     {
@@ -132,12 +137,12 @@ void KTools::Options::addInt16Variable(const QByteArray &name, const qint16 data
     content.append(static_cast<quint8>(ParamType::Int16));
 
     qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
-    QByteArray pointer = makePointer(PointerType::VariableTypes, address);
-    content.append(pointer);
+    KTools::Kff::Pointer pointer(this, KTools::Kff::Pointer::PointerType::VariableTypes, address);
+    content.append(pointer.getAll());
 
     address = numbers->add(data, Kff::FixedTypes::Type::Int16);
-    pointer = makePointer(PointerType::FixedTypes, address);
-    content.append(pointer);
+    pointer.setAll(KTools::Kff::Pointer::PointerType::FixedTypes, address);
+    content.append(pointer.getAll());
 
     for (int i = 0; i < defaultStream->size(); i += content.size())
     {
@@ -157,12 +162,12 @@ void KTools::Options::addInt32Variable(const QByteArray &name, const qint32 data
     content.append(static_cast<quint8>(ParamType::Int32));
 
     qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
-    QByteArray pointer = makePointer(PointerType::VariableTypes, address);
-    content.append(pointer);
+    KTools::Kff::Pointer pointer(this, KTools::Kff::Pointer::PointerType::VariableTypes, address);
+    content.append(pointer.getAll());
 
     address = numbers->add(data, Kff::FixedTypes::Type::Int32);
-    pointer = makePointer(PointerType::FixedTypes, address);
-    content.append(pointer);
+    pointer.setAll(KTools::Kff::Pointer::PointerType::FixedTypes, address);
+    content.append(pointer.getAll());
 
     for (int i = 0; i < defaultStream->size(); i += content.size())
     {
@@ -182,12 +187,12 @@ void KTools::Options::addInt64Variable(const QByteArray &name, const qint64 data
     content.append(static_cast<quint8>(ParamType::Int64));
 
     qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
-    QByteArray pointer = makePointer(PointerType::VariableTypes, address);
-    content.append(pointer);
+    KTools::Kff::Pointer pointer(this, KTools::Kff::Pointer::PointerType::VariableTypes, address);
+    content.append(pointer.getAll());
 
     address = numbers->add(data, Kff::FixedTypes::Type::Int64);
-    pointer = makePointer(PointerType::FixedTypes, address);
-    content.append(pointer);
+    pointer.setAll(KTools::Kff::Pointer::PointerType::FixedTypes, address);
+    content.append(pointer.getAll());
 
     for (int i = 0; i < defaultStream->size(); i += content.size())
     {
@@ -200,3 +205,7 @@ void KTools::Options::addInt64Variable(const QByteArray &name, const qint64 data
         }
     }
 }
+
+template QByteArray KTools::Options::getParam<QByteArray>(const QByteArray&);
+template QString KTools::Options::getParam<QString>(const QByteArray&);
+template qint8 KTools::Options::getParam<qint8>(const QByteArray&);

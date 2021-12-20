@@ -27,7 +27,7 @@ void KTools::Log::writeCustomLog(const QString &message, const QString &from, co
 {
     QString dateTime = QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss:zzz");
     QString dt = '[' + from + "]\t" + dateTime + ' ' + message + '\n';
-    File::writeFile(dt.toUtf8(), optionsObj->getParam("Path:Log").toString() + logTypePath[type], logFileName, QIODevice::Append | QIODevice::WriteOnly);
+    File::writeFile(dt.toUtf8(), optionsObj->getParam<QString>("Path:Log") + logTypePath[type], logFileName, QIODevice::Append | QIODevice::WriteOnly);
 }
 
 void KTools::Log::writeCustomLog(const QString &message, const QString &from, const KTools::Enums::LogType &type, const QString &path, const QString &fileName)

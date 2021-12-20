@@ -4,6 +4,7 @@
 #include "rawstream.h"
 #include "../converter.h"
 #include "../log.h"
+#include "pointer.h"
 
 namespace KTools::Kff {
     class VariableTypes : private RawStream
@@ -20,10 +21,11 @@ namespace KTools::Kff {
 
         qint64 add(const QByteArray &data, const Type type);
         QByteArray readString(const qint64 position);
-        qint64 appendPointers(const QList<QByteArray> &pointers, const qint64 position = -1); // If position -1 will created new pointer list
+        qint64 appendPointers(QList<Pointer> &pointers, const qint64 position = -1); // If position -1 will created new pointer list
         qint64 rewriteVariable(const QByteArray &data, const qint64 position, const Type type);
         bool deleteVariable(const qint64 position);
-        QList<QByteArray> getPointers(const qint64 position);
+        QList<Pointer> getPointers(const qint64 position);
+        qint64 rewritePointers(const QList<Pointer> &list, const qint64 position);
 
     private:
         struct Sizes {

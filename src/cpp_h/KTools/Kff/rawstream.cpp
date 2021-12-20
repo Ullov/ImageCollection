@@ -2,6 +2,7 @@
 #include "manager.h"
 #include "../file.h"
 #include "../log.h"
+#include "pointer.h"
 
 const qint64 KTools::Kff::RawStream::Sizes::rawData = 4080;
 
@@ -202,4 +203,9 @@ void KTools::Kff::RawStream::writeSizeVariable()
 {
     file->seek(clusters.first() + 16);
     file->write(size());
+}
+
+KTools::Kff::Pointer KTools::Kff::RawStream::getPointer()
+{
+    return Pointer(manager, Pointer::PointerType::File, clusters.first());
 }

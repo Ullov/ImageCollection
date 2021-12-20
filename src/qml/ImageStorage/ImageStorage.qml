@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
+import ImageStorageNs 1.0
 
 Rectangle {
     id: root
@@ -27,5 +28,13 @@ Rectangle {
                 tags.visible = false
         }
     }
-    Component.onCompleted: windowSwitch.currentIndex = 0
+    Component.onCompleted:{
+        windowSwitch.currentIndex = 0
+        /*imageStorage.addTag("Test", "Test tag.")
+        imageStorage.addTag("Test2", "")
+        imageStorage.addAttribute("Attr", "Attr info", ImageStorageNs.DataType.Int8)
+        imageStorage.addAttribute("Attr2", "", ImageStorageNs.DataType.UInt64)*/
+        var tmp = imageStorage.getNames()
+        console.log(tmp + " " + ImageStorageNs.DataType.Int8)
+    }
 }

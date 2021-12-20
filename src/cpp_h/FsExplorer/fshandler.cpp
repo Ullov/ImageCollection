@@ -82,7 +82,7 @@ bool FsHandler::cd(QDir &dir, const QString &file, const QVariant &uuid)
 
 void FsHandler::init(const QVariant uuid)
 {
-    QDir tmpDir = getDir(optionsObj->getParam("FSExplorer:LastPath").toString());
+    QDir tmpDir = getDir(optionsObj->getParam<QString>("FSExplorer:LastPath"));
     currentDirs->insert(uuid, tmpDir.absolutePath());
     asyncSendDirInfo(tmpDir.entryInfoList(), uuid);
 }

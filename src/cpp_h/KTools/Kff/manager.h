@@ -14,11 +14,6 @@ namespace KTools::Kff {
             Clear,
             Keep
         };
-        enum class PointerType : quint8 {
-            FixedTypes = 1,
-            VariableTypes = 2,
-            File = 3
-        };
 
         ~Manager();
         Manager(const QString &path, const OpenMode lMode);
@@ -29,10 +24,8 @@ namespace KTools::Kff {
         void writeInode(const qint64 clust);
         FixedTypes* getNumbers();
         VariableTypes* getStrings();
-        QByteArray makePointer(const PointerType type, const qint64 position);
         void addClusterPos(const qint64 position);
         RawStream getNewStream();
-        QByteArray getDataFromPointer(const QByteArray &pointer);
 
         KTools::File file;
 
@@ -41,6 +34,8 @@ namespace KTools::Kff {
         FixedTypes *numbers;
         VariableTypes *strs;
         RawStream *defaultStream;
+
+        QList<qint64> readInodes();
 
     private:
         void constructFs();
