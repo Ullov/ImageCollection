@@ -18,6 +18,7 @@ SOURCES += \
         cpp_h/KTools/Kff/manager.cpp \
         cpp_h/KTools/Kff/pointer.cpp \
         cpp_h/KTools/Kff/rawstream.cpp \
+        cpp_h/KTools/Kff/string.cpp \
         cpp_h/KTools/Kff/variabletypes.cpp \
         cpp_h/KTools/StaticVarsDeclarations.cpp \
         cpp_h/KTools/archiverw.cpp \
@@ -57,6 +58,7 @@ HEADERS += \
     cpp_h/KTools/Kff/manager.h \
     cpp_h/KTools/Kff/pointer.h \
     cpp_h/KTools/Kff/rawstream.h \
+    cpp_h/KTools/Kff/string.h \
     cpp_h/KTools/Kff/variabletypes.h \
     cpp_h/KTools/archiverw.h \
     cpp_h/KTools/converter.h \
