@@ -33,8 +33,8 @@ Rectangle {
         /*imageStorage.addTag("Test", "Test tag.")
         imageStorage.addTag("Test2", "")
         imageStorage.addAttribute("Attr", "Attr info", ImageStorageNs.DataType.Int8)
-        imageStorage.addAttribute("Attr2", "", ImageStorageNs.DataType.UInt64)*/
+        imageStorage.addAttribute("Attr2", "", ImageStorageNs.DataType.UInt64)
         var tmp = imageStorage.getNames()
-        console.log(tmp + " " + ImageStorageNs.DataType.Int8)
+        console.log(tmp + " " + ImageStorageNs.DataType.Int8)*/
     }
 }

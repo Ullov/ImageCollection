@@ -3,30 +3,27 @@
 
 #include <QVariantMap>
 #include "rawstream.h"
-#include "../../ImageStorage/nameinfo.h"
-
-namespace ImageStorage {
-    class Db;
-}
+#include "nameinfo.h"
 
 namespace KTools::Kff {
+    class MetainfoFs;
     class Image : private RawStream
     {
     public:
-        Image(ImageStorage::Db *ldb, const QByteArray &data);
-        Image(ImageStorage::Db *ldb, const qint64 position);
+        Image(MetainfoFs *ldb, const QByteArray &data);
+        Image(MetainfoFs *ldb, const qint64 position);
 
-        void addAttributes(QList<ImageStorage::NameInfo> name);
+        void addAttributes(QList<NameInfo> name);
         void addAttributes(QVariantMap name);
         void addTags(QList<QByteArray> name);
         void addTags(QVariantList name);
-        using KTools::Kff::RawStream::getPointer;
+        using RawStream::getPointer;
 
         template <typename T>
         bool changeAttribute(const QByteArray &name, const T &value);
 
     private:
-        ImageStorage::Db *db;
+        MetainfoFs *db;
     };
 }
 

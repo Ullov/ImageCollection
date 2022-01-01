@@ -8,11 +8,11 @@ CONFIG += c++17
 
 SOURCES += \
         cpp_h/FsExplorer/fshandler.cpp \
-        cpp_h/ImageStorage/db.cpp \
         cpp_h/ImageStorage/interface.cpp \
         cpp_h/ImageViewer/pixmapimage.cpp \
         cpp_h/KTools/HtmlAstMaker/object.cpp \
         cpp_h/KTools/HtmlAstMaker/tag.cpp \
+        cpp_h/KTools/Kff/metainfofs.cpp \
         cpp_h/KTools/Kff/fixedtypes.cpp \
         cpp_h/KTools/Kff/image.cpp \
         cpp_h/KTools/Kff/manager.cpp \
@@ -46,12 +46,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     cpp_h/FsExplorer/fshandler.h \
-    cpp_h/ImageStorage/db.h \
     cpp_h/ImageStorage/interface.h \
-    cpp_h/ImageStorage/nameinfo.h \
     cpp_h/ImageViewer/pixmapimage.h \
     cpp_h/KTools/HtmlAstMaker/object.h \
     cpp_h/KTools/HtmlAstMaker/tag.h \
+    cpp_h/KTools/Kff/nameinfo.h \
+    cpp_h/KTools/Kff/metainfofs.h \
     cpp_h/KTools/Kff/fixedtypes.h \
     cpp_h/KTools/Kff/image.h \
     cpp_h/KTools/Kff/manager.h \

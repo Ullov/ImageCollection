@@ -1,8 +1,8 @@
 #include "interface.h"
-#include "db.h"
+#include "../KTools/Kff/metainfofs.h"
 #include "../KTools/Kff/image.h"
 
-ImageStorage::Interface::Interface(Db *ldb)
+ImageStorage::Interface::Interface(KTools::Kff::MetainfoFs *ldb)
 {
     db = ldb;
 }
@@ -20,30 +20,15 @@ void ImageStorage::Interface::addTag(const QByteArray name, const QByteArray des
     db->addTagName(name, description);
 }
 
-void ImageStorage::Interface::addAttribute(const QByteArray name, const QByteArray description, const ImageStorage::DataType dataType)
+void ImageStorage::Interface::addAttribute(const QByteArray name, const QByteArray description, const KTools::Kff::DataType dataType)
 {
-    //ImageStorage::DataType type;
-
-    /*if (dataType == "Int8") type = ImageStorage::DataType::Int8;
-    else if (dataType == "Int16") type = ImageStorage::DataType::Int16;
-    else if (dataType == "Int32") type = ImageStorage::DataType::Int32;
-    else if (dataType == "Int64") type = ImageStorage::DataType::Int64;
-    else if (dataType == "UInt8") type = ImageStorage::DataType::UInt8;
-    else if (dataType == "UInt16") type = ImageStorage::DataType::UInt16;
-    else if (dataType == "UInt32") type = ImageStorage::DataType::UInt32;
-    else if (dataType == "UInt64") type = ImageStorage::DataType::UInt64;
-    else if (dataType == "Float") type = ImageStorage::DataType::Float;
-    else if (dataType == "Bool") type = ImageStorage::DataType::Bool;
-    else if (dataType == "String") type = ImageStorage::DataType::String;
-    else {KLOG_ERROR("Undefined data type. dataType: " + dataType); return;}*/
-
     db->addAttrName(name, dataType, description);
 }
 
 QVariantList ImageStorage::Interface::getNames()
 {
     QVariantList result;
-    NameInfoList names = db->getNames();
+    KTools::Kff::NameInfoList names = db->getNames();
     for (int i = 0; i < names.items.size(); i++)
     {
         QVariantMap item;

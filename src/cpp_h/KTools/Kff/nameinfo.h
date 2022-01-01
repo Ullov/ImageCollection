@@ -1,10 +1,11 @@
-#ifndef NAMEINFO_H
+#ifndef KTOOLS_KFF_NAMEINFO_H
+#define KTOOLS_KFF_NAMEINFO_H
 
 #include <QByteArray>
 #include <QObject>
 #include <QQmlEngine>
 
-namespace ImageStorage {
+namespace KTools::Kff {
     Q_NAMESPACE
     Q_CLASSINFO("RegisterEnumClassesUnscoped", "false")
     enum class NameAffinity {
@@ -54,6 +55,5 @@ namespace ImageStorage {
     }
 }
 
-#define NAMEINFO_H
 
-#endif // NAMEINFO_H
+#endif // KTOOLS_KFF_NAMEINFO_H

@@ -7,7 +7,7 @@
 #include "KTools/uuidslist.h"
 #include "KTools/options.h"
 #include "ImageViewer/pixmapimage.h"
-#include "ImageStorage/db.h"
+#include "KTools/Kff/metainfofs.h"
 #include "KTools/Kff/manager.h"
 #include "KTools/Kff/rawstream.h"
 #include "KTools/Kff/fixedtypes.h"
@@ -81,11 +81,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<UuidsList>("QmlUuidsList", 1, 0, "UuidsList");
     qmlRegisterType<PixmapImage>("QmlPixmapImage", 1, 0, "PixmapImage");
     //qmlRegisterType<ImageStorage::ImageStorage>("QmlImageStorage", 1, 0, "ImageStorage");
-    ImageStorage::registerTypesForQml();
+    KTools::Kff::registerTypesForQml();
 
     static KTools::Options *options = new KTools::Options();
     FsHandler *fsExplorerHandle = new FsHandler();
-    ImageStorage::Db db(options);
+    KTools::Kff::MetainfoFs db(options);
     ImageStorage::Interface imageStorage(&db);
 
     UuidsList::ids.init(&UuidsList::ids);
@@ -102,5 +102,5 @@ int main(int argc, char *argv[])
 }
 
 
-Q_DECLARE_METATYPE(ImageStorage::NameInfo)
-Q_DECLARE_METATYPE(ImageStorage::NameInfoList)
+Q_DECLARE_METATYPE(KTools::Kff::NameInfo)
+Q_DECLARE_METATYPE(KTools::Kff::NameInfoList)

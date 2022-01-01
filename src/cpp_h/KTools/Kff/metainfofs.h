@@ -1,16 +1,16 @@
-#ifndef IMAGESTORAGE_DB_H
-#define IMAGESTORAGE_DB_H
+#ifndef KTOOLS_KFF_METAINFOFS_H
+#define KTOOLS_KFF_METAINFOFS_H
 
-#include "../KTools/log.h"
-#include "../KTools/Kff/manager.h"
-#include "../KTools/Kff/pointer.h"
+#include "../log.h"
+#include "manager.h"
+#include "pointer.h"
 #include "nameinfo.h"
 
-namespace ImageStorage {
-    class Db : private KTools::Kff::Manager
+namespace KTools::Kff {
+    class MetainfoFs : private Manager
     {
     public:
-        Db(KTools::Options *opts);
+        MetainfoFs(KTools::Options *opts);
 
         NameInfo getAttrName(const QByteArray &name);
         NameInfo getAttrName(const qint64 &pos);
@@ -21,7 +21,7 @@ namespace ImageStorage {
         NameInfoList getNames();
         KTools::Kff::Pointer addImage(const QByteArray &path, const QByteArray &convertTo, const qint8 quality);
 
-        KTools::Kff::Manager *manager = this->manager;
+        Manager *manager = this->manager;
 
     private:
         enum class EntityAssociation : qint8 {
@@ -41,4 +41,4 @@ namespace ImageStorage {
     };
 }
 
-#endif // IMAGESTORAGE_DB_H
+#endif // KTOOLS_KFF_METAINFOFS_H
