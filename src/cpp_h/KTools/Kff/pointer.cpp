@@ -405,3 +405,29 @@ bool KTools::Kff::Pointer::writeData(const bool &content)
         return true;
     }
 }
+
+KTools::Kff::Manager* KTools::Kff::Pointer::getManager()
+{
+    return manager;
+}
+
+void KTools::Kff::Pointer::deleteData()
+{
+    if (getType() == PointerType::FixedTypes)
+    {
+        manager->getNumbers()->remove(getPosition());
+    }
+    else if (getType() == PointerType::VariableTypes)
+    {
+        manager->getStrings()->deleteVariable(getPosition());
+    }
+    else if (getType() == PointerType::File)
+    {
+        manager->deleteStream(getPosition());
+    }
+    else if (getType() == PointerType::Null)
+    {
+        KLOG_ERROR("There might be segfault (pointer already null).");
+    }
+    setType(PointerType::Null);
+}

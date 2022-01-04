@@ -27,9 +27,8 @@ namespace KTools::Kff {
         void setPos(const qint64 position);
         void setAll(const PointerType type, const qint64 position);
         void setAll(const QByteArray &content);
-        /*void writeData(const QByteArray &content);
-        void writeData(const QList<Pointer> &content);
-        void writeData(const QByteArray &content, const FixedTypes::Type type);*/
+        Manager* getManager();
+        void deleteData();
 
         template <typename T>
         bool writeData(const T &content);
