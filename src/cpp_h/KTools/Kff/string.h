@@ -24,12 +24,12 @@ namespace KTools::Kff {
         String& operator=(const QByteArray &other);
         bool operator==(const QByteArray &other);
         String& operator+=(const QByteArray &other);
+        Pointer *pointer;
 
 
     protected:
         void flush();
 
-        Pointer *pointer;
         QByteArray data;
     };
 }

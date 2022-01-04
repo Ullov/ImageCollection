@@ -429,5 +429,6 @@ void KTools::Kff::Pointer::deleteData()
     {
         KLOG_ERROR("There might be segfault (pointer already null).");
     }
+    isNull = true;
     setType(PointerType::Null);
 }
