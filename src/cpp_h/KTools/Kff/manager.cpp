@@ -153,3 +153,10 @@ QList<qint64> KTools::Kff::Manager::readInodes()
     }
     return list;
 }
+
+void KTools::Kff::Manager::deleteStream(const qint64 i)
+{
+    RawStream stream(this, i);
+    stream.resize(0);
+    freeCluster(i);
+}

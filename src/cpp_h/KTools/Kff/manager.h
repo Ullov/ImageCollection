@@ -26,6 +26,7 @@ namespace KTools::Kff {
         VariableTypes* getStrings();
         void addClusterPos(const qint64 position);
         RawStream getNewStream();
+        void deleteStream(const qint64 i);
 
         KTools::File file;
 
