@@ -64,6 +64,36 @@ KTools::Kff::List<KTools::Kff::Pointer>::List(Pointer *poi) : KTools::Kff::Strin
 }
 
 template <typename T>
+KTools::Kff::List<T>::~List()
+{
+    data = "";
+    for (int i = 0; i < list.size(); i++)
+    {
+        data += KTools::Converter::toByteArray<T>(list[i]);
+    }
+}
+
+template <>
+KTools::Kff::List<KTools::Kff::String>::~List()
+{
+    data = "";
+    for (int i = 0; i < list.size(); i++)
+    {
+        data += list[i].pointer->getAll();
+    }
+}
+
+template <>
+KTools::Kff::List<KTools::Kff::Pointer>::~List()
+{
+    data = "";
+    for (int i = 0; i < list.size(); i++)
+    {
+        data += list[i].getAll();
+    }
+}
+
+template <typename T>
 T& KTools::Kff::List<T>::operator[](const qint64 i)
 {
     return list[i];

@@ -12,6 +12,7 @@ namespace KTools::Kff {
         List(Manager *man);
         List(Manager *man, const qint64 pos);
         List(Pointer *poi);
+        ~List();
 
         void remove(const qint64 i);
         void safeRemove(const qint64 i);
