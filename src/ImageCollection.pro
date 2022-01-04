@@ -12,6 +12,7 @@ SOURCES += \
         cpp_h/ImageViewer/pixmapimage.cpp \
         cpp_h/KTools/HtmlAstMaker/object.cpp \
         cpp_h/KTools/HtmlAstMaker/tag.cpp \
+        cpp_h/KTools/Kff/list.cpp \
         cpp_h/KTools/Kff/metainfofs.cpp \
         cpp_h/KTools/Kff/fixedtypes.cpp \
         cpp_h/KTools/Kff/image.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     cpp_h/ImageViewer/pixmapimage.h \
     cpp_h/KTools/HtmlAstMaker/object.h \
     cpp_h/KTools/HtmlAstMaker/tag.h \
+    cpp_h/KTools/Kff/list.h \
     cpp_h/KTools/Kff/nameinfo.h \
     cpp_h/KTools/Kff/metainfofs.h \
     cpp_h/KTools/Kff/fixedtypes.h \
