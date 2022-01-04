@@ -15,18 +15,18 @@ namespace KTools::Kff {
         ~String();
 
         QByteArray mid(const qint64 pos, const qint64 len = -1);
-        QByteArray readAll();
+        QByteArray& readAll();
         void insert(const qint64 pos, const QByteArray content);
         char at(const qint64 pos);
+        void deleteVariable();
 
         const QByteRef operator[](const uint pos);
-        QByteArray& operator=(const QByteArray &other);
+        String& operator=(const QByteArray &other);
         bool operator==(const QByteArray &other);
-        bool operator==(const String &other);
-        QByteArray& operator+=(const QByteArray &other);
+        String& operator+=(const QByteArray &other);
 
 
-    private:
+    protected:
         void flush();
 
         Pointer *pointer;

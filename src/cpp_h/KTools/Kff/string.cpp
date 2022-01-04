@@ -32,7 +32,7 @@ QByteArray KTools::Kff::String::mid(const qint64 pos, const qint64 len)
     return data.mid(pos, len);
 }
 
-QByteArray KTools::Kff::String::readAll()
+QByteArray& KTools::Kff::String::readAll()
 {
     return data;
 }
@@ -58,11 +58,11 @@ const QByteRef KTools::Kff::String::operator[](const uint pos)
     return data[pos];
 }
 
-QByteArray& KTools::Kff::String::operator=(const QByteArray &other)
+KTools::Kff::String& KTools::Kff::String::operator=(const QByteArray &other)
 {
     data = other;
     flush();
-    return data;
+    return *this;
 }
 
 bool KTools::Kff::String::operator==(const QByteArray &other)
@@ -70,9 +70,14 @@ bool KTools::Kff::String::operator==(const QByteArray &other)
     return data == other;
 }
 
-QByteArray& KTools::Kff::String::operator+=(const QByteArray &other)
+KTools::Kff::String& KTools::Kff::String::operator+=(const QByteArray &other)
 {
     data.append(other);
     flush();
-    return data;
+    return *this;
+}
+
+void KTools::Kff::String::deleteVariable()
+{
+    pointer->deleteData();
 }
