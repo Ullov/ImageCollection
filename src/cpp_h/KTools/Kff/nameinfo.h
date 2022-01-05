@@ -50,8 +50,6 @@ namespace KTools::Kff {
     {
         qmlRegisterUncreatableMetaObject(staticMetaObject, "ImageStorageNs", 1, 0, "ImageStorageNs", "It's enum");
         qRegisterMetaType<DataType>();
-        /*qRegisterMetaType<NameInfo>();
-        qRegisterMetaType<NameInfoList>();*/
     }
 }
 

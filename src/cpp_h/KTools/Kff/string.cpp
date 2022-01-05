@@ -6,7 +6,7 @@
 
 KTools::Kff::String::String(Manager *man)
 {
-    pointer = new Pointer(man, Pointer::PointerType::VariableTypes, man->getStrings()->add("", VariableTypes::Type::String));
+    pointer = new Pointer(man, Pointer::PointerType::VariableTypes, man->getStrings()->writeVariable(""));
     data = "";
 }
 

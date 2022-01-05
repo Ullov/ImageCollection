@@ -15,17 +15,14 @@ namespace KTools::Kff {
 
         enum class Type : qint8 {
             String = 1,
-            ListOfPointers = 2,
-            OccupiedCls = 3 // All clusters aside from first cluster in variable
+            OccupiedCls = 2 // All clusters aside from first cluster in variable
         };
 
-        qint64 add(const QByteArray &data, const Type type);
         QByteArray readString(const qint64 position);
-        qint64 appendPointers(QList<Pointer> &pointers, const qint64 position = -1); // If position -1 will created new pointer list
-        qint64 rewriteVariable(const QByteArray &data, const qint64 position, const Type type);
+        qint64 rewriteVariable(const QByteArray &data, const qint64 position);
         bool deleteVariable(const qint64 position);
-        QList<Pointer> getPointers(const qint64 position);
-        qint64 rewritePointers(const QList<Pointer> &list, const qint64 position);
+        bool clearVariable(const qint64 position);
+        qint64 writeVariable(const QByteArray &data, const qint64 position = -1);
 
     private:
         struct Sizes {

@@ -3,6 +3,7 @@
 #include "fixedtypes.h"
 #include "variabletypes.h"
 #include "metainfofs.h"
+#include "list.h"
 #include <QDateTime>
 
 KTools::Kff::Image::Image(MetainfoFs *ldb, const QByteArray &data) : RawStream(ldb->manager, false)
@@ -13,11 +14,11 @@ KTools::Kff::Image::Image(MetainfoFs *ldb, const QByteArray &data) : RawStream(l
     write(data);
     VariableTypes *strs = manager->getStrings();
     manager->file.seek(clusters.first() + (dataOffset - 27)); // Pointer to attributes names
-    manager->file.write<QByteArray>(Pointer(ldb->manager, Pointer::PointerType::VariableTypes, strs->add("", VariableTypes::Type::String)).getAll());
+    manager->file.write<QByteArray>(Pointer(ldb->manager, Pointer::PointerType::VariableTypes, strs->writeVariable("")).getAll());
     manager->file.seek(clusters.first() + (dataOffset - 18)); // Pointer to attributes values
-    manager->file.write<QByteArray>(Pointer(ldb->manager, Pointer::PointerType::VariableTypes, strs->add("", VariableTypes::Type::ListOfPointers)).getAll());
+    manager->file.write<QByteArray>(Pointer(ldb->manager, Pointer::PointerType::VariableTypes, strs->writeVariable("")).getAll());
     manager->file.seek(clusters.first() + (dataOffset - 9)); // Pointer to tag names
-    manager->file.write<QByteArray>(Pointer(ldb->manager, Pointer::PointerType::VariableTypes, strs->add("", VariableTypes::Type::String)).getAll());
+    manager->file.write<QByteArray>(Pointer(ldb->manager, Pointer::PointerType::VariableTypes, strs->writeVariable("")).getAll());
 
     QList<NameInfo> info;
     info.append(db->addAttrName("System:Time:Modification", DataType::Int64, "Modification time of file."));
@@ -46,7 +47,7 @@ void KTools::Kff::Image::addAttributes(QList<NameInfo> name)
 
     manager->file.seek(clusters.first() + (dataOffset - 18));
     pointer.setAll(manager->file.read<QByteArray>(9));
-    QList<Pointer> pointersToValues = pointer.getData<QList<Pointer>>();
+    List<Pointer> pointersToValues(&pointer);
 
     for (int i = 0; i < pointersToNames.size(); i += 8)
     {
@@ -67,12 +68,7 @@ void KTools::Kff::Image::addAttributes(QList<NameInfo> name)
                     case DataType::UInt64 : pointersToValues[i].writeData(KTools::Converter::byteArrayToT<quint64>(name[n].data)); break;
                     case DataType::Float : pointersToValues[i].writeData(KTools::Converter::byteArrayToT<double>(name[n].data)); break;
                     case DataType::Bool : pointersToValues[i].writeData(KTools::Converter::byteArrayToT<bool>(name[n].data)); break;
-                    case DataType::String :
-                    {
-                        pointersToValues[i].writeData(name[n].data);
-                        pointer.writeData(pointersToValues);
-                        break;
-                    }
+                    case DataType::String : pointersToValues[i].writeData(name[n].data); break;
                     case DataType::List : KLOG_ERROR("Currently unsupported"); break;
                 }
                 name.removeAt(n);
@@ -159,7 +155,7 @@ void KTools::Kff::Image::addAttributes(QList<NameInfo> name)
             }
             case DataType::String :
             {
-                qint64 valueAddr = manager->getStrings()->add(name[i].data, VariableTypes::Type::String);
+                qint64 valueAddr = manager->getStrings()->writeVariable(name[i].data);
                 pointer.setAll(Pointer::PointerType::VariableTypes, valueAddr);
                 break;
             }
@@ -173,9 +169,9 @@ void KTools::Kff::Image::addAttributes(QList<NameInfo> name)
 
         manager->file.seek(clusters.first() + (dataOffset - 18)); // Values
         pairPointer.setAll(manager->file.read<QByteArray>(9));
-        pointersToValues = pairPointer.getData<QList<Pointer>>();
-        pointersToValues.append(pointer);
-        pairPointer.writeData(pointersToValues);
+        pointersToValues.~List();
+        pointersToValues = List<Pointer>(&pairPointer);
+        pointersToValues += pointer;
     }
 }
 

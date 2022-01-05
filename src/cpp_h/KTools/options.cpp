@@ -1,5 +1,6 @@
 #include "options.h"
 #include "../FsExplorer/fshandler.h"
+#include "Kff/string.h"
 
 KTools::Options::Options() : KTools::Kff::Manager(QDir::currentPath() + "/options.kff", KTools::Kff::Manager::OpenMode::Keep)
 {
@@ -27,15 +28,14 @@ void KTools::Options::updateParam(const QByteArray &name, const QByteArray &valu
         QByteArray entity = defaultStream->read(19);
         if (entity[0] != '\0')
         {
-            KTools::Kff::Pointer readedName(this, entity.mid(1, 9));
-            if (readedName.getData<QByteArray>() == name)
+            KTools::Kff::Pointer pointer(this, entity.mid(1, 9));
+            KTools::Kff::String readedName(&pointer);
+            if (readedName == name)
             {
                 if (type == ParamType::String)
                 {
-                    qint64 addr = strs->rewriteVariable(value, KTools::Converter::byteArrayToT<qint64>(entity.mid(11)), KTools::Kff::VariableTypes::Type::String);
-                    entity.insert(11, KTools::Converter::toByteArray(addr));
-                    defaultStream->seek(i);
-                    defaultStream->write(entity);
+                    KTools::Kff::String localValue(this, KTools::Converter::byteArrayToT<qint64>(entity.mid(11)));
+                    localValue = value;
                 }
                 else
                 {
@@ -70,10 +70,12 @@ T KTools::Options::getParam(const QByteArray &name)
         QByteArray entity = defaultStream->read(19);
         if (entity[0] != '\0')
         {
-            KTools::Kff::Pointer readedName(this, entity.mid(1, 9));
-            if (readedName.getData<QByteArray>() == name)
+            KTools::Kff::Pointer pointer(this, entity.mid(1, 9));
+            KTools::Kff::String readedName(&pointer);
+            if (readedName == name)
             {
-                result = KTools::Kff::Pointer(this, entity.mid(10)).getData<T>();
+                pointer.setAll(entity.mid(10));
+                result = pointer.getData<T>();
                 break;
             }
         }
@@ -86,7 +88,7 @@ void KTools::Options::addInt8Variable(const QByteArray &name, const qint8 data)
     QByteArray content;
     content.append(static_cast<quint8>(ParamType::Int8));
 
-    qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
+    qint64 address = strs->writeVariable(name);
     KTools::Kff::Pointer pointer(this, KTools::Kff::Pointer::PointerType::VariableTypes, address);
     content.append(pointer.getAll());
 
@@ -111,11 +113,11 @@ void KTools::Options::addStringVariable(const QByteArray &name, const QByteArray
     QByteArray content;
     content.append(static_cast<quint8>(ParamType::Int8));
 
-    qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
+    qint64 address = strs->writeVariable(name);
     KTools::Kff::Pointer pointer(this, KTools::Kff::Pointer::PointerType::VariableTypes, address);
     content.append(pointer.getAll());
 
-    address = strs->add(data, Kff::VariableTypes::Type::String);
+    address = strs->writeVariable(data);
     pointer.setAll(KTools::Kff::Pointer::PointerType::VariableTypes, address);
     content.append(pointer.getAll());
 
@@ -136,7 +138,7 @@ void KTools::Options::addInt16Variable(const QByteArray &name, const qint16 data
     QByteArray content;
     content.append(static_cast<quint8>(ParamType::Int16));
 
-    qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
+    qint64 address = strs->writeVariable(name);
     KTools::Kff::Pointer pointer(this, KTools::Kff::Pointer::PointerType::VariableTypes, address);
     content.append(pointer.getAll());
 
@@ -161,7 +163,7 @@ void KTools::Options::addInt32Variable(const QByteArray &name, const qint32 data
     QByteArray content;
     content.append(static_cast<quint8>(ParamType::Int32));
 
-    qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
+    qint64 address = strs->writeVariable(name);
     KTools::Kff::Pointer pointer(this, KTools::Kff::Pointer::PointerType::VariableTypes, address);
     content.append(pointer.getAll());
 
@@ -186,7 +188,7 @@ void KTools::Options::addInt64Variable(const QByteArray &name, const qint64 data
     QByteArray content;
     content.append(static_cast<quint8>(ParamType::Int64));
 
-    qint64 address = strs->add(name, Kff::VariableTypes::Type::String);
+    qint64 address = strs->writeVariable(name);
     KTools::Kff::Pointer pointer(this, KTools::Kff::Pointer::PointerType::VariableTypes, address);
     content.append(pointer.getAll());
 

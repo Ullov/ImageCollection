@@ -1,6 +1,7 @@
 #include "metainfofs.h"
 #include "../options.h"
 #include "image.h"
+#include "list.h"
 #include <QImage>
 
 KTools::Kff::MetainfoFs::MetainfoFs(KTools::Options *opts) : KTools::Kff::Manager(opts->getParam<QByteArray>("Path:Data") + "/iamgeStorage.kff", KTools::Kff::Manager::OpenMode::Keep)
@@ -8,15 +9,15 @@ KTools::Kff::MetainfoFs::MetainfoFs(KTools::Options *opts) : KTools::Kff::Manage
     options = opts;
     if (mode == KTools::Kff::Manager::OpenMode::Clear)
     {
-        KTools::Kff::Pointer pointer(this, Pointer::PointerType::VariableTypes, strs->add("", VariableTypes::Type::String)); // Attribute names
+        KTools::Kff::Pointer pointer(this, Pointer::PointerType::VariableTypes, strs->writeVariable("")); // Attribute names
         defaultStream->seek(0);
         defaultStream->write(pointer.getAll());
 
-        pointer.setPos(strs->add("", VariableTypes::Type::ListOfPointers)); // Tag names
+        pointer.setPos(strs->writeVariable("")); // Tag names
         defaultStream->seek(9);
         defaultStream->write(pointer.getAll());
 
-        pointer.setPos(strs->add("", VariableTypes::Type::ListOfPointers)); // Pointers to images
+        pointer.setPos(strs->writeVariable("")); // Pointers to images
         defaultStream->seek(18);
         defaultStream->write(pointer.getAll());
     }
@@ -82,7 +83,7 @@ KTools::Kff::NameInfo KTools::Kff::MetainfoFs::addAttrName(const QByteArray &nam
     content.append(KTools::Converter::toByteArray<qint64>(name.length()));
     content.append(name);
     content.append(description);
-    Pointer pointer(this, Pointer::PointerType::VariableTypes, strs->add(content, VariableTypes::Type::String));
+    Pointer pointer(this, Pointer::PointerType::VariableTypes, strs->writeVariable(content));
 
     content = "";
     content.append(pointer.getAll());
@@ -112,20 +113,16 @@ KTools::Kff::NameInfo KTools::Kff::MetainfoFs::addTagName(const QByteArray &name
 
     defaultStream->seek(9);
     Pointer basePointer(this, defaultStream->read(9));
-    QList<Pointer> list = basePointer.getData<QList<Pointer>>();
+    List<Pointer> list(&basePointer);
 
     QByteArray content;
     content.append(KTools::Converter::toByteArray<qint64>(name.length()));
     content.append(name);
     content.append(description);
 
-    result.addr = list.length();
-    Pointer pointer(this, Pointer::PointerType::VariableTypes, strs->add(content, VariableTypes::Type::String));
-    list.append(pointer);
-
-    basePointer.writeData(list);
-    defaultStream->seek(9);
-    defaultStream->write(basePointer.getAll());
+    result.addr = list.size();
+    Pointer pointer(this, Pointer::PointerType::VariableTypes, strs->writeVariable(content));
+    list += pointer;
 
     result.affinity = NameAffinity::Tag;
     result.name = name;
@@ -141,7 +138,7 @@ KTools::Kff::NameInfo KTools::Kff::MetainfoFs::getTagName(const QByteArray &name
     result.affinity = NameAffinity::Tag;
     defaultStream->seek(9);
     Pointer pointer = Pointer(this, defaultStream->read(9));
-    QList<Pointer> list = pointer.getData<QList<Pointer>>();
+    List<Pointer> list(&pointer);
     for (int i = 0; i < list.size(); i++)
     {
         QByteArray item = list[i].getData<QByteArray>();
@@ -164,8 +161,8 @@ KTools::Kff::NameInfo KTools::Kff::MetainfoFs::getTagName(const qint64 &numb)
     NameInfo result;
     result.affinity = NameAffinity::Tag;
     defaultStream->seek(9);
-    KTools::Kff::Pointer pointer = KTools::Kff::Pointer(this, defaultStream->read(9));
-    QList<Pointer> list = pointer.getData<QList<Pointer>>();
+    Pointer pointer = KTools::Kff::Pointer(this, defaultStream->read(9));
+    List<Pointer> list(&pointer);
 
     QByteArray item = list[numb].getData<QByteArray>();
     qint64 namelen = KTools::Converter::byteArrayToT<qint64>(item.mid(0, 8));
@@ -195,11 +192,8 @@ KTools::Kff::Pointer KTools::Kff::MetainfoFs::addImage(const QByteArray &path, c
     Image file(this, resImg);
     defaultStream->seek(18);
     Pointer pointer(this, defaultStream->read(9));
-    QList<Pointer> list = pointer.getData<QList<Pointer>>();
-    list.append(file.getPointer());
-    pointer.writeData(list);
-    defaultStream->seek(18);
-    defaultStream->write(pointer.getAll());
+    List<Pointer> list(&pointer);
+    list += file.getPointer();
     return file.getPointer();
 }
 
@@ -209,7 +203,7 @@ KTools::Kff::NameInfoList KTools::Kff::MetainfoFs::getNames()
     // Getting tags
     defaultStream->seek(9);
     Pointer pointer = KTools::Kff::Pointer(this, defaultStream->read(9));
-    QList<Pointer> list = pointer.getData<QList<Pointer>>();
+    List<Pointer> list(&pointer);
     for (int i = 0; i < list.size(); i++)
     {
         NameInfo nameItem;

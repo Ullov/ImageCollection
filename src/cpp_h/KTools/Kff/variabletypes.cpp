@@ -3,7 +3,7 @@
 KTools::Kff::VariableTypes::VariableTypes(Manager *man) : RawStream(man, true) {}
 KTools::Kff::VariableTypes::VariableTypes(Manager *man, const qint64 position) : RawStream(man, position) {}
 
-qint64 KTools::Kff::VariableTypes::add(const QByteArray &data, const Type type)
+qint64 KTools::Kff::VariableTypes::writeVariable(const QByteArray &data, const qint64 position)
 {
     bool run = true;
     bool first = true;
@@ -12,6 +12,34 @@ qint64 KTools::Kff::VariableTypes::add(const QByteArray &data, const Type type)
     qint64 writed = 0;
     qint64 sizeAddress = 0;
     qint64 previousClsAddr = 0;
+    if (position != -1)
+    {
+        seek(position + 17);
+        if (data.size() <= Sizes::data)
+        {
+            write(data);
+            run = false;
+            writed = data.size();
+        }
+        else
+        {
+            write(data.mid(0, Sizes::data));
+            writed += Sizes::data;
+        }
+        if (!run)
+        {// Write size because here is no next cluster
+            seek(position + 9);
+            write(KTools::Converter::toByteArray<qint64>(data.length()));
+        }
+        else
+        {
+            sizeAddress = position + 9;
+            previousClsAddr = lastSeek;
+        }
+        firstClsAddr = position;
+        first = false;
+        lastSeek = Sizes::all + position;
+    }
     while (run)
     {
         seek(lastSeek);
@@ -54,7 +82,7 @@ qint64 KTools::Kff::VariableTypes::add(const QByteArray &data, const Type type)
         else if (first && tryRead == 0)
         {// Writing first cluster
             QByteArray content;
-            content.append(static_cast<quint8>(type)); // Cluster type
+            content.append(static_cast<quint8>(Type::String)); // Cluster type
             content.append(KTools::Converter::toByteArray(-1ll)); // Next cluster address
             content.append(KTools::Converter::toByteArray(0ll)); // Size of variable
             if (data.size() <= Sizes::data)
@@ -88,64 +116,26 @@ qint64 KTools::Kff::VariableTypes::add(const QByteArray &data, const Type type)
     return firstClsAddr;
 }
 
-QByteArray KTools::Kff::VariableTypes::readString(const qint64 position)
-{
-    return readVariable(position, Type::String);
-}
-
-qint64 KTools::Kff::VariableTypes::appendPointers(QList<Pointer> &pointers, const qint64 position)
-{
-    QByteArray content;
-    for (int i = 0; i < pointers.size(); i++)
-        content.append(pointers[i].getAll());
-    seek(position);
-    qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
-    if (position == -1)
-    {
-        QByteArray content;
-        for (int i = 0; i < pointers.length(); i++)
-            content.append(pointers[i].getAll());
-        return add(content, Type::ListOfPointers);
-    }
-    else if (tryRead == static_cast<qint8>(Type::String) || tryRead == static_cast<qint8>(Type::OccupiedCls))
-    {
-        KLOG_ERROR("Trying rewrite variable with different type or wrong position. position: " + QString::number(position));
-    }
-    else if (tryRead == 0)
-    {
-        return add(content, Type::ListOfPointers);
-    }
-    else if (tryRead == static_cast<qint8>(Type::ListOfPointers))
-    {
-        QByteArray currValue = readVariable(position, Type::ListOfPointers);
-        return rewriteVariable(currValue + content, position, Type::ListOfPointers);
-    }
-    else
-    {
-        KLOG_ERROR("Wrong position. position: " + QString::number(position) + " ... tryRead: " + QString::number(tryRead));
-    }
-    return -1;
-}
-
-qint64 KTools::Kff::VariableTypes::rewriteVariable(const QByteArray &data, const qint64 position, const Type type)
+qint64 KTools::Kff::VariableTypes::rewriteVariable(const QByteArray &data, const qint64 position)
 {
     seek(position);
     qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
-    if (tryRead != static_cast<qint8>(type))
+    if (tryRead != static_cast<qint8>(Type::String))
     {
         KLOG_ERROR("Wrong type or wrong position. position: " + QString::number(position));
         return -1;
     }
-    deleteVariable(position);
-    return add(data, type);
+    clearVariable(position);
+    writeVariable(data, position);
+    return position;
 }
 
-QByteArray KTools::Kff::VariableTypes::readVariable(const qint64 position, const Type type)
+QByteArray KTools::Kff::VariableTypes::readString(const qint64 position)
 {
     QByteArray result;
     seek(position);
     qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
-    if (tryRead != static_cast<qint8>(type))
+    if (tryRead != static_cast<qint8>(Type::String))
     {
         KLOG_ERROR("Wrong type or wrong position. position: " + QString::number(position));
         return QByteArray();
@@ -190,7 +180,7 @@ bool KTools::Kff::VariableTypes::deleteVariable(const qint64 position)
 {
     seek(position);
     qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
-    if (tryRead < 1 || tryRead > 3)
+    if (!(tryRead > 0 && tryRead < 3))
     {
         KLOG_ERROR("Wrong position. position: " + QString::number(position));
         return false;
@@ -210,23 +200,27 @@ bool KTools::Kff::VariableTypes::deleteVariable(const qint64 position)
     return true;
 }
 
-QList<KTools::Kff::Pointer> KTools::Kff::VariableTypes::getPointers(const qint64 position)
+bool KTools::Kff::VariableTypes::clearVariable(const qint64 position)
 {
-    QList<Pointer> result;
-    QByteArray rawData = readVariable(position, Type::ListOfPointers);
-    for (int i = 0; i < rawData.length(); i += 9)
+    seek(position);
+    qint8 tryRead = KTools::Converter::byteArrayToT<qint8>(read(1));
+    if (tryRead != static_cast<qint8>(Type::String))
     {
-        result.append(Pointer(manager, rawData.mid(i, 9)));
+        KLOG_ERROR("Wrong position. position: " + QString::number(position));
+        return false;
     }
-    return result;
-}
-
-qint64 KTools::Kff::VariableTypes::rewritePointers(const QList<Pointer> &list, const qint64 position)
-{
+    seek(position + 1);
+    qint64 next = KTools::Converter::byteArrayToT<qint64>(read(8));
+    if (next != -1)
+    {
+        deleteVariable(next);
+    }
     QByteArray content;
-    for (int i = 0; i < list.size(); i++)
-    {
-        content += list[i].getAll();
-    }
-    return rewriteVariable(content, position, Type::ListOfPointers);
+    content.append(static_cast<quint8>(Type::String)); // Cluster type
+    content.append(KTools::Converter::toByteArray(-1ll)); // Next cluster address
+    content.append(KTools::Converter::toByteArray(0ll)); // Size of variable
+    content.append(Sizes::data, '\0');
+    seek(position);
+    write(content);
+    return true;
 }

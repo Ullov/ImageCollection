@@ -20,6 +20,7 @@ namespace KTools::Kff {
         char at(const qint64 pos);
         void deleteVariable();
 
+
         const QByteRef operator[](const uint pos);
         String& operator=(const QByteArray &other);
         bool operator==(const QByteArray &other);

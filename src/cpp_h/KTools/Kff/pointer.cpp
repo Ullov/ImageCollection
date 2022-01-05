@@ -5,6 +5,7 @@
 #include "manager.h"
 #include "fixedtypes.h"
 #include "variabletypes.h"
+#include "list.h"
 
 KTools::Kff::Pointer::Pointer()
 {
@@ -149,21 +150,6 @@ QString KTools::Kff::Pointer::getData()
 }
 
 template <>
-QList<KTools::Kff::Pointer> KTools::Kff::Pointer::getData()
-{
-    if (comparePointerType(PointerType::VariableTypes, data.at(0)))
-    {
-        VariableTypes *strs = manager->getStrings();
-        return strs->getPointers(KTools::Converter::byteArrayToT<qint64>(data.mid(1)));
-    }
-    else
-    {
-        KLOG_ERROR("Wrong pointer type. type:" + QString(data.at(0)));
-        return QList<Pointer>();
-    }
-}
-
-template <>
 KTools::Kff::RawStream KTools::Kff::Pointer::getData()
 {
     if (comparePointerType(PointerType::File, data.at(0)))
@@ -234,23 +220,7 @@ bool KTools::Kff::Pointer::writeData(const QByteArray &content)
     }
     else
     {
-        qint64 addr = manager->getStrings()->rewriteVariable(content, getPosition(), VariableTypes::Type::String);
-        setPos(addr);
-        return true;
-    }
-}
-
-template <>
-bool KTools::Kff::Pointer::writeData(const QList<Pointer> &content)
-{
-    if (!comparePointerType(PointerType::VariableTypes, data.at(0)))
-    {
-        KLOG_ERROR("Attempt write to wrong data type.");
-        return false;
-    }
-    else
-    {
-        qint64 addr = manager->getStrings()->rewritePointers(content, getPosition());
+        qint64 addr = manager->getStrings()->rewriteVariable(content, getPosition());
         setPos(addr);
         return true;
     }
