@@ -1,6 +1,6 @@
 #include "metainfofs.h"
 #include "../options.h"
-#include "image.h"
+#include "file.h"
 #include "list.h"
 #include <QImage>
 
@@ -189,7 +189,7 @@ KTools::Kff::Pointer KTools::Kff::MetainfoFs::addImage(const QByteArray &path, c
     {
         resImg = KTools::File::readFile<QByteArray>(path);
     }
-    Image file(this, resImg);
+    File file(this, resImg);
     defaultStream->seek(18);
     Pointer pointer(this, defaultStream->read(9));
     List<Pointer> list(&pointer);

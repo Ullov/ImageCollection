@@ -1,5 +1,5 @@
-#ifndef KTOOLS_KFF_IMAGE_H
-#define KTOOLS_KFF_IMAGE_H
+#ifndef KTOOLS_KFF_FILE_H
+#define KTOOLS_KFF_FILE_H
 
 #include <QVariantMap>
 #include "rawstream.h"
@@ -7,11 +7,11 @@
 
 namespace KTools::Kff {
     class MetainfoFs;
-    class Image : private RawStream
+    class File : private RawStream
     {
     public:
-        Image(MetainfoFs *ldb, const QByteArray &data);
-        Image(MetainfoFs *ldb, const qint64 position);
+        File(MetainfoFs *ldb, const QByteArray &data);
+        File(MetainfoFs *ldb, const qint64 position);
 
         void addAttributes(QList<NameInfo> name);
         void addAttributes(QVariantMap name);
@@ -27,4 +27,4 @@ namespace KTools::Kff {
     };
 }
 
-#endif // KTOOLS_KFF_IMAGE_H
+#endif // KTOOLS_KFF_FILE_H

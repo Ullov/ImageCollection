@@ -1,6 +1,6 @@
 QT += quick sql
 
-CONFIG += c++17
+CONFIG += c++17 object_parallel_to_source
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -12,10 +12,10 @@ SOURCES += \
         cpp_h/ImageViewer/pixmapimage.cpp \
         cpp_h/KTools/HtmlAstMaker/object.cpp \
         cpp_h/KTools/HtmlAstMaker/tag.cpp \
+        cpp_h/KTools/Kff/file.cpp \
         cpp_h/KTools/Kff/list.cpp \
         cpp_h/KTools/Kff/metainfofs.cpp \
         cpp_h/KTools/Kff/fixedtypes.cpp \
-        cpp_h/KTools/Kff/image.cpp \
         cpp_h/KTools/Kff/manager.cpp \
         cpp_h/KTools/Kff/pointer.cpp \
         cpp_h/KTools/Kff/rawstream.cpp \
@@ -52,11 +52,11 @@ HEADERS += \
     cpp_h/ImageViewer/pixmapimage.h \
     cpp_h/KTools/HtmlAstMaker/object.h \
     cpp_h/KTools/HtmlAstMaker/tag.h \
+    cpp_h/KTools/Kff/file.h \
     cpp_h/KTools/Kff/list.h \
     cpp_h/KTools/Kff/nameinfo.h \
     cpp_h/KTools/Kff/metainfofs.h \
     cpp_h/KTools/Kff/fixedtypes.h \
-    cpp_h/KTools/Kff/image.h \
     cpp_h/KTools/Kff/manager.h \
     cpp_h/KTools/Kff/pointer.h \
     cpp_h/KTools/Kff/rawstream.h \

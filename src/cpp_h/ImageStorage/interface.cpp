@@ -1,6 +1,6 @@
 #include "interface.h"
 #include "../KTools/Kff/metainfofs.h"
-#include "../KTools/Kff/image.h"
+#include "../KTools/Kff/file.h"
 
 ImageStorage::Interface::Interface(KTools::Kff::MetainfoFs *ldb)
 {
@@ -10,7 +10,7 @@ ImageStorage::Interface::Interface(KTools::Kff::MetainfoFs *ldb)
 void ImageStorage::Interface::addPhoto(const QByteArray path, const QVariantMap attributes, const QVariantList tags, const QByteArray convertTo)
 {
     KTools::Kff::Pointer pointer = db->addImage(path, convertTo, 100);
-    KTools::Kff::Image img(db, pointer.getPosition());
+    KTools::Kff::File img(db, pointer.getPosition());
     img.addAttributes(attributes);
     img.addTags(tags);
 }

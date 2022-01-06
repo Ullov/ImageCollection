@@ -1,4 +1,4 @@
-#include "image.h"
+#include "file.h"
 #include "manager.h"
 #include "fixedtypes.h"
 #include "variabletypes.h"
@@ -6,7 +6,7 @@
 #include "list.h"
 #include <QDateTime>
 
-KTools::Kff::Image::Image(MetainfoFs *ldb, const QByteArray &data) : RawStream(ldb->manager, false)
+KTools::Kff::File::File(MetainfoFs *ldb, const QByteArray &data) : RawStream(ldb->manager, false)
 {
     db = ldb;
     dataOffset += 27; // 9 * 3 (3 x Pointer)
@@ -20,38 +20,39 @@ KTools::Kff::Image::Image(MetainfoFs *ldb, const QByteArray &data) : RawStream(l
     manager->file.seek(clusters.first() + (dataOffset - 9)); // Pointer to tag names
     manager->file.write<QByteArray>(Pointer(ldb->manager, Pointer::PointerType::VariableTypes, strs->writeVariable("")).getAll());
 
+    QByteArray nowTime = KTools::Converter::toByteArray(QDateTime::currentMSecsSinceEpoch());
     QList<NameInfo> info;
     info.append(db->addAttrName("System:Time:Modification", DataType::Int64, "Modification time of file."));
-    info.last().data = KTools::Converter::toByteArray(QDateTime::currentMSecsSinceEpoch());
+    info.last().data = nowTime;
 
     info.append(db->addAttrName("System:Time:Access", DataType::Int64, "Acces time of file."));
-    info.last().data = KTools::Converter::toByteArray(QDateTime::currentMSecsSinceEpoch());
+    info.last().data = nowTime;
 
     info.append(db->addAttrName("System:Time:Creation", DataType::Int64, "Creation time of file."));
-    info.last().data = KTools::Converter::toByteArray(QDateTime::currentMSecsSinceEpoch());
+    info.last().data = nowTime;
     addAttributes(info);
 }
 
-KTools::Kff::Image::Image(MetainfoFs *ldb, const qint64 position) : RawStream(ldb->manager, position)
+KTools::Kff::File::File(MetainfoFs *ldb, const qint64 position) : RawStream(ldb->manager, position)
 {
     db = ldb;
     dataOffset += 27; // 9 * 3 (3 x Pointer)
     seek(0);
 }
 
-void KTools::Kff::Image::addAttributes(QList<NameInfo> name)
+void KTools::Kff::File::addAttributes(QList<NameInfo> name)
 {
     manager->file.seek(clusters.first() + (dataOffset - 27));
     Pointer pointer(manager, manager->file.read<QByteArray>(9));
-    QByteArray pointersToNames = pointer.getData<QByteArray>(); // CAUTION!!! This is custom pointers.
+    List<qint64> pointersToNames(&pointer);
 
     manager->file.seek(clusters.first() + (dataOffset - 18));
     pointer.setAll(manager->file.read<QByteArray>(9));
     List<Pointer> pointersToValues(&pointer);
 
-    for (int i = 0; i < pointersToNames.size(); i += 8)
+    for (int i = 0; i < pointersToNames.size(); i++)
     {
-        NameInfo readedNameinfo = db->getAttrName(KTools::Converter::byteArrayToT<qint64>(pointersToNames.mid(i, 8)));
+        NameInfo readedNameinfo = db->getAttrName(pointersToNames[i]);
         for (int n = 0; n < name.size(); n++)
         {
             if (readedNameinfo.name == name[n].name)
@@ -163,9 +164,9 @@ void KTools::Kff::Image::addAttributes(QList<NameInfo> name)
         }
         manager->file.seek(clusters.first() + (dataOffset - 27)); // Names
         Pointer pairPointer(manager, manager->file.read<QByteArray>(9));
-        pointersToNames = pairPointer.getData<QByteArray>();
-        pointersToNames.append(KTools::Converter::toByteArray(nameInfo.addr));
-        pairPointer.writeData(pointersToNames);
+        pointersToNames.~List();
+        pointersToNames = List<qint64>(&pairPointer);
+        pointersToNames += nameInfo.addr;
 
         manager->file.seek(clusters.first() + (dataOffset - 18)); // Values
         pairPointer.setAll(manager->file.read<QByteArray>(9));
@@ -175,7 +176,7 @@ void KTools::Kff::Image::addAttributes(QList<NameInfo> name)
     }
 }
 
-void KTools::Kff::Image::addAttributes(QVariantMap name)
+void KTools::Kff::File::addAttributes(QVariantMap name)
 {
     QList<NameInfo> result;
     QList<QString> keys = name.keys();
@@ -188,17 +189,17 @@ void KTools::Kff::Image::addAttributes(QVariantMap name)
     addAttributes(result);
 }
 
-void KTools::Kff::Image::addTags(QList<QByteArray> name)
+void KTools::Kff::File::addTags(QList<QByteArray> name)
 {
     manager->file.seek(clusters.first() + (dataOffset - 9));
     Pointer pointer(manager, manager->file.read<QByteArray>(9));
-    QByteArray pointerData = pointer.getData<QByteArray>();
+    List<qint64> pointerData(&pointer);
     QList<qint64> newNamesNumbers;
     QList<qint64> oldNamesNumbers;
 
-    for (int i = 0; i < pointerData.size(); i += 8)
+    for (int i = 0; i < pointerData.size(); i++)
     {
-        oldNamesNumbers.append(KTools::Converter::byteArrayToT<qint64>(pointerData.mid(i, 8)));
+        oldNamesNumbers.append(pointerData[i]);
     }
 
     for (int i = 0; i < name.size(); i++)
@@ -209,18 +210,10 @@ void KTools::Kff::Image::addTags(QList<QByteArray> name)
     newNamesNumbers = QSet<qint64>(newNamesNumbers.begin(), newNamesNumbers.end()).subtract(QSet<qint64>(oldNamesNumbers.begin(), oldNamesNumbers.end())).values();
     oldNamesNumbers.append(newNamesNumbers);
 
-    pointerData = "";
-    for (int i = 0; i < oldNamesNumbers.size(); i++)
-    {
-        pointerData.append(KTools::Converter::toByteArray<qint64>(oldNamesNumbers[i]));
-    }
-    pointer.writeData(pointerData);
-
-    manager->file.seek(clusters.first() + (dataOffset - 9));
-    manager->file.write<QByteArray>(pointer.getAll());
+    pointerData = oldNamesNumbers;
 }
 
-void KTools::Kff::Image::addTags(QVariantList name)
+void KTools::Kff::File::addTags(QVariantList name)
 {
     QList<QByteArray> result;
     for (int i = 0; i < name.size(); i++)
@@ -231,7 +224,7 @@ void KTools::Kff::Image::addTags(QVariantList name)
 }
 
 template <typename T>
-bool KTools::Kff::Image::changeAttribute(const QByteArray &name, const T &value)
+bool KTools::Kff::File::changeAttribute(const QByteArray &name, const T &value)
 {
     NameInfo info = db->getAttrName(name);
     if (info.addr == -1)
@@ -242,24 +235,23 @@ bool KTools::Kff::Image::changeAttribute(const QByteArray &name, const T &value)
 
     manager->file.seek(clusters.first() + (dataOffset - 27));
     Pointer pointer(manager, manager->file.read<QByteArray>(9));
-    QByteArray pointersToNames = pointer.getData<QByteArray>(); // CAUTION!!! This is custom pointers.
+    List<qint64> pointersToNames(&pointer);
 
     manager->file.seek(clusters.first() + (dataOffset - 18));
     pointer.setAll(manager->file.read<QByteArray>(9));
     QList<Pointer> pointersToValues = pointer.getData<QList<Pointer>>();
 
-    for (int i = 0; i < pointersToNames.size(); i += 8)
+    for (int i = 0; i < pointersToNames.size(); i++)
     {
-        if (KTools::Converter::byteArrayToT<qint64>(pointersToNames.mid(i, 8)) == info.addr)
+        if (pointersToNames[i] == info.addr)
         {
-            NameInfo readedNameinfo = db->getAttrName(KTools::Converter::byteArrayToT<qint64>(pointersToNames.mid(i, 8)));
+            NameInfo readedNameinfo = db->getAttrName(pointersToNames[i]);
             if (readedNameinfo.type == DataType::List)
                 KLOG_ERROR("Currently unsupported");
             else if (readedNameinfo.type == DataType::String)
             {
-                pointersToValues[i].writeData(value);
-                pointer.writeData(pointersToValues);
-                break;
+                String str(&pointersToValues[i]);
+                str = value;
             }
             else
                 pointersToValues[i].writeData(KTools::Converter::byteArrayToT<T>(value));
