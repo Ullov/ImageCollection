@@ -100,9 +100,16 @@ T& KTools::Kff::List<T>::operator[](const qint64 i)
 }
 
 template <typename T>
-KTools::Kff::List<T>& KTools::Kff::List<T>::operator+=(const T other)
+KTools::Kff::List<T>& KTools::Kff::List<T>::operator+=(const T &other)
 {
     list.append(other);
+    return *this;
+}
+
+template <typename T>
+KTools::Kff::List<T>& KTools::Kff::List<T>::operator=(const QList<T> &other)
+{
+    list = other;
     return *this;
 }
 
@@ -150,7 +157,16 @@ template void KTools::Kff::List<double>::safeRemove(const qint64);
 template void KTools::Kff::List<bool>::safeRemove(const qint64);
 
 template qint64 KTools::Kff::List<KTools::Kff::Pointer>::size();
+template qint64 KTools::Kff::List<qint64>::size();
 
-template KTools::Kff::List<KTools::Kff::Pointer>& KTools::Kff::List<KTools::Kff::Pointer>::operator+=(const KTools::Kff::Pointer);
+template KTools::Kff::List<KTools::Kff::Pointer>& KTools::Kff::List<KTools::Kff::Pointer>::operator+=(const KTools::Kff::Pointer&);
+template KTools::Kff::List<qint64>& KTools::Kff::List<qint64>::operator+=(const qint64&);
 
 template KTools::Kff::Pointer& KTools::Kff::List<KTools::Kff::Pointer>::operator[](const qint64);
+template qint64& KTools::Kff::List<qint64>::operator[](const qint64);
+
+template KTools::Kff::List<qint64>& KTools::Kff::List<qint64>::operator=(const QList<qint64>&);
+
+template KTools::Kff::List<qint64>::List(KTools::Kff::Pointer*);
+
+template KTools::Kff::List<qint64>::~List();

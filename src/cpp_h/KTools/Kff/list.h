@@ -19,7 +19,8 @@ namespace KTools::Kff {
         qint64 size();
 
         T& operator[](const qint64 i);
-        List<T>& operator+=(const T other);
+        List<T>& operator+=(const T &other);
+        List<T>& operator=(const QList<T> &other);
 
     private:
         QList<T> list;
