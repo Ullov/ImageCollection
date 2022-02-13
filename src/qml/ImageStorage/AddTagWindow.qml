@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import "../QmlIncludes"
+import "qrc:/qml/QmlIncludes" as KTools
 
 Rectangle {
     property string colorText: "White"
@@ -21,7 +21,7 @@ Rectangle {
         text: "Add tag"
         color: colorText
     }
-    KawaiLabelInputFieldCombination {
+    KTools.LabelInputFieldCombination {
         id: name
         anchors.top: title.bottom
         anchors.left: parent.left
@@ -37,7 +37,7 @@ Rectangle {
         fontSize: 12
         height: 45
     }
-    KawaiLabelInputFieldCombination {
+    KTools.LabelInputFieldCombination {
         id: parentTag
         anchors.top: name.bottom
         anchors.left: parent.left
@@ -53,7 +53,7 @@ Rectangle {
         fontSize: 12
         height: 45
     }
-    KawaiLabelInputFieldCombination {
+    KTools.LabelInputFieldCombination {
         id: summary
         anchors.top: parentTag.bottom
         anchors.left: parent.left
@@ -69,14 +69,14 @@ Rectangle {
         fontSize: 12
         height: 45
     }
-    KawaiButton {
+    KTools.Button {
         id: addButton
         anchors.top: summary.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: 3
         height: 31
         radius: 2
-        labelText: "Add"
+        text: "Add"
         mouseArea.onClicked: sendInfo()
     }
     Text {

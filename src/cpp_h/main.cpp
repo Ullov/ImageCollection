@@ -4,14 +4,14 @@
 #include <QUuid>
 #include <QQmlEngine>
 #include "FsExplorer/fshandler.h"
-#include "KTools/uuidslist.h"
-#include "KTools/options.h"
+#include "KTools/src/cpp_h/uuidslist.h"
+#include "KTools/src/cpp_h/options.h"
 #include "ImageViewer/pixmapimage.h"
-#include "KTools/Kff/metainfofs.h"
-#include "KTools/Kff/manager.h"
-#include "KTools/Kff/rawstream.h"
-#include "KTools/Kff/fixedtypes.h"
-#include "KTools/Kff/variabletypes.h"
+#include "KTools/src/cpp_h/Kff/metainfofs.h"
+#include "KTools/src/cpp_h/Kff/manager.h"
+#include "KTools/src/cpp_h/Kff/rawstream.h"
+#include "KTools/src/cpp_h/Kff/fixedtypes.h"
+#include "KTools/src/cpp_h/Kff/variabletypes.h"
 #include "ImageStorage/interface.h"
 
 void testFunction ()
@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 
     static KTools::Options *options = new KTools::Options();
     FsHandler *fsExplorerHandle = new FsHandler();
+    fsExplorerHandle->optionsObj = options;
     KTools::Kff::MetainfoFs db(options);
     ImageStorage::Interface imageStorage(&db);
 

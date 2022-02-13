@@ -2,7 +2,7 @@
 #define IMAGESTORAGE_INTERFACE_H
 
 #include <QVariantMap>
-#include "../KTools/Kff/nameinfo.h"
+#include "KTools/src/cpp_h/Kff/nameinfo.h"
 
 namespace KTools::Kff {
     class MetainfoFs;

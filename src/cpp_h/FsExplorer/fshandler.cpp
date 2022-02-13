@@ -1,6 +1,6 @@
 #include "fshandler.h"
 
-#include "../KTools/log.h"
+#include "KTools/src/cpp_h/log.h"
 
 KTools::Options *FsHandler::optionsObj;
 

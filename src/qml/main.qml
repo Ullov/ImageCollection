@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
-import "QmlIncludes"
+import "qrc:/qml/QmlIncludes" as KTools
 
 Window {
     width: 640
@@ -9,7 +9,7 @@ Window {
     title: qsTr("Image Collection")
     color: "Black"
     visibility: "Maximized"
-    KawaiSwitchableWindows {
+    KTools.SwitchableWindows {
         id: switchableWindow
     }
 

@@ -1,6 +1,6 @@
 #include "interface.h"
-#include "../KTools/Kff/metainfofs.h"
-#include "../KTools/Kff/file.h"
+#include "KTools/src/cpp_h/Kff/metainfofs.h"
+#include "KTools/src/cpp_h/Kff/file.h"
 
 ImageStorage::Interface::Interface(KTools::Kff::MetainfoFs *ldb)
 {

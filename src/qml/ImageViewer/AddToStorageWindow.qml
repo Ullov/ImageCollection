@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQml.Models 2.12
 import QtQuick.Controls 2.12
-import "../QmlIncludes"
+import "qrc:/qml/QmlIncludes" as KTools
 
 Rectangle {
     property string colorText: "White"
@@ -19,17 +19,17 @@ Rectangle {
         id: fixedFont
         source: "qrc:/resources/fonts/RobotoMono-Regular.ttf"
     }
-    KawaiButton {
+    KTools.Button {
         id: closeButton
         anchors.right: parent.right
         anchors.top: parent.top
-        borderRadiusC: 0
-        labelText: "X"
-        pixelSize: 20
+        radius: 0
+        text: "X"
+        textSize: 20
         opacity: 0.3
         mouseArea.onClicked: root.destroy()
     }
-    KawaiLabelInputFieldCombination {
+    KTools.LabelInputFieldCombination {
         id: name
         anchors.top: closeButton.bottom
         anchors.horizontalCenter: parent.horizontalCenter
@@ -50,7 +50,7 @@ Rectangle {
             comboBox.currentIndex = 0
         }
     }
-    KawaiLabelInputFieldCombination {
+    KTools.LabelInputFieldCombination {
         id: conversionQuality
         anchors.top: name.bottom
         anchors.left: conversionFormat.right
@@ -59,7 +59,7 @@ Rectangle {
         label.text: "Conversion quality"
         textField.text: "100"
     }
-    KawaiLabelInputFieldCombination {
+    KTools.LabelInputFieldCombination {
         id: addTagName
         anchors.top: conversionFormat.bottom
         anchors.right: addTagButton.left
@@ -67,15 +67,15 @@ Rectangle {
         label.text: "Add tag"
         textField.text: ""
     }
-    KawaiButton {
+    KTools.Button {
         id: addTagButton
         anchors.right: conversionQuality.right
         anchors.top: conversionFormat.bottom
         anchors.topMargin: 5
-        heightC: 33
-        borderRadiusC: 0
-        labelText: "Add"
-        pixelSize: 10
+        height: 33
+        radius: 0
+        text: "Add"
+        textSize: 10
         mouseArea.onClicked: addTagToListModel()
     }
     Rectangle {
@@ -101,7 +101,7 @@ Rectangle {
         model: ListModel {}
         delegate: delegateItem
     }
-    KawaiLabelInputFieldCombination {
+    KTools.LabelInputFieldCombination {
         id: addAttributeName
         anchors.top: tagListViewRect.bottom
         anchors.right: attributeTypeComboBox.left
@@ -123,15 +123,15 @@ Rectangle {
             ListElement { text:"BLOB" }
         }
     }
-    KawaiButton {
+    KTools.Button {
         id: addAttributeButton
         anchors.right: conversionQuality.right
         anchors.top: tagListViewRect.bottom
         anchors.topMargin: 5
-        heightC: 33
-        borderRadiusC: 0
-        labelText: "Add"
-        pixelSize: 10
+        height: 33
+        radius: 0
+        text: "Add"
+        textSize: 10
         mouseArea.onClicked: addAttirbuteToListModel()
     }
     Rectangle {
@@ -205,13 +205,13 @@ Rectangle {
             }
         }
     }
-    KawaiButton {
+    KTools.Button {
         id: storeImageButton
         anchors.top: attrListViewRect.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: 10
-        borderRadiusC: 0
-        labelText: "Store image"
+        radius: 0
+        text: "Store image"
         //mouseArea.onClicked:
     }
 

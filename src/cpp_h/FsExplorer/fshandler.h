@@ -13,8 +13,8 @@
 #include <QPixmap>
 #include <QtConcurrent/QtConcurrent>
 #include <QFuture>
-#include "../KTools/fileidentifier.h"
-#include "../KTools/options.h"
+#include "KTools/src/cpp_h/fileidentifier.h"
+#include "KTools/src/cpp_h/options.h"
 
 class FsHandler : public QObject
 {

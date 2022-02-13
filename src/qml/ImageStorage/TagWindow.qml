@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
 import QtQml.Models 2.12
-import "../QmlIncludes"
+import "qrc:/qml/QmlIncludes" as KTools
 
 Rectangle {
     property int windowSwitchHeight: 40
@@ -23,7 +23,7 @@ Rectangle {
         color: colorFirst
         border.color: colorBorder
         border.width: 2
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: keywordLine
             anchors.centerIn: parent
             label.text: "Keyword"
@@ -36,14 +36,14 @@ Rectangle {
             fontSize: 13
             height: 50
         }
-        KawaiButton {
+        KTools.Button {
             id: searchButton
             anchors.left: keywordLine.right
             anchors.bottom: keywordLine.bottom
             anchors.leftMargin: 5
             height: 31
             radius: 2
-            labelText: "Search"
+            text: "Search"
         }
     }
     AddTagWindow {

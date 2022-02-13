@@ -1,0 +1,3 @@
+[submodule "src/KTools"]
+	path = src/KTools
+	url = https://github.com/Ullov/KTools

@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Shapes 1.15
-import "../QmlIncludes"
-import "../../js/Tools.js" as Tools
+import "qrc:/qml/QmlIncludes" as KTools
+import "/js/Tools.js" as Tools
 
 Rectangle {
     property var info
@@ -36,15 +36,15 @@ Rectangle {
             GradientStop { position: 0.0; color: outerColor}
             GradientStop { position: 1.0; color: innerColor}
         }
-        KawaiButton {
+        KTools.Button {
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             width: parent.height
-            borderRadiusC: 0
-            labelText: "X"
-            pixelSize: 20
-            standartColor: innerColor
+            radius: 0
+            text: "X"
+            textSize: 20
+            color: innerColor
             opacity: 0.3
             mouseArea.onPressed: root.destroy()
         }
@@ -82,7 +82,7 @@ Rectangle {
             }
         }
 
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoFileName
             anchors.left: icon.right
             anchors.right: parent.right
@@ -91,7 +91,7 @@ Rectangle {
             textField.text: info.fileName
             color: innerColor
         }
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoPath
             anchors.left: icon.right
             anchors.right: parent.right
@@ -101,7 +101,7 @@ Rectangle {
             color: innerColor
             onlyRead: true
         }
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoFilePath
             anchors.left: parent.left
             anchors.right: parent.right
@@ -111,7 +111,7 @@ Rectangle {
             color: innerColor
             onlyRead: true
         }
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoSize
             anchors.left: parent.left
             anchors.top: infoFilePath.bottom
@@ -121,7 +121,7 @@ Rectangle {
             onlyRead: true
             width: 200
         }
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoCreationTime
             anchors.top: infoSize.bottom
             anchors.left: parent.left
@@ -131,7 +131,7 @@ Rectangle {
             onlyRead: true
             width: 200
         }
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoModificationTime
             anchors.top: infoCreationTime.bottom
             anchors.left: parent.left
@@ -141,7 +141,7 @@ Rectangle {
             onlyRead: true
             width: 200
         }
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoMetadataModificationTime
             anchors.top: infoModificationTime.bottom
             anchors.left: parent.left
@@ -151,7 +151,7 @@ Rectangle {
             onlyRead: true
             width: 200
         }
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoReadedTime
             anchors.top: infoMetadataModificationTime.bottom
             anchors.left: parent.left
@@ -161,7 +161,7 @@ Rectangle {
             onlyRead: true
             width: 200
         }
-        KawaiVerticalLine {
+        KTools.VerticalLine {
             id: verticalLine
             anchors.top: infoFilePath.bottom
             anchors.bottom: infoReadedTime.bottom
@@ -169,7 +169,7 @@ Rectangle {
             anchors.margins: 3
             anchors.bottomMargin: 0
         }
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoPermissions
             anchors.top: infoFilePath.bottom
             anchors.left: verticalLine.left
@@ -179,7 +179,7 @@ Rectangle {
             color: innerColor
             onlyRead: true
         }
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoOwner
             anchors.top: infoPermissions.bottom
             anchors.left: verticalLine.left
@@ -189,7 +189,7 @@ Rectangle {
             color: innerColor
             onlyRead: true
         }
-        KawaiLabelInputFieldCombination {
+        KTools.LabelInputFieldCombination {
             id: infoGroup
             anchors.top: infoOwner.bottom
             anchors.left: verticalLine.left

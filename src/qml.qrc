@@ -5,16 +5,6 @@
         <file>qml/FSExplorer/FileBrowserTab.qml</file>
         <file>qml/FSExplorer/FileListTools.js</file>
         <file>qml/FSExplorer/StartObject.qml</file>
-        <file>qml/QmlIncludes/KawaiButton.qml</file>
-        <file>qml/QmlIncludes/KawaiCollapsibleBlock.qml</file>
-        <file>qml/QmlIncludes/KawaiDownloadBar.qml</file>
-        <file>qml/QmlIncludes/KawaiHorisontalLine.qml</file>
-        <file>qml/QmlIncludes/KawaiLoadTabButton.qml</file>
-        <file>qml/QmlIncludes/KawaiVerticalLine.qml</file>
-        <file>qml/QmlIncludes/KawaiLabelInputFieldCombination.qml</file>
-        <file>qml/QmlIncludes/KawaiSwitchableWindows.qml</file>
-        <file>js/pageloader.js</file>
-        <file>js/Tools.js</file>
         <file>resources/FSExplorer/img/fileTypeIcons/bmp.png</file>
         <file>resources/FSExplorer/img/fileTypeIcons/folder.png</file>
         <file>resources/FSExplorer/img/fileTypeIcons/gif.png</file>
@@ -126,6 +116,5 @@
         <file>qml/ImageStorage/AddTagWindow.qml</file>
         <file>qml/ImageStorage/DelegateItemForTags.qml</file>
         <file>qml/ImageViewer/AddToStorageWindow.qml</file>
-        <file>qml/QmlIncludes/LabelComboBoxCombination.qml</file>
     </qresource>
 </RCC>
